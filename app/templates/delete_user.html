@@ -1,0 +1,42 @@
+{% extends "base2.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+
+<div class="container">
+  <h1><span class="glyphicon glyphicon-trash"></span>{{title}}</h1>
+  <p>  Tap on a user to delete it</p>            
+  <table class="table">
+    <thead>
+      <tr>
+        <th><center>User Name</center></th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        
+        {% for users in users %}
+            <tr><td><form action="" method="POST" ><button class="btn btn-primary btn-block" Onclick="return ConfirmDelete('{{users.username}}');" type="submit" value ="{{users.username}}" name="delete" ><span class="glyphicon glyphicon-trash"></span> {{ users.username }}</button> </form>
+             </td></tr>
+                
+        {% endfor %}
+        
+      
+      
+    </tbody>
+  </table>
+</div>
+    
+    <script>
+        function ConfirmDelete(username){
+        return confirm("Are you sure you want to delete " + username + " from the users list?");}
+    </script> 
+
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,410 @@
+{% extends 'bootstrap/base.html' %}
+{% block title %}
+    {% if title %}{{ title }} - Proyecto{% else %}Proyecto{% endif %}
+{% endblock %}
+{% block navbar %}
+<script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+<script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+<body>
+  <style>
+  body {
+    font-family: "Lato", sans-serif;
+    transition: background-color .5s;
+    background-color: "white"
+}
+    /*!
+ * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+/* Toggle Styles */
+
+#wrapper {
+    padding-left: 0px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    
+}
+
+
+#sidebar-wrapper {
+    position: fixed;
+    left: 250px;
+    z-index: 1000;
+    overflow-y: auto;
+    margin-left: -250px;
+    width: 250px;
+    height: 100%;
+    background: #000;
+    
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+   width: 0px;
+   padding-left: 0px;
+
+
+ 
+    
+}
+
+#page-content-wrapper {
+    padding: 15px;
+    width: 100%;
+    margin-left: 250px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+
+}
+
+
+#wrapper.toggled #page-content-wrapper {
+    position: relative;
+    margin-left: 0px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+      
+    }
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    width: 250px;
+    list-style: none;
+    font-size: 25px;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+    font-size: 25px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    color: #999999;
+    text-decoration: none;
+    font-size: 25px;
+}
+
+.sidebar-nav li a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    text-decoration: none;
+}
+
+.dropdown-btn:hover {
+    color: #f1f1f1;
+  background: rgba(255, 255, 255, 0.2);
+}
+.dropdown-container {
+    display: none;
+    background-color: #262626;
+    padding-left: 8px;
+    color: #999999;
+}
+.dropdown-btn {
+    padding: 8px 8px 8px 40px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #999999;
+    display: block;
+    transition: 0.0s;
+
+    border: none;
+    background: none;
+
+    width: 100%;
+
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+}
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    background: none;
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    #wrapper {
+        padding-left: 250px;
+    }
+
+    #wrapper.toggled {
+        padding-left: 0px;
+    }
+
+    #sidebar-wrapper {
+        width: 250px;
+  
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0px;
+    }
+
+    #page-content-wrapper {
+        padding: 20px;
+   margin-left: 0px
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-left: 0px;
+    }
+}
+  </style>
+ 
+  <nav class="navbar navbar-inverse navbar-fixed-top " >
+    <div class="container-fluid ">
+      <div class="row">
+
+        <div class="navbar-header col-md-4 col-xs-4" style="padding-left:0px;">
+            
+            <a class="navbar-brand" href="#menu-toggle" style="font-size: 20px; display: flex;justify-content: flex-start;" id="menu-toggle"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
+        </div>
+        
+        <div class="navbar-header col-md-4 col-xs-4" style="display: flex;justify-content: center;"> 
+		     	
+		            <a id="hormin" class="navbar-brand" style="font-size: 20px;"></a>
+		        
+		 </div>
+        
+        {% if current_user.is_authenticated %}
+        <div class="navbar-header hidden-xs col-md-4 col-sm-4" style="display: flex;justify-content: flex-end;" > 
+          <a href="{{ url_for('logout') }}" style="font-size: 20px;padding-right: 0px;" class="navbar-brand" Onclick="return ConfirmLogout();"><span  class="glyphicon glyphicon-log-out "></span> Log Out</a>
+        </div>
+        
+        <div class="navbar-header hidden-md hidden-sm hidden-lg col-xs-4 " style="display: flex;justify-content: flex-end;"> 
+
+          <a href="{{ url_for('logout') }}" style="font-size: 20px;padding-right: 0px;" class="navbar-brand" Onclick="return ConfirmLogout();" ><span  class="glyphicon glyphicon-log-out "></span></a>
+        </div>
+      {%endif%}
+      
+      
+      
+      </div>
+           </div>
+
+</nav>
+
+<div id="wrapper" class="toggled" > 
+	
+    <div class="container-fluid">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            {% if current_user.is_authenticated %}
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <br>
+                </li>
+                <li class="sidebar-brand">
+                    <a href="#" class="navbar-brand">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>   Home</a>
+                </li>
+                <li>
+                    <font color="#337AB7"> STATISTICS</font>
+                </li>
+                <li>
+                    <a href="#"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Reports</a>
+                </li>
+                <li>
+                    <a href="#"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Statistic</a>
+                </li>
+                <li>
+                  <font color="#337AB7"> ADMINISTRATION</font>
+                </li>
+                
+                <li>
+                  <a href="#"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Tasks</a>
+                </li>
+                <button class="dropdown-btn" data-toggle="collapse" id="prueba2"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Parameters 
+                    <i class="glyphicon glyphicon-triangle-bottom" id="pato" style="font-size: 20px" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-container collapse" >
+                    <li>
+                        <a href="{{ url_for('setparameters') }}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Temperature</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('toggle_switch') }}"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> Light</a>
+                    </li>
+                </div>
+                {% if  current_user.admin == 1 %}
+                <button class="dropdown-btn" data-toggle="collapse" id="prueba"><span  class="glyphicon glyphicon-cog" ></span> Users 
+                    <i class="glyphicon glyphicon-triangle-bottom" id="pato" style="font-size: 20px" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-container collapse" >
+                     <li><a href="{{ url_for('register') }}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> New User</a></li>
+                     <li><a href="{{ url_for('delete_user') }}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete User</a></li>
+                </div>
+                {%endif%}
+                {%endif%}
+                </div>
+
+                
+            
+           
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            
+                <div class="row">
+                    <div class="col-lg-12" style="padding-left: 0px;">
+                      <br>
+                      <h1>Your Title</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12" style="padding-left: 0px;">
+                    	{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+                      {% block app_content %}
+                       {% endblock %}
+                       {%- block footer %}<center>Proyecto 2018</center>{%- endblock footer %}
+            
+                    </div>
+                </div>
+            
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+</div>
+<!-- /#wrapper -->
+</body>
+<script >
+
+
+
+  $(document).ready(function() {
+// Making 2 variable month and day
+var monthNames = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ]; 
+var dayNames= ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"]
+
+// make single object
+var newDate = new Date();
+// make current time
+newDate.setDate(newDate.getDate());
+// setting date and time
+$('#Date').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
+$('#Date2').html(newDate.getDate() + '/' + newDate.getMonth() + '/' + newDate.getFullYear());
+
+setInterval( function() {
+// Create a newDate() object and extract the seconds of the current time on the visitor's
+var seconds = new Date().getSeconds();
+// Add a leading zero to seconds value
+$("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+},1000);
+
+setInterval( function() {
+// Create a newDate() object and extract the minutes of the current time on the visitor's
+var minutes = new Date().getMinutes();
+var hours = new Date().getHours();
+// Add a leading zero to the minutes value
+$("#hormin").html(( hours < 10 ? "0" : "" ) + hours +":"+( minutes < 10 ? "0" : "" ) + minutes);
+},1000);
+
+setInterval( function() {
+// Create a newDate() object and extract the hours of the current time on the visitor's
+var hours = new Date().getHours();
+// Add a leading zero to the hours value
+$("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+}, 1000); 
+});
+
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownContent = this.nextElementSibling;
+    if (dropdownContent.style.display === "block") {
+      dropdownContent.style.display = "none";
+    } else {
+      dropdownContent.style.display = "block";
+    }
+  });
+}
+
+$('#prueba').on('click', function(){
+    var iSelector = $(this).find('i:first');
+    if(iSelector.hasClass('glyphicon glyphicon-triangle-bottom')) {
+        iSelector.removeClass('glyphicon glyphicon-triangle-bottom')
+        iSelector.addClass('glyphicon glyphicon-triangle-top')
+    }else{
+        iSelector.removeClass('glyphicon glyphicon-triangle-top')
+        iSelector.addClass('glyphicon glyphicon-triangle-bottom')
+
+    }
+
+
+});
+$('#prueba2').on('click', function(){
+    var iSelector = $(this).find('i:first');
+    if(iSelector.hasClass('glyphicon glyphicon-triangle-bottom')) {
+        iSelector.removeClass('glyphicon glyphicon-triangle-bottom')
+        iSelector.addClass('glyphicon glyphicon-triangle-top')
+    }else{
+        iSelector.removeClass('glyphicon glyphicon-triangle-top')
+        iSelector.addClass('glyphicon glyphicon-triangle-bottom')
+
+    }
+
+
+});
+
+  function ConfirmLogout(){
+        return confirm("Are you sure you want to logout?");
+    }
+  $("#menu-toggle").click(function(e) {
+
+       
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+
+        
+    });
+</script>
+
+{% endblock %}
+
