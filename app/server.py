@@ -94,6 +94,9 @@ def get_set_point_light():
 def get_current_temp():
     return 20
 
+def set_event():
+    pass
+
 '''
 class LoopThread(Thread):
     def __init__(self, stop_event, interrupt_event,continue_event):
