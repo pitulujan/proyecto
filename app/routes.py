@@ -6,11 +6,9 @@ from app.manage_users import *
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, User_State
 from werkzeug.urls import url_parse
-from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
-import time
-import os
 from app.server import set_temp, set_light, get_set_point_temp, get_current_temp, get_initial_values,get_light_state,get_set_point_light
+from app.configuracion_scheduler import config_scheduler
 
 '''
 import socket
@@ -25,14 +23,15 @@ except:
     print("Connection error")
     sys.exit()
 '''
+
+
+
+
 def tick():
     print('Tick! The time is: %s' % datetime.now())
-scheduler = BackgroundScheduler()
-scheduler.add_job(tick, 'interval', seconds=20)
+scheduler = config_scheduler()
+scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
 scheduler.start()
-print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
-
-
 
 get_initial_values()
 @app.route('/')
