@@ -25,8 +25,6 @@ except:
 '''
 
 
-
-
 def tick():
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
