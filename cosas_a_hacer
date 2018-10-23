@@ -1,0 +1,24 @@
+Eventos:
+
+--> date: use when you want to run the job just once at a certain point of time   --> https://apscheduler.readthedocs.io/en/v3.5.3/modules/triggers/date.html#module-apscheduler.triggers.date
+--> interval: use when you want to run the job at fixed intervals of time         --> https://apscheduler.readthedocs.io/en/v3.5.3/modules/triggers/interval.html
+--> cron: use when you want to run the job periodically at certain time(s) of day --> https://apscheduler.readthedocs.io/en/v3.5.3/modules/triggers/cron.html#module-apscheduler.triggers.cron
+
+
+--Tengo que poder eliminar eventos 
+--Tengo que poder reprogramar eventos 
+
+
+
+CAMBIAR datetime.utcnow() por datetime.now() en server en todos lados!!! utc es la cara de la japi HAY QUE CAMBIAR EL DEFAULT EN MODELS.PY PORQUE SINO SE CAGA LA FRUTA --> HACER MIGRATE
+
+
+tablas nuevas ?
+
+id | user | timestamp | pid | atributo --> esto para relacionar usuarios a jobs schedualizados y qué se schedualizo 
+
+
+reveer tablas -->deberia haber una por atributo(luz,temp,etc) -->los usuarios las cambian y queda registrado eso en cada tabla
+tabla mapeo de atributos? 
+
+id | atributo  --> con esta tabla despues podria mapear los eventos (jobs) en la table (id | user | timestamp | pid | atributo) 

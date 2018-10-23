@@ -8,6 +8,7 @@ import socket
 import sys
 import traceback
 import sqlite3
+from app.configuracion_scheduler import config_scheduler
 
 
 route = '/home/pitu/proyecto/app.db'
@@ -15,7 +16,11 @@ route = '/home/pitu/proyecto/app.db'
 Current_state_dic= {'Set_Point_Temp' : 12.0,
                     'Set_Point_Light' : { 'State' : False,
                     					   'Intensity' : 10.0}}
-
+def tick():
+    print('Tick! The time is: %s' % datetime.now())
+scheduler = config_scheduler()
+scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
+scheduler.start()
 
 
 def get_initial_values():
@@ -94,7 +99,13 @@ def get_set_point_light():
 def get_current_temp():
     return 20
 
-def set_event():
+def schedule_event():
+    pass
+
+def reschedule_event():
+    pass
+
+def delete_scheduled_event():
     pass
 
 '''

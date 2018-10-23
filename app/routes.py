@@ -8,7 +8,7 @@ from app.models import User, User_State
 from werkzeug.urls import url_parse
 from datetime import datetime
 from app.server import set_temp, set_light, get_set_point_temp, get_current_temp, get_initial_values,get_light_state,get_set_point_light
-from app.configuracion_scheduler import config_scheduler
+
 
 '''
 import socket
@@ -25,11 +25,7 @@ except:
 '''
 
 
-def tick():
-    print('Tick! The time is: %s' % datetime.now())
-scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
-scheduler.start()
+
 
 get_initial_values()
 @app.route('/')
