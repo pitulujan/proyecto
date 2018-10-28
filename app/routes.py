@@ -4,7 +4,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm 
 from app.manage_users import *
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, User_State
+from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
 from app.server import set_temp, set_light, get_set_point_temp, get_current_temp, get_initial_values,get_light_state,get_set_point_light
@@ -102,7 +102,7 @@ def setparameters():
     
     if request.method == 'POST':
         print(str(request.form.get('set_temp')))
-        set_temp(request.form.get('set_temp'),current_user.id)
+        set_temp(request.form.get('set_temp'),current_user.username)
         flash("The temperature was set in: "+str(request.form.get('set_temp'))+" successfully")
         return redirect(url_for('index'))
         
@@ -113,7 +113,7 @@ def setparameters():
 @login_required
 def toggle_switch():
 
-    current_light_set_point=get_set_point_light()
+    current_light_set_point=get_set_point_light() #-->puedo pasar un dic y que jinja2 se encargue de lo suyo atr perri
     if get_light_state():
         current_state='On'
         button='Turn Light Off'
