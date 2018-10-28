@@ -89,11 +89,11 @@ def get_set_point_temp():
     return Current_state_dic['Temperature']['Set_Point']
 
 def get_light_state():
-    print(Current_state_dic['Set_Point_Light']['State'])
-    return Current_state_dic['Set_Point_Light']['State']
+    
+    return Current_state_dic['Lights'] #--> que se la arrgle routes
 def get_set_point_light():
-    print(Current_state_dic['Set_Point_Light']['Intensity'])
-    return Current_state_dic['Set_Point_Light']['Intensity']
+    
+    return Current_state_dic['Light']
 
 def get_current_temp():
     return 20
@@ -116,7 +116,11 @@ def reschedule_event():
 
 def delete_scheduled_event(id_event):
 
-    scheduler.remove_job(id_event)
+    if type(id_event)==list: #Esto es por si elimino un usuario para eliminar todos los eventos que tenia schedulizados
+        for pid in id_event:
+            scheduler.remove_job(pid)
+    else:
+        scheduler.remove_job(id_event)
 
     return
 

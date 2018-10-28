@@ -83,6 +83,7 @@ def delete_user():
 
     if request.method == 'POST':
         post_id = request.form.get('delete')
+        print(post_id)
         ans=delete_user_full(post_id)
         flash(ans)
         return redirect(url_for('delete_user'))
@@ -102,7 +103,7 @@ def setparameters():
     
     if request.method == 'POST':
         print(str(request.form.get('set_temp')))
-        set_temp(request.form.get('set_temp'),current_user.username)
+        set_temp(request.form.get('set_temp'),current_user.username) #aca ya cambie el id por el username
         flash("The temperature was set in: "+str(request.form.get('set_temp'))+" successfully")
         return redirect(url_for('index'))
         
@@ -137,8 +138,5 @@ def toggle_switch():
     return render_template('toggle_switch.html', title=' Set light', current_light_set_point=current_light_set_point, current_state=current_state,button=button)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
-@app.route('/base2', methods=['GET', 'POST'])
-@login_required
-def base2():
-	return render_template('base2.html')
+
 
