@@ -10,21 +10,6 @@ from datetime import datetime
 from app.server import set_temp, set_light, get_set_point_temp, get_current_temp, get_initial_values,get_light_state,get_set_point_light
 
 
-'''
-import socket
-import sys
-soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = "127.0.0.1"
-port = 8888
-
-try:
-    soc.connect((host, port))
-except:
-    print("Connection error")
-    sys.exit()
-'''
-
-
 
 
 get_initial_values()
