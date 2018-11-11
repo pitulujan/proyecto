@@ -53,7 +53,20 @@ def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un secto
 
 
 
-def set_light(state,setpoint,user):
+def set_light(state,setpoint,user,str_id):
+    
+    query_lights=Current_Light_State.query.filter_by(str_id=str_id).first()
+    
+    query_lights.user=user
+    query_lights.light_state=state
+    query_lights.light_intensity=setpoint
+    
+    Current_state_dic['Lights'][str_id]['State']=state
+    Current_state_dic['Lights'][str_id]['Intensity']=setpoint
+    
+    db.session.add(query_lights)
+    db.session.commit()
+
 
     return
 

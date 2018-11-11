@@ -103,34 +103,16 @@ def toggle_switch():
           
         
     if request.method == 'POST':
-        set_light(request.form['state'],request.form['set_point'],current_user.username,request.form['place'])
+        if request.form['state'] == 'True':
+            set_light(True,request.form['set_point'],current_user.username,request.form['place'])
+        else:
+            set_light(False,request.form['set_point'],current_user.username,request.form['place'])
+
         print(request.form['place'],request.form['state'],request.form['set_point'])
         
 
     return render_template('set_lights.html', title=' Set light', dic=current_light_state)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
-@app.route('/pruebitas', methods=['GET', 'POST'])
-@login_required
-def pruebitas():
-    current_temp_state =get_light_state()
-    print(current_temp_state)
-    return render_template('pruebitas.html',dic=current_temp_state)
 
-@app.route('/pruebitas2', methods=['GET', 'POST'])
-@login_required
-def pruebitas2():
-    current_temp_state =get_light_state()
-    print(current_temp_state)
-    return render_template('pruebitas2.html',dic=current_temp_state)
-
-@app.route('/pruebitas3', methods=['GET', 'POST'])
-@login_required
-def pruebitas3():
-
-    if request.method == 'POST':
-        user =  request.form['username']
-        password = request.form['password']
-        return json.dumps({'status':'OK','user':user,'pass':password})
-    return render_template('pruebitas3.html')
 
