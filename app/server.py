@@ -10,8 +10,8 @@ from app import db
 route = '/home/pitu/proyecto/app.db'
 
 Current_state_dic= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25},
-                    'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10,'Current_value': 30},
-                                'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 30},
+                    'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10,'Current_value': 50},
+                                'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 20},
                                 'Patio':  { 'State' : False,'Intensity' : 10, 'Current_value': 30}}
 
                     }
@@ -53,29 +53,8 @@ def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un secto
 
 
 
-def set_light(state,user_id,*args):
-    conn=sqlite3.connect(route, check_same_thread=False)
-    co=conn.cursor()
+def set_light(state,setpoint,user):
 
-    
-    Current_state_dic['Set_Point_Light']['State']=state
-    
-    touple=(state,Current_state_dic['Set_Point_Light']['Intensity'],datetime.now(),user_id)
-    tup=(state,Current_state_dic['Set_Point_Light']['Intensity'],1)
-    if args:
-        Current_state_dic['Set_Point_Light']['Intensity']=args[0]
-        touple=(state,args[0],datetime.now(),user_id)
-        tup=(state,args[0],1)
-
-    sql = "UPDATE User__State SET light_state = ?,light_intensity = ?, timestamp = ? WHERE user_id= ?"
-    co.execute(sql, touple)
-
-    sql = "UPDATE Current__State SET light_state = ?,light_intensity = ? WHERE id=?"
-    co.execute(sql,tup)
-
-    conn.commit()
-    conn.close()
-    get_set_point_temp()
     return
 
 

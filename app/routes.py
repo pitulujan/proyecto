@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, set_light, get_temp_state, get_initial_values
+from app.server import set_temp, set_light, get_temp_state, get_initial_values,get_light_state
 
 
 
@@ -82,9 +82,6 @@ def set_temperature():
 
     current_temp_state =get_temp_state() # VER QUE LE MANDO AL TEMPLATE; SI EL ESTADO O EL DIC
     
-
-
-    
     if request.method == 'POST':
         print(request.form.get('statevalue'),type(request.form.get('statevalue')))
         if request.form.get('statevalue')=='True':
@@ -95,10 +92,6 @@ def set_temperature():
         else:
             set_temp(False,request.form.get('set_temp'),current_user.username)
 
-        #print(request.form.get('statevalue'))
-        #set_temp(request.form.get('statevalue'),request.form.get('set_temp'),current_user.username) #aca ya cambie el id por el username
-        
-        
     return render_template('set_temperature.html', title=' Set Temperature', dic=current_temp_state)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
@@ -106,33 +99,38 @@ def set_temperature():
 @login_required
 def toggle_switch():
 
-    current_light_set_point=get_set_point_light() #-->puedo pasar un dic y que jinja2 se encargue de lo suyo atr perri
-    if get_light_state():
-        current_state='On'
-        button='Turn Light Off'
-        
-    else:
-        current_state='Off'
-        button='Turn Light On'
-        
+    current_light_state =get_light_state()#-->puedo pasar un dic y que jinja2 se encargue de lo suyo atr perri
+          
         
     if request.method == 'POST':
-        if request.form.get('statevalue')=='On':
-            set_light(True,current_user.id,request.form.get('set_point_light'))
-            hola="The Light was set in: "+str(request.form.get('set_point_light'))+" successfully"
-        else:
-            set_light(False,current_user.id)
-            hola="Light was successfully turned off"
+        set_light(request.form['state'],request.form['set_point'],current_user.username,request.form['place'])
+        print(request.form['place'],request.form['state'],request.form['set_point'])
         
-        flash(hola)
-        return redirect(url_for('toggle_switch'))
-        
-    return render_template('toggle_switch.html', title=' Set light', current_light_set_point=current_light_set_point, current_state=current_state,button=button)
+
+    return render_template('set_lights.html', title=' Set light', dic=current_light_state)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
 @app.route('/pruebitas', methods=['GET', 'POST'])
 @login_required
 def pruebitas():
-    current_temp_state =get_temp_state()
+    current_temp_state =get_light_state()
+    print(current_temp_state)
     return render_template('pruebitas.html',dic=current_temp_state)
+
+@app.route('/pruebitas2', methods=['GET', 'POST'])
+@login_required
+def pruebitas2():
+    current_temp_state =get_light_state()
+    print(current_temp_state)
+    return render_template('pruebitas2.html',dic=current_temp_state)
+
+@app.route('/pruebitas3', methods=['GET', 'POST'])
+@login_required
+def pruebitas3():
+
+    if request.method == 'POST':
+        user =  request.form['username']
+        password = request.form['password']
+        return json.dumps({'status':'OK','user':user,'pass':password})
+    return render_template('pruebitas3.html')
 

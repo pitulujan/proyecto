@@ -1,0 +1,162 @@
+{% extends "base2.html" %}
+{% block app_content %}
+<!---https://stackoverflow.com/questions/24175998/meaning-of-numbers-in-col-md-4-col-xs-1-col-lg-2-in-bootstrap -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <h1><span class="glyphicon glyphicon-flash"></span>{{ title}}</h1>
+    
+<style >
+
+.slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+
+}
+  .onoffswitch {
+    position: relative; width: 78px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    height: 36px; padding: 0; line-height: 36px;
+    border: 2px solid #E3E3E3; border-radius: 36px;
+    background-color: #FFFFFF;
+    transition: background-color 0.3s ease-in;
+}
+.onoffswitch-label:before {
+    content: "";
+    display: block; width: 36px; margin: 0px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 4px;
+    right: 40px;
+    border: 2px solid #E3E3E3; border-radius: 36px;
+    transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label {
+    background-color: #49E845;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label, .onoffswitch-checkbox:checked + .onoffswitch-label:before {
+   border-color: #49E845;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+    right: 0px; 
+}
+
+</style>
+
+
+<body>
+{% for place,state in dic.items()|sort: %}
+  <div class="row">
+          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                          
+                          <h2 id="textoreloco" val="{{place}}" style="vertical-align: text-top;margin-top: 5px;"> {{place}}</h2>
+                          
+                  </div>
+                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+                              <div class="onoffswitch">
+                                  {%if state['State']==True:%}
+                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{place}}" value="On" checked>
+                                  {%else:%}
+                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{place}}" value="Off" >
+                                  {%endif%}
+                                  <label class="onoffswitch-label" for="myonoffswitch{{place}}"></label>
+                              </div>
+                    </div> 
+                         
+          </div>
+   
+          {%if state['State'] == True:%}
+          <div class="row" id="prendeapaga{{place}}" style="display:show;">
+          {%else:%}
+          <div class="row" id="prendeapaga{{place}}" style="display:none;">
+          {%endif%}
+            <form action="{{ url_for('toggle_switch') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+            <div class="form-group">
+              <input type="text" style="display:none;"  id="statevalue{{place}}" name="statevalue" value="{{state['State']}}">
+                <b><p>Current Set Point: {{state['Intensity']}}</p></b>
+                <label for="temp">Set the New Desired Light Set Point</label>
+                <div class="slidecontainer">
+                <input type="range" min="0" max="100" value="{{state['Intensity']}}" class="slider" id="myRange{{place}}" name="set_point_light">
+                <b><p>Value: <span id="demo{{place}}"></span></p></b> 
+        </div>
+    </div>
+
+    <div class="=row">
+      <div class="='col-md-12">
+        <div class="form-group">
+        <button type="submit" class="btn btn-primary">Register Light</button>
+      </div>
+        </div>
+
+      </div>
+            </form>
+    
+  </div>
+  {% endfor %}
+
+
+    
+
+</body>
+<script>
+{% for place,state in dic.items()|sort: %}
+var slider{{place}} = document.getElementById("myRange{{place}}");
+
+var output{{place}} = document.getElementById("demo{{place}}");
+output{{place}}.innerHTML = slider{{place}}.value;
+
+slider{{place}}.oninput = function() {
+  output{{place}}.innerHTML = this.value;
+    
+}
+$(document).ready(function(){
+    $("#myonoffswitch{{place}}").click(function(){
+        $("#prendeapaga{{place}}").toggle(500);
+      if ($("#myonoffswitch{{place}}").val()=='On'){$("#myonoffswitch{{place}}").val('Off');$("#statevalue{{place}}").val('False');$.post("{{ url_for('toggle_switch') }}",{"place": '{{place}}','state':'False','set_point':$("#myRange{{place}}").val()});}
+      else{$("#myonoffswitch{{place}}").val('On');$("#statevalue{{place}}").val('True');$.post("{{ url_for('toggle_switch') }}",{"place": '{{place}}','state': 'True','set_point':$("#myRange{{place}}").val()});}
+
+         });
+});
+{% endfor %}
+
+
+</script>
+{% endblock %}
+
+
