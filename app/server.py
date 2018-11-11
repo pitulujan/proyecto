@@ -6,12 +6,13 @@ from app import db
 
 
 
+
 route = '/home/pitu/proyecto/app.db'
 
-Current_state_dic= {'Temperature':        { 'State' : False,'Set_Point' : 12.0},
-                    'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10.0},
-                                'Living': { 'State' : False,'Intensity' : 10.0},
-                                'Patio':  { 'State' : False,'Intensity' : 10.0}}
+Current_state_dic= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25},
+                    'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10,'Current_value': 30},
+                                'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 30},
+                                'Patio':  { 'State' : False,'Intensity' : 10, 'Current_value': 30}}
 
                     }
 
@@ -38,9 +39,12 @@ def get_initial_values():
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
     
     query_temp=Current_Temperature_State.query.first()
-    
+
     query_temp.temp_state = state
-    query_temp.temp_set_point = setpoint
+    Current_state_dic['Temperature']['State']=state
+    if state==True:
+        query_temp.temp_set_point = setpoint
+        Current_state_dic['Temperature']['Set_Point']=setpoint
     query_temp.user = user
     query_temp.timestamp = datetime.now()
 
@@ -75,19 +79,12 @@ def set_light(state,user_id,*args):
     return
 
 
-def get_set_point_temp():
-    print(Current_state_dic['Temperature']['Set_Point'])
-    return Current_state_dic['Temperature']['Set_Point']
+def get_temp_state():
+    return Current_state_dic['Temperature'] #Esto devuelve todo, el state, el set point y la current temp
 
 def get_light_state():
-    
     return Current_state_dic['Lights'] #--> que se la arrgle routes
-def get_set_point_light():
-    
-    return Current_state_dic['Light']
 
-def get_current_temp():
-    return 20
 
 def schedule_event(user,function,atribute,type=None,run_date=None,args=[],start_date=None,end_date=None,interval=None):
 

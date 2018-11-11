@@ -1,7 +1,16 @@
 from app import db
-from app.models import User,User_Temperature_State,Current_Light_State
-from app.models import User_Light_State
-from app.models import Current_Temperature_State
+from app.models import User,User_Temperature_State,Current_Light_State,User_Light_State,Current_Temperature_State
+'''
+ pitu = User(username='Pitu',admin=True)
+ pitu.set_password('pitu')
+ 
+ gordo =User(username='gordo',admin=False)
+ gordo.set_password('gordo')
+ db.session.add(pitu)
+ db.session.add(gordo)
+ 
+ db.session.commit()
+ '''
 
 create_light_state=User_Light_State(user='Pitu',str_id='Cocina')
 create_light_state2=User_Light_State(user='Pitu',str_id='Patio')

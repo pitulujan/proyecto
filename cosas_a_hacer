@@ -10,9 +10,6 @@ Eventos:
 
 
 
-CAMBIAR datetime.utcnow() por datetime.now() en server en todos lados!!! utc es la cara de la japi HAY QUE CAMBIAR EL DEFAULT EN MODELS.PY PORQUE SINO SE CAGA LA FRUTA --> HACER MIGRATE
-
-
 tablas nuevas ?
 
 id | user | timestamp | pid | atributo --> esto para relacionar usuarios a jobs schedualizados y qué se schedualizo 
@@ -22,3 +19,19 @@ reveer tablas -->deberia haber una por atributo(luz,temp,etc) -->los usuarios la
 tabla mapeo de atributos? 
 
 id | atributo  --> con esta tabla despues podria mapear los eventos (jobs) en la table (id | user | timestamp | pid | atributo) 
+
+
+
+
+guardar set point de la luz solamente, en el dic de server si guardar el current
+
+
+
+
+guardar estados de temperatura y luces en memoria para no tener que checkear cada vezq que se ntra a una pagina, mas vale seteamos que se actualicen cada un par de minutos
+y guardamos esos valores (cada cuanto hay que checkear luz y temp? un par de minutos?)
+
+definimos temp y luz como integer? para mi lo mejor por como aseguramos la medicion
+
+
+template temperatura igual al de luz (con on y off) y luces con un for items que genere un boton de esos por cada luz, no?

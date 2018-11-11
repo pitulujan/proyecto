@@ -43,7 +43,7 @@ class User_Temperature_State(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(64),db.ForeignKey('user.username'), index=True)
     temp_state=db.Column(db.Boolean,default=False)
-    temp_set_point= db.Column(db.Float, default=20)
+    temp_set_point= db.Column(db.Integer, default=20)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
 
 class Current_Light_State(db.Model):
@@ -62,7 +62,7 @@ class Current_Temperature_State(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user=db.Column(db.String(64),index=True) #"quien seteo este estado"
     temp_state= db.Column(db.Boolean,default=False)
-    temp_set_point=db.Column(db.Float, default=22.0)
+    temp_set_point=db.Column(db.Integer, default=22)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now) #"Cuando setearon este estado"
     def __repr__(self):
         return '<Temp {}>'.format(self.temp_state)

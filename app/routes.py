@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, set_light, get_set_point_temp, get_current_temp, get_initial_values,get_light_state,get_set_point_light
+from app.server import set_temp, set_light, get_temp_state, get_initial_values
 
 
 
@@ -76,23 +76,30 @@ def delete_user():
 
 
 
-@app.route('/setparameters', methods=['GET', 'POST'])
+@app.route('/set_temperature', methods=['GET', 'POST'])
 @login_required
-def setparameters():
+def set_temperature():
 
-    current_temp =get_current_temp()
-    current_temp_set_point=get_set_point_temp()
+    current_temp_state =get_temp_state() # VER QUE LE MANDO AL TEMPLATE; SI EL ESTADO O EL DIC
+    
 
-    print(current_temp)
-    print(current_temp_set_point)
+
     
     if request.method == 'POST':
-        print(str(request.form.get('set_temp')))
-        set_temp(request.form.get('set_temp'),current_user.username) #aca ya cambie el id por el username
-        flash("The temperature was set in: "+str(request.form.get('set_temp'))+" successfully")
-        return redirect(url_for('index'))
+        print(request.form.get('statevalue'),type(request.form.get('statevalue')))
+        if request.form.get('statevalue')=='True':
+            print(request.form.get('statevalue'))
+            set_temp(True,request.form.get('set_temp'),current_user.username)
+            flash("The temperature was set in: "+str(request.form.get('set_temp'))+" successfully")
+            return redirect(url_for('index'))
+        else:
+            set_temp(False,request.form.get('set_temp'),current_user.username)
+
+        #print(request.form.get('statevalue'))
+        #set_temp(request.form.get('statevalue'),request.form.get('set_temp'),current_user.username) #aca ya cambie el id por el username
         
-    return render_template('setparameters.html', title=' Set Temperature', current_temp_set_point=current_temp_set_point, current_temp=current_temp)
+        
+    return render_template('set_temperature.html', title=' Set Temperature', dic=current_temp_state)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
 @app.route('/toggle_switch', methods=['GET', 'POST'])
@@ -123,5 +130,9 @@ def toggle_switch():
     return render_template('toggle_switch.html', title=' Set light', current_light_set_point=current_light_set_point, current_state=current_state,button=button)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
-
+@app.route('/pruebitas', methods=['GET', 'POST'])
+@login_required
+def pruebitas():
+    current_temp_state =get_temp_state()
+    return render_template('pruebitas.html',dic=current_temp_state)
 
