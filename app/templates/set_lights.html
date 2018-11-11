@@ -85,7 +85,7 @@
   <div class="row">
           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                           
-                          <h2 id="textoreloco" val="{{place}}" style="vertical-align: text-top;margin-top: 5px;"> {{place}}</h2>
+                          <h2 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;"> {{place}}</h2>
                           
                   </div>
                     <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -109,6 +109,7 @@
             <form action="{{ url_for('toggle_switch') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             <div class="form-group">
               <input type="text" style="display:none;"  id="statevalue{{place}}" name="statevalue" value="{{state['State']}}">
+              <input type="text" style="display:none;"  name="place_str" value="{{place}}">
                 <b><p>Current Set Point: {{state['Intensity']}}</p></b>
                 <label for="temp">Set the New Desired Light Set Point</label>
                 <div class="slidecontainer">
@@ -120,7 +121,8 @@
     <div class="=row">
       <div class="='col-md-12">
         <div class="form-group">
-        <button type="submit" id="submit"class="btn btn-primary">Register Light</button>
+       <!-- <button type="submit" id="submit"class="btn btn-primary">Register Light</button> -->
+        <input class="btn btn-primary" id="submit{{place}}" value="Register Light">
       </div>
         </div>
 
@@ -153,6 +155,11 @@ $(document).ready(function(){
 
          });
 });
+
+$(document).ready(function(){
+    $("#submit{{place}}").click(function(){$.post("{{ url_for('toggle_switch') }}",{"place": '{{place}}','state': 'True','set_point':$("#myRange{{place}}").val()})})});
+
+
 {% endfor %}
 
 

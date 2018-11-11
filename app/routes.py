@@ -103,12 +103,13 @@ def toggle_switch():
           
         
     if request.method == 'POST':
+    
         if request.form['state'] == 'True':
             set_light(True,request.form['set_point'],current_user.username,request.form['place'])
+            
         else:
             set_light(False,request.form['set_point'],current_user.username,request.form['place'])
-
-        print(request.form['place'],request.form['state'],request.form['set_point'])
+        
         
 
     return render_template('set_lights.html', title=' Set light', dic=current_light_state)
