@@ -100,21 +100,20 @@ def set_temperature():
     current_temp_state =get_temp_state() # VER QUE LE MANDO AL TEMPLATE; SI EL ESTADO O EL DIC
     
     if request.method == 'POST':
-        print(request.form.get('statevalue'),type(request.form.get('statevalue')))
-        if request.form.get('statevalue')=='True':
-            print(request.form.get('statevalue'))
-            set_temp(True,request.form.get('set_temp'),current_user.username)
-            flash("The temperature was set in: "+str(request.form.get('set_temp'))+" successfully")
-            return redirect(url_for('index'))
+        
+        if request.form['state']=='True':
+            
+            set_temp(True,request.form['set_point'],current_user.username)
+                        
         else:
-            set_temp(False,request.form.get('set_temp'),current_user.username)
+            set_temp(False,request.form['set_point'],current_user.username)
 
     return render_template('set_temperature.html', title=' Set Temperature', dic=current_temp_state)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
-@app.route('/toggle_switch', methods=['GET', 'POST'])
+@app.route('/set_lights', methods=['GET', 'POST'])
 @login_required
-def toggle_switch():
+def set_lights():
 
     current_light_state =get_light_state()#-->puedo pasar un dic y que jinja2 se encargue de lo suyo atr perri
           
@@ -129,7 +128,7 @@ def toggle_switch():
         
         
 
-    return render_template('set_lights.html', title=' Set light', dic=current_light_state)
+    return render_template('set_lights.html', title=' Set lights', dic=current_light_state)
 
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 

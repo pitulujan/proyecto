@@ -105,7 +105,7 @@
                     </div> 
                          
           </div>
-   
+   <div class="alert alert-success" role="alert" id="activatechange" style="display:none;"> Changes were made madafaca!</div>
 
     <div class="row" id="prendeapaga" >
      
@@ -123,7 +123,8 @@
     <div class="=row">
       <div class="='col-md-12">
         <div class="form-group">
-        <button type="submit" class="btn btn-primary">Register Temperature</button>
+        <!--<button type="submit" class="btn btn-primary">Register Temperature</button>-->
+        <input class="btn btn-primary" id="submit" value="Register Light">
       </div>
         </div>
 
@@ -148,11 +149,19 @@ slider.oninput = function() {
 $(document).ready(function(){
     $("#myonoffswitch").click(function(){
         $("#prendeapaga").toggle(500);
-      if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}");}
-      else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
+      if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
+      else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
 
          });
 });
+
+
+$(document).ready(function(){
+    $("#submit").click(function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});
+      $("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');}
+
+
+      )});
 
 </script>
 {% endblock %}
