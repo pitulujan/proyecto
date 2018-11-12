@@ -40,3 +40,17 @@ def delete_user_full(user):
     db.session.commit()
 
     return 'Congratulations, you have just deleted '+delete_user.username+ ' from the users list!'
+
+def change_user_password(form,user):
+    
+    user = User.query.filter_by(username=user).first()
+
+    if user.check_password(form.current_password.data)==False:
+        return False
+    elif user.check_password(form.new_password.data)==True:
+        return True
+    else:
+        user.set_password(form.new_password.data)
+        db.session.add(user)
+        db.session.commit()
+    return 'Your password has been changed'

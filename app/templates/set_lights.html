@@ -100,7 +100,7 @@
                     </div> 
                          
           </div>
-   
+    <div class="alert alert-success" role="alert" id="activatechange{{place}}" style="display:none;"> Changes were made madafaca!</div>
           {%if state['State'] == True:%}
           <div class="row" id="prendeapaga{{place}}" style="display:show;">
           {%else:%}
@@ -157,8 +157,12 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-    $("#submit{{place}}").click(function(){$.post("{{ url_for('toggle_switch') }}",{"place": '{{place}}','state': 'True','set_point':$("#myRange{{place}}").val()})})});
+    $("#submit{{place}}").click(function(){$.post("{{ url_for('toggle_switch') }}",{"place": '{{place}}','state': 'True','set_point':$("#myRange{{place}}").val()});
+      $("#activatechange{{place}}").fadeIn('slow').delay(1000).fadeOut('slow');}
 
+
+      )});
+    
 
 {% endfor %}
 

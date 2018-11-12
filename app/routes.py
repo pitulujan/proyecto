@@ -1,7 +1,7 @@
 
 from flask import render_template, flash, redirect, request, url_for
 from app import app, db
-from app.forms import LoginForm, RegistrationForm 
+from app.forms import LoginForm, RegistrationForm, ChangePassword
 from app.manage_users import *
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
@@ -57,6 +57,23 @@ def register():
         
     return render_template('register.html', title=' New User', form=form)
 
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePassword()
+    if form.validate_on_submit():
+        change= change_user_password(form,current_user.username)
+        if change == False:
+            flash('Invalid Current Password')
+            return redirect(url_for('change_password'))
+        elif change== True:
+            flash('Your new password should be different from the current one')
+            return redirect(url_for('change_password'))
+        else:
+            flash(change)
+            return redirect(url_for('logout'))
+    return render_template('change_password.html',title='Change Password',form=form)
+
 
 @app.route('/delete_user', methods=['GET', 'POST'])
 @login_required
@@ -106,14 +123,18 @@ def toggle_switch():
     
         if request.form['state'] == 'True':
             set_light(True,request.form['set_point'],current_user.username,request.form['place'])
-            
+
         else:
             set_light(False,request.form['set_point'],current_user.username,request.form['place'])
         
         
 
     return render_template('set_lights.html', title=' Set light', dic=current_light_state)
+
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
-
+@app.route('/pruebitas', methods=['GET', 'POST'])
+@login_required
+def pruebitas():
+    return render_template('pruebitas.html')
 
