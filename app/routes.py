@@ -132,8 +132,12 @@ def set_lights():
 
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
-@app.route('/pruebitas', methods=['GET', 'POST'])
+@app.route('/schedule_events', methods=['GET', 'POST'])
 @login_required
-def pruebitas():
-    return render_template('pruebitas.html')
+def schedule_events():
+
+    if request.method == 'POST':
+
+        print(request.form.get('mail'),request.form.get('pass'))
+    return render_template('schedule_events.html', title=' Schedule Events')
 

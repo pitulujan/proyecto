@@ -1,0 +1,103 @@
+{% extends 'base2.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+
+<style type="text/css">
+	.modal-body .form-horizontal .col-sm-2,
+.modal-body .form-horizontal .col-sm-10 {
+    width: 100%
+
+}
+
+.modal-body .form-horizontal .control-label {
+    text-align: left;
+}
+.modal-body .form-horizontal .col-sm-offset-2 {
+    margin-left: 15px;
+}
+</style>
+    
+    <div class="row">
+      <div class="col-md-2 col-xs-2" style="padding-left:0px;">
+            
+            <a class="navbar-brand" style="font-size: 20px; display: flex;justify-content: flex-start;" id="menu-toggle"> Edit</span></a>
+            
+              </div>
+
+         <div class="navbar-header col-md-8 col-xs-8" style="display: flex;justify-content: center;"> 
+		     	
+		            <a  class="navbar-brand" style="font-size: 20px;"><span class="glyphicon glyphicon-calendar"></span> {{ title}}</a>
+		        
+		 </div>
+
+		 <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;"> 
+		     	
+		            <a class="navbar-brand" data-toggle="modal" data-target="#myModalNorm" style="font-size: 20px;padding-right: 0px;"><span class="glyphicon glyphicon-plus"></span></a>
+		        
+		 </div>
+    </div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModalNorm" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <center><h4 class="modal-title" id="myModalLabel">
+                    Schedule New Event
+                </h4></center>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form role="form" action="{{ url_for('schedule_events') }}" method="POST">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                      <input type="datetime-local" class="form-control"
+                      id="exampleInputEmail1" name="mail" placeholder="Enter email"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                      <input type="password" class="form-control"
+                          id="exampleInputPassword1" name="pass" placeholder="Password"/>
+                  </div>
+          
+                
+                
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+ 
+
+
+    
+{% endblock %}
+
+
