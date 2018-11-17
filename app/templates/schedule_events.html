@@ -22,13 +22,13 @@
     <div class="row">
       <div class="col-md-2 col-xs-2" style="padding-left:0px;">
             
-            <a class="navbar-brand" style="font-size: 20px; display: flex;justify-content: flex-start;" id="menu-toggle"> Edit</span></a>
+            <a class="navbar-brand" style="font-size: 20px; display: flex;justify-content: flex-start;" id="edit"> Edit</span></a>
             
               </div>
 
          <div class="navbar-header col-md-8 col-xs-8" style="display: flex;justify-content: center;"> 
 		     	
-		            <a  class="navbar-brand" style="font-size: 20px;"><span class="glyphicon glyphicon-calendar"></span> {{ title}}</a>
+		            <a  class="navbar-brand" style="font-size: 20px;color:#333"><span class="glyphicon glyphicon-calendar"></span> {{ title}}</a>
 		        
 		 </div>
 
@@ -39,7 +39,16 @@
 		 </div>
     </div>
 
+<div class="row">
+   
+    <div class="col-xs-6" style="display: flex;justify-content: flex-start;">
+      <span class="glyphicon glyphicon-minus-sign" style="color: #f70707;display:none;padding-right: 10px;font-size: 15px;" id="del"></span>  <p>Holusssss</p>
+   </div>
+   <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+    <span class="glyphicon glyphicon-menu-right" style="color: #333;font-size: 15px;display:none;" id="cont"></span>
+   </div>
 
+</div>
 
 
 
@@ -95,7 +104,16 @@
     </div>
 </div>
  
-
+<script >
+  $(document).ready(function(){
+    $("#edit").click(function(){
+        $("#del").toggle(500);
+        $("#cont").toggle(500);
+        if ($("#edit").text()==' Edit'){$("#edit").text("Done");}
+        else{$("#edit").text(" Edit"); }
+                });
+});
+</script>
 
     
 {% endblock %}
