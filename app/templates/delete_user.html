@@ -17,7 +17,7 @@
       
         
         {% for users in users %}
-            <tr><td><form action="" method="POST" ><button class="btn btn-primary btn-block" Onclick="return ConfirmDelete('{{users.username}}');" type="submit" value ="{{users.username}}" name="delete" ><span class="glyphicon glyphicon-trash"></span> {{ users.username }}</button> </form>
+            <tr><td><form action="" method="POST" ><button class="btn btn-danger btn-block" Onclick="return ConfirmDelete('{{users.username}}');" type="submit" value ="{{users.username}}" name="delete" ><span class="glyphicon glyphicon-trash"></span> {{ users.username }}</button> </form>
              </td></tr>
                 
         {% endfor %}
