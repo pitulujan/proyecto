@@ -35,7 +35,7 @@
 
 		 <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;"> 
 		     	
-		            <a class="navbar-brand" data-toggle="modal" data-target="#myModalNorm" style="font-size: 20px;padding-right: 0px;"><span class="glyphicon glyphicon-plus"></span></a>
+		            <a class="navbar-brand" data-toggle="modal" href="#" data-target="#myModalNorm" style="font-size: 20px;padding-right: 0px;"><span class="glyphicon glyphicon-plus"></span></a>
 		        
 		 </div>
     </div>
@@ -46,9 +46,11 @@
       <span class="glyphicon glyphicon-minus-sign" style="color: #f70707;display:none;padding-right: 10px;font-size: 15px;" id="del"></span>  <p>Holusssss</p>
    </div>
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-    <span class="glyphicon glyphicon-menu-right" data-toggle="modal" data-target="#myModalNorm" style="color: #333;font-size: 15px;display:none;" id="cont"></span>
+   <span class="glyphicon glyphicon-menu-right" href="#" data-toggle="modal" data-target="#myModalNorm" style="color: #333;font-size: 15px;display:none;" id="cont"></span> 
 
-    <form action="" method="POST" ><button class="btn btn-danger btn-block" Onclick="return ConfirmDelete();" id="cont2" style="display: none;" type="submit" value ="" name="delete" ><span class="glyphicon glyphicon-trash"></span> Delete</button> </form>
+
+
+    <form action="" method="POST" ><button  class="btn btn-danger btn-block" Onclick="return ConfirmDelete();" id="cont2" style="display: none;" type="submit" value ="" name="delete" ><span class="glyphicon glyphicon-trash"></span> Delete</button> </form>
    
    </div>
 
@@ -125,7 +127,11 @@ $(document).ready(function(){
 
   function ConfirmDelete(username){
         return confirm("Are you sure you want to delete this event?");}
+
+     
 </script>
+
+
 
     
 {% endblock %}
