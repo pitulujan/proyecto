@@ -141,3 +141,7 @@ def schedule_events():
         print(request.form.get('mail'),request.form.get('pass'))
     return render_template('schedule_events.html', title=' Schedule Events')
 
+@app.route('/pruebitas', methods=['GET', 'POST'])
+@login_required
+def pruebitas():
+    return render_template('pruebitas.html')
