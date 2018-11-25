@@ -116,21 +116,24 @@
 <script >
   $(document).ready(function(){
     $("#edit").click(function(){
-        $("#del").toggle(500);
-        $("#cont").toggle(500);
-        if ($("#edit").text()==' Edit'){$("#edit").text("Done");}
-        else{$("#edit").text(" Edit"); }
-                });
-});
 
-$(document).ready(function(){
-    $("#del").click(function(){$("#cont2").toggle(500);$("#cont").toggle(500);});});
+        if ($("#edit").text()==' Edit'){$("#edit").text("Done");$("#del").toggle(500);$("#cont").toggle(500); }
+        else{$("#edit").text(" Edit");$('#cont2').hide(500);$('#cont').hide(500);$('#del').hide(500);} 
+               
+                });
+
+       $("#del").click(function(){$("#cont2").toggle(500);$("#cont").toggle(500);});
 
 
 
   function ConfirmDelete(username){
         return confirm("Are you sure you want to delete this event?");}
 
+
+});
+
+
+ 
      
 </script>
 
