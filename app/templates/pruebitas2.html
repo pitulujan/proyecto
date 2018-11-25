@@ -1,0 +1,56 @@
+<!--https://stackoverflow.com/questions/12463896/create-div-using-jquery-and-json-data-->
+{% extends "base2.html" %}
+{% block app_content %}
+
+
+<div class="row">
+	<div id="pitu">
+	<p>This is a paragraph.</p>
+	<p>This is another paragraph.</p>
+	</div>
+</div>
+
+<button>Insert content after each p element</button>
+
+<script>
+$(document).ready(function(){
+    $("button").click(function(){$.post("{{ url_for('pruebitas2') }}",{'state': 'True','set_point':'rolando'}).done(function(result) {
+
+
+    
+    var div = $("<div></div>")
+           .attr("id", "probando");
+    var a = $("<a></a>")
+           .attr("href", "#")
+           .attr("id", "close-note");
+     $("<h1></h1>").text("I added this on: " + result.nombre)
+           .appendTo(a);
+     $("<p></p>").text(result.apellido)
+           .appendTo(a);
+     
+     a.appendTo(div)
+     $("#pitu").after(div);
+    
+
+
+
+});})});
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

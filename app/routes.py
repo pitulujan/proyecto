@@ -1,5 +1,5 @@
 
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for,jsonify
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, ChangePassword
 from app.manage_users import *
@@ -145,3 +145,11 @@ def schedule_events():
 @login_required
 def pruebitas():
     return render_template('pruebitas.html')
+
+@app.route('/pruebitas2', methods=['GET', 'POST'])
+@login_required
+def pruebitas2():
+    
+    if request.method == 'POST':
+        return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
+    return render_template('pruebitas2.html')

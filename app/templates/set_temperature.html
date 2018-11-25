@@ -157,8 +157,10 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
-    $("#submit").click(function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});
-      $("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');}
+    $("#submit").click(function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function() {$("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');
+    // success callback
+});
+      }
 
 
       )});

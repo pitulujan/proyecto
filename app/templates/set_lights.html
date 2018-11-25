@@ -157,8 +157,10 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-    $("#submit{{place}}").click(function(){$.post("{{ url_for('set_lights') }}",{"place": '{{place}}','state': 'True','set_point':$("#myRange{{place}}").val()});
-      $("#activatechange{{place}}").fadeIn('slow').delay(1000).fadeOut('slow');}
+    $("#submit{{place}}").click(function(){$.post("{{ url_for('set_lights') }}",{"place": '{{place}}','state': 'True','set_point':$("#myRange{{place}}").val()}).done(function() {$("#activatechange{{place}}").fadeIn('slow').delay(1000).fadeOut('slow');
+    // success callback
+});
+      }
 
 
       )});
