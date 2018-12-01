@@ -41,8 +41,11 @@
     </div>
 
 <div class="row">
+	<table class="table">
+    <tbody>
+        <tr><td>
    
-    <div class="col-xs-6" style="display: flex;justify-content: flex-start;">
+    <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
       <span class="glyphicon glyphicon-minus-sign" style="color: #f70707;display:none;padding-right: 10px;font-size: 15px;" id="del"></span>  <p>Holusssss</p>
    </div>
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -53,7 +56,28 @@
     <form action="" method="POST" ><button  class="btn btn-danger btn-block" Onclick="return ConfirmDelete();" id="cont2" style="display: none;" type="submit" value ="" name="delete" ><span class="glyphicon glyphicon-trash"></span> Delete</button> </form>
    
    </div>
+</tr></td>
+<tr><td>
+<div class="row">
+    <div class="col-xs-8" >
+            <h1 style="margin-bottom: 0px;">10:00</h1>
+    </div>
+        <div >
+            <h4 style="margin-top: 0px;">Alarma</h4>
+        </div>
 
+   
+    <div class="col-xs-4" style="display: flex;justify-content: flex-end;">
+        <br/>
+        <br/>
+        <h3>Rolando</h3>
+     </div>
+</div>
+</tr></td>
+
+
+</tbody>
+</table>
 </div>
 
 
@@ -117,7 +141,7 @@
   $(document).ready(function(){
     $("#edit").click(function(){
 
-        if ($("#edit").text()==' Edit'){$("#edit").text("Done");$("#del").toggle(500);$("#cont").toggle(500); }
+        if ($("#edit").text()==' Edit'){$("#edit").text("Done");$("#del").toggle(500);$("#del2").toggle(500);$("#cont").toggle(500); }
         else{$("#edit").text(" Edit");$('#cont2').hide(500);$('#cont').hide(500);$('#del').hide(500);} 
                
                 });

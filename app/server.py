@@ -7,12 +7,13 @@ from app import db
 
 
 
-route = '/home/pitu/proyecto/app.db'
+#route = '/home/pitu/proyecto/app.db'
 
 Current_state_dic= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25},
                     'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10,'Current_value': 50},
                                 'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 20},
                                 'Patio':  { 'State' : False,'Intensity' : 10, 'Current_value': 30}}
+                    
 
                     }
 

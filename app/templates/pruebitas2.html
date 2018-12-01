@@ -22,6 +22,7 @@ $(document).ready(function(){
            .attr("id", "probando");
     var a = $("<a></a>")
            .attr("href", "#")
+           .text("I added this on: " + result.nombre) //esto funca tambien =)
            .attr("id", "close-note");
      $("<h1></h1>").text("I added this on: " + result.nombre)
            .appendTo(a);
