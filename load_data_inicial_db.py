@@ -51,3 +51,8 @@ create_current_temp = Current_Temperature_State(user='Pitu')
 db.session.add(create_current_temp)
 db.session.commit()
 
+motor = Current_Boolean_States(user='Pitu',str_id='Lavarropas')
+db.session.add(motor)
+db.session.commit()
+
+

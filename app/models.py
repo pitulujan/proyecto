@@ -26,46 +26,27 @@ class User(UserMixin,db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-class User_Light_State(db.Model):
+class Devices(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(64),db.ForeignKey('user.username'), index=True)
-    light_state = db.Column(db.Boolean,default=False)
-    light_intensity=db.Column(db.Integer,default=50)
-    str_id=db.Column(db.String(64),default='default')
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
-
+    user_perm=db.Column(db.Boolean,default=False) #False for everyone , True for admins
+    str_id=db.Column(db.String(64),default='default') #Luz, motor, etc
+    location=db.Column(db.String(64),default='default') #Nombre de la habitacion donde se encuentra el device
+    dev_type=db.Column(db.Boolean,default=False) #True para booleano y False no booleano(dimmer)
+    state=db.Column(db.Boolean,default=False) #On/Off 
+    set_point=db.Column(db.Integer,default=20) #En caso de dev_type=False y está expresado en porcentaje
+    def __repr__(self):
+        return '<str_id {},location {},dev_type {}>'.format(self.str_id,self.location,self.dev_type)
     
 
-    def __repr__(self):
-        return '<State {},Intensity {}>'.format(self.light_state,self.light_intensity)
-
-class User_Temperature_State(db.Model):
+class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(64),db.ForeignKey('user.username'), index=True)
-    temp_state=db.Column(db.Boolean,default=False)
-    temp_set_point= db.Column(db.Integer, default=20)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
-
-class Current_Light_State(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user=db.Column(db.String(64), index=True) #"quien seteo este estado"
-    light_state =db.Column(db.Boolean,default=False) 
-    light_intensity=db.Column(db.Integer,default=50)
-    str_id=db.Column(db.String(64),default='default') #-->"luz cocina","luz patio"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.now) #"Cuando setearon este estado"
-
-
+    str_id=db.Column(db.String(64),default='default')
+    location=db.Column(db.String(64),default='default')
+    description = db.Column(db.String(64),default='Creation')
     def __repr__(self):
-        return '<State {}>'.format(self.light_state)
-
-class Current_Temperature_State(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user=db.Column(db.String(64),index=True) #"quien seteo este estado"
-    temp_state= db.Column(db.Boolean,default=False)
-    temp_set_point=db.Column(db.Integer, default=22)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.now) #"Cuando setearon este estado"
-    def __repr__(self):
-        return '<Temp {}>'.format(self.temp_state)
+        return '<user {},description {}>'.format(self.user,self.description)
 
 
 class Scheduled_events(db.Model):
@@ -73,5 +54,6 @@ class Scheduled_events(db.Model):
     user = db.Column(db.String(64),db.ForeignKey('user.username'), index=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
     str_id=db.Column(db.String(64))
+    location=db.Column(db.String(64),default='default')
     pid=db.Column(db.String(40), index=True, unique=True)
 

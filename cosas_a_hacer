@@ -35,3 +35,20 @@ definimos temp y luz como integer? para mi lo mejor por como aseguramos la medic
 
 
 template temperatura igual al de luz (con on y off) y luces con un for items que genere un boton de esos por cada luz, no?
+
+
+
+
+
+-------------------------------UPDATE 1/12/2019------------------------------------------
+
+Crear habitaciones ---> ubicar disposivos por habitacion (en el sidenav)
+
++Agregar dispositvo (dropdown fijo con los dispositivos que hay ) --> asignar habitacion (o crear una nueva) -->
+
+
+cambiar todo el server para que matchee con la nueva base de datos
+
+crear metodo para agregar un dispositivo en memoria (agregarlo al diccionario)
+
+armar diccionario server por habitacion -->cuando se crea un device se lo mete en una habitacion y lo meto al dicc de una

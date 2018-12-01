@@ -1,7 +1,7 @@
 from datetime import datetime
 import sqlite3
 from app.configuracion_scheduler import config_scheduler
-from app.models import User, User_Light_State,User_Temperature_State,Scheduled_events,Current_Light_State,Current_Temperature_State
+from app.models import User
 from app import db
 
 
@@ -11,8 +11,10 @@ from app import db
 
 Current_state_dic= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25},
                     'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10,'Current_value': 50},
-                                'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 20},
-                                'Patio':  { 'State' : False,'Intensity' : 10, 'Current_value': 30}}
+                                 'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 20},
+                                 'Patio':  { 'State' : False,'Intensity' : 10, 'Current_value': 30}},
+                    'Booleans' : {'Lavarropas' :  {'State' : False},
+                                  'Luz Comedor' : {'State' : False}}
                     
 
                     }
@@ -27,12 +29,19 @@ def get_initial_values():
 
     query_lights=Current_Light_State.query.all()
     for place in query_lights:
-        Current_state_dic['Lights'][place.str_id]['State']=place.light_state
-        Current_state_dic['Lights'][place.str_id]['Intensity']=place.light_intensity
+        Current_state_dic['Lights'][place.location]['State']=place.light_state
+        if place.dimmer == True:
+            Current_state_dic['Lights'][place.location]['Intensity']=place.light_intensity
+        
+
 
     query_temp=Current_Temperature_State.query.first() #Si hay mas temperaturas (mas sectores) cambiar el first por un all y sus respectivos cambios despues 
     Current_state_dic['Temperature']['State']=query_temp.temp_state
     Current_state_dic['Temperature']['Set_Point']=query_temp.temp_set_point
+
+    query_bools= Current_Boolean_States.query.all()
+    for boolean in query_bools:
+        Current_state_dic['Booleans'][boolean.str_id]['State']= boolean.bool_state 
 
     print(Current_state_dic)
     return

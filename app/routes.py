@@ -12,7 +12,7 @@ from app.server import set_temp, set_light, get_temp_state, get_initial_values,g
 
 
 
-get_initial_values()
+#get_initial_values()
 @app.route('/')
 @app.route('/index')
 @login_required
