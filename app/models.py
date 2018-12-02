@@ -9,9 +9,7 @@ class User(UserMixin,db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     admin = db.Column(db.Boolean)
     password_hash = db.Column(db.String(128))
-    user_light_state = db.relationship('User_Light_State', backref='user_light_state', lazy='dynamic') # Esto hace que si yo despues tengo un User pitu, si pongo pitu.actual_state.first() me mueste el State de pitu
-    user_temperature_state = db.relationship('User_Temperature_State', backref='user_temperature_state', lazy='dynamic') # Esto hace que si yo despues tengo un User pitu, si pongo pitu.actual_state.first() me mueste el State de pitu
-
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -44,7 +42,7 @@ class Log(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
     str_id=db.Column(db.String(64),default='default')
     location=db.Column(db.String(64),default='default')
-    description = db.Column(db.String(64),default='Creation')
+    description = db.Column(db.String(64),default='User Creation')
     def __repr__(self):
         return '<user {},description {}>'.format(self.user,self.description)
 

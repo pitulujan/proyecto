@@ -1,7 +1,7 @@
 from datetime import datetime
 import sqlite3
 from app.configuracion_scheduler import config_scheduler
-from app.models import User
+from app.models import User, Devices
 from app import db
 
 
@@ -9,15 +9,39 @@ from app import db
 
 #route = '/home/pitu/proyecto/app.db'
 
-Current_state_dic= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25},
-                    'Lights' : { 'Cocina': { 'State' : False,'Intensity' : 10,'Current_value': 50},
-                                 'Living': { 'State' : False,'Intensity' : 10, 'Current_value': 20},
-                                 'Patio':  { 'State' : False,'Intensity' : 10, 'Current_value': 30}},
-                    'Booleans' : {'Lavarropas' :  {'State' : False},
-                                  'Luz Comedor' : {'State' : False}}
-                    
+'''
+user_perm
+    str_id
+    location
+    dev_type
+    state
+    set_point
+'''
 
-                    }
+Current_state_dic_temp= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25}}
+Current_state_dic_rooms ={'Cocina': {'Luz Puerta' : {'dev_type' : True, 'State': True , 'set_point' : None, 'user_perm' : False},
+                                    'Luz Mesada': {'dev_type' : False, 'State': True , 'set_point' : 50, 'user_perm': False}},
+
+                          'Patio' : {'Luz Parrilla' :{'dev_type' : False, 'State': True , 'set_point' : 50, 'user_perm': False},
+                                     'Riego' :{'dev_type' : True, 'State': False , 'set_point' : None, 'user_perm': True}},                                    
+                                    }
+                        
+ 
+                    
+def add_device(user_perm,str_id,location,dev_type,state,set_point):
+
+    if location not in Current_state_dic_rooms.keys():
+        Current_state_dic_rooms[location] = {str_id:{'dev_type' : dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : user_perm}}
+    else:
+        if str_id not in Current_state_dic_rooms[location]:
+            Current_state_dic_rooms[location][str_id] = {'dev_type' : dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : user_perm}
+            new_device=Devices()
+        else:
+            return 'Device "'+str_id+'" already exists, please try a different name'
+    return 'Device "'+str_id+'" added successfully' 
+
+
+                    
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
@@ -26,6 +50,12 @@ scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
 #scheduler.start()
 
 def get_initial_values():
+
+
+
+    query_devices=Devices.query.all()
+
+    #for location in query_devices:
 
     query_lights=Current_Light_State.query.all()
     for place in query_lights:

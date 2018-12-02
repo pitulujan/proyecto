@@ -51,4 +51,8 @@ cambiar todo el server para que matchee con la nueva base de datos
 
 crear metodo para agregar un dispositivo en memoria (agregarlo al diccionario)
 
+crear modelo en base de datos para los dispositivos nuevos
+
 armar diccionario server por habitacion -->cuando se crea un device se lo mete en una habitacion y lo meto al dicc de una
+
+
