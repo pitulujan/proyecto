@@ -1,30 +1,12 @@
 from datetime import datetime
 import sqlite3
 from app.configuracion_scheduler import config_scheduler
-from app.models import User, Devices
+from app.models import User, Devices, Log, Temperature
 from app import db
 
 
-
-
-#route = '/home/pitu/proyecto/app.db'
-
-'''
-user_perm
-    str_id
-    location
-    dev_type
-    state
-    set_point
-'''
-
-Current_state_dic_temp= {'Temperature':        { 'State' : False,'Set_Point' : 12, 'Current_value': 25}}
-Current_state_dic_rooms ={'Cocina': {'Luz Puerta' : {'dev_type' : True, 'State': True , 'set_point' : None, 'user_perm' : False},
-                                    'Luz Mesada': {'dev_type' : False, 'State': True , 'set_point' : 50, 'user_perm': False}},
-
-                          'Patio' : {'Luz Parrilla' :{'dev_type' : False, 'State': True , 'set_point' : 50, 'user_perm': False},
-                                     'Riego' :{'dev_type' : True, 'State': False , 'set_point' : None, 'user_perm': True}},                                    
-                                    }
+Current_state_dic_temp= {}
+Current_state_dic_rooms ={}
                         
  
                     
@@ -51,71 +33,57 @@ scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
 
 def get_initial_values():
 
-
-
+    global Current_state_dic_temp
+    global Current_state_dic_rooms
     query_devices=Devices.query.all()
+    for location in query_devices:
+        if location.location in Current_state_dic_rooms.keys():
+            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm}
+        else:
+            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm}}
 
-    #for location in query_devices:
-
-    query_lights=Current_Light_State.query.all()
-    for place in query_lights:
-        Current_state_dic['Lights'][place.location]['State']=place.light_state
-        if place.dimmer == True:
-            Current_state_dic['Lights'][place.location]['Intensity']=place.light_intensity
-        
+    query_temp=Temperature.query.first()
+    Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
 
-    query_temp=Current_Temperature_State.query.first() #Si hay mas temperaturas (mas sectores) cambiar el first por un all y sus respectivos cambios despues 
-    Current_state_dic['Temperature']['State']=query_temp.temp_state
-    Current_state_dic['Temperature']['Set_Point']=query_temp.temp_set_point
-
-    query_bools= Current_Boolean_States.query.all()
-    for boolean in query_bools:
-        Current_state_dic['Booleans'][boolean.str_id]['State']= boolean.bool_state 
-
-    print(Current_state_dic)
+    print(Current_state_dic_rooms)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
-    
-    query_temp=Current_Temperature_State.query.first()
+    global Current_state_dic_temp
+    query_temp=Temperature.query.first()
 
-    query_temp.temp_state = state
-    Current_state_dic['Temperature']['State']=state
+    query_temp.state = state
+    Current_state_dic_temp['State']=state
     if state==True:
-        query_temp.temp_set_point = setpoint
-        Current_state_dic['Temperature']['Set_Point']=setpoint
-    query_temp.user = user
-    query_temp.timestamp = datetime.now()
+        query_temp.set_point = setpoint
+        Current_state_dic_temp['Set_Point']=setpoint
 
     db.session.add(query_temp)
     db.session.commit()
 
+def set_device(location, str_id,state,set_point):
+    global Current_state_dic_rooms
 
+    query_devices=Devices.query.filter_by(location=location,str_id=str_id).first()
 
-def set_light(state,setpoint,user,str_id):
+    Current_state_dic_rooms[location][str_id]['State'] = state
+    query_devices.state=state
+
+    if not Current_state_dic_rooms[location][str_id]['dev_type']:
+        Current_state_dic_rooms[location][str_id]['set_Point'] = set_point
+        query_devices.set_point =set_point
     
-    query_lights=Current_Light_State.query.filter_by(str_id=str_id).first()
-    
-    query_lights.user=user
-    query_lights.light_state=state
-    query_lights.light_intensity=setpoint
-    
-    Current_state_dic['Lights'][str_id]['State']=state
-    Current_state_dic['Lights'][str_id]['Intensity']=setpoint
-    
-    db.session.add(query_lights)
+    db.session.add(query_devices)
     db.session.commit()
 
-
-    return
-
+        
 
 def get_temp_state():
-    return Current_state_dic['Temperature'] #Esto devuelve todo, el state, el set point y la current temp
+    return Current_state_dic_temp #Esto devuelve todo, el state, el set point y la current temp
 
-def get_light_state():
-    return Current_state_dic['Lights'] #--> que se la arrgle routes
+def get_devices():
+    return Current_state_dic_rooms #--> que se la arrgle routes
 
 
 def schedule_event(user,function,atribute,type=None,run_date=None,args=[],start_date=None,end_date=None,interval=None):

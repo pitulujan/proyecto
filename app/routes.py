@@ -7,12 +7,11 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, set_light, get_temp_state, get_initial_values,get_light_state
+from app.server import set_temp, get_temp_state, get_initial_values
 
 
 
-
-#get_initial_values()
+get_initial_values()
 @app.route('/')
 @app.route('/index')
 @login_required

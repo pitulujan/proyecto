@@ -38,14 +38,20 @@ class Devices(db.Model):
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(64),db.ForeignKey('user.username'), index=True)
+    user = db.Column(db.String(64))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
     str_id=db.Column(db.String(64),default='default')
     location=db.Column(db.String(64),default='default')
-    description = db.Column(db.String(64),default='User Creation')
+    description = db.Column(db.String(64),default='default')
     def __repr__(self):
         return '<user {},description {}>'.format(self.user,self.description)
 
+class Temperature(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    state= db.Column(db.Boolean,default=False)
+    set_point=db.Column(db.Integer, default=22)
+    def __repr__(self):
+        return '<Temp {}>'.format(self.temp_state)
 
 class Scheduled_events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
