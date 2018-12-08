@@ -74,11 +74,19 @@
             <form action="{{ url_for('set_temperature') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             <div class="form-group">
               <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="{{temp['State']}}">
-                <div class="slidecontainer">
-                <input type="range" min="18" max="32" value="{{temp['Set_Point']}}" class="slider" id="myRange"  name="set_temp">
-                <b><p>Value: <span id="demo"></span></p></b> 
-        </div>
-    </div>
+    
+    <div class="row">
+    	<div class="col-xs-10">
+		    <div class="slidecontainer" style="padding-top: 26px;">
+                <input type="range" min="15" max="30" value="{{temp['Set_Point']}}" class="slider" id="myRange"  name="set_temp">
+                
+		    </div>
+		</div>
+		<div class="col-xs-2" style="display: flex;justify-content: center;">
+			<b><h3><span id="demo"></span>°C</h3></b> 
+		</div>
+		</div>
+	</div>
 
     <div class="=row">
       <div class="='col-md-12">
@@ -128,13 +136,18 @@
             <div class="form-group">
               <input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{kk['state']}}">
               <input type="text" style="display:none;"  name="place_str" value="{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}">
-             
-                
-                <div class="slidecontainer">
-                <input type="range" min="0" max="100" value="{{kk['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point_light">
-                <b><p>Value: <span id="demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></span></p></b> 
-        		</div>
-    </div>
+              
+
+            <div class="row">
+    			<div class="col-xs-10">
+		    		<div class="slidecontainer" style="padding-top: 26px;">
+                    	<input type="range" min="0" max="100" value="{{kk['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point_light">
+                   	</div>
+				</div>
+				<div class="col-xs-2" style="display: flex;justify-content: center;">
+					<b><h3><span id="demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></span>%</h3></b> 
+				</div>
+			</div>
 
     <div class="=row">
       <div class="='col-md-12">
@@ -153,6 +166,10 @@
     	
     {%endfor%}
 </div>
+</form>
+
+</div>
+
   
 {%endfor%}
   <script>
