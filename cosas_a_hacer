@@ -55,4 +55,6 @@ crear modelo en base de datos para los dispositivos nuevos
 
 armar diccionario server por habitacion -->cuando se crea un device se lo mete en una habitacion y lo meto al dicc de una
 
+en set lights cazar por class los divs asi no se repite el javascript al pedo (los cazo por el id y los meti adentro del for, no hace falta)
+
 

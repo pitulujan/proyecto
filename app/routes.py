@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices
 
 
 
@@ -16,13 +16,16 @@ get_initial_values()
 @app.route('/index')
 @login_required
 def index():
-	return render_template('index.html', title='Home')
+    devices=get_devices()
+    temp=get_temp_state()
+    return render_template('index.html', title='Home', devices=devices,temp=temp)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        devices=get_devices()
+        return redirect(url_for('index', devices=devices))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
