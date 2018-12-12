@@ -88,16 +88,7 @@
 		</div>
 	</div>
 
-    <div class="=row">
-      <div class="='col-md-12">
-        <div class="form-group">
-        <!--<button type="submit" class="btn btn-primary">Register Temperature</button>-->
-        <input class="btn btn-primary" id="submit" value="Register Temperature">
-      </div>
-        </div>
-
-      </div>
-            </form>
+              </form>
     
   </div>
 
@@ -170,6 +161,11 @@
   
 {%endfor%}
   <script>
+ $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function() {$("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');
+    // success callback
+});
+      });
+
   	$(document).ready(function() {
   		var slider = document.getElementById("myRange");
 		var output = document.getElementById("demo");
@@ -183,13 +179,7 @@ $("#myonoffswitch").click(function(){
       else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
 
          });
-     $("#submit").click(function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function() {$("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');
-    // success callback
-});
-      }
 
-
-      );
 
   	{% for k,v in devices.items()|sort: %}
   	{% for kk,vv in v.items()|sort: %}
