@@ -103,7 +103,7 @@
 
 {% for k,v in devices.items()|sort: %}
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-    <div class="dropdown-container-pitu collapse " >
+   <div class="dropdown-container-pitu collapse " >
     	
     {% for kk,vv in v.items()|sort: %}
     	
@@ -127,48 +127,45 @@
 	          </div>
     	{%if vv['dev_type'] == False:%}
             <div class="alert alert-success" role="alert" id="activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;"> Changes were made madafaca!</div>
-          {%if kk['state'] == True:%}
-          <div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;">
-          {%else:%}
-          <div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;">
-        {%endif%}
-            <form action="{{ url_for('set_lights') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
-            <div class="form-group">
-              <input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{kk['state']}}">
-              <input type="text" style="display:none;"  name="place_str" value="{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}">
+          	{%if kk['state'] == True:%}
+          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;">
+          	{%else:%}
+          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;">
+        	{%endif%}
+            	<form action="{{ url_for('set_lights') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+            		<div class="form-group">
+              			<input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{kk['state']}}">
+              			<input type="text" style="display:none;"  name="place_str" value="{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}">
               
 
-            <div class="row">
-    			<div class="col-xs-10">
-		    		<div class="slidecontainer" style="padding-top: 26px;">
-                    	<input type="range" min="0" max="100" value="{{kk['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point_light">
-                   	</div>
-				</div>
-				<div class="col-xs-2" style="display: flex;justify-content: center;">
-					<b><h3><span id="demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></span>%</h3></b> 
-				</div>
-			</div>
+            			<div class="row">
+    						<div class="col-xs-10">
+		    					<div class="slidecontainer" style="padding-top: 26px;">
+                    				<input type="range" min="0" max="100" value="{{kk['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point_light">
+                   				</div>
+							</div>
+							<div class="col-xs-2" style="display: flex;justify-content: center;">
+								<b><h3><span id="demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></span>%</h3></b> 
+							</div>
+						</div>
 
-    <div class="=row">
-      <div class="='col-md-12">
-        <div class="form-group">
+    					<div class="=row">
+      						<div class="='col-md-12">
+        						<div class="form-group">
        <!-- <button type="submit" id="submit"class="btn btn-primary">Register Light</button> -->
-        <input class="btn btn-primary" id="submit{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="Register Light">
-      </div>
-        </div>
+       								 <input class="btn btn-primary" id="submit{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="Register Light">
+      							</div>
+        					</div>
 
-      </div>
-            </form>
-    
-  </div>
-
+      					</div>
+      				</div>
+            	</form>
+    {%else:%}
+  		</div>
+            	
         {%endif%}
-    	
+    	</div>
     {%endfor%}
-</div>
-</form>
-
-</div>
 
   
 {%endfor%}
