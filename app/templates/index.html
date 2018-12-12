@@ -102,18 +102,18 @@
   </div>
 
 {% for k,v in devices.items()|sort: %}
-   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
     	
     {% for kk,vv in v.items()|sort: %}
     	
 	    	  <div class="row">
-	          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+	          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;width: 303px;">
 	                          
-	                          <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;"> {{kk}}</h3>
+	                          <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
 	                          
 	                  </div>
-	                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+	                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;width: 302px;">
 	                              <div class="onoffswitch">
 	                                  {%if vv['state']==True:%}
 	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}" value="On" checked>
@@ -128,9 +128,9 @@
     	{%if vv['dev_type'] == False:%}
             <div class="alert alert-success" role="alert" id="activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;"> Changes were made madafaca!</div>
           	{%if kk['state'] == True:%}
-          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;">
+          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;padding-left: 20px;">
           	{%else:%}
-          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;">
+          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;padding-left: 20px;">
         	{%endif%}
             	<form action="{{ url_for('set_lights') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             		<div class="form-group">
