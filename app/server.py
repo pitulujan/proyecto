@@ -64,15 +64,19 @@ def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un secto
 
 def set_device(location, str_id,state,set_point):
     global Current_state_dic_rooms
+    print(location,str_id,state,set_point)
 
     query_devices=Devices.query.filter_by(location=location,str_id=str_id).first()
+
+    print(query_devices.str_id)
 
     Current_state_dic_rooms[location][str_id]['State'] = state
     query_devices.state=state
 
     if not Current_state_dic_rooms[location][str_id]['dev_type']:
-        Current_state_dic_rooms[location][str_id]['set_Point'] = set_point
+        Current_state_dic_rooms[location][str_id]['set_point'] = set_point
         query_devices.set_point =set_point
+        print(query_devices.set_point)
     
     db.session.add(query_devices)
     db.session.commit()

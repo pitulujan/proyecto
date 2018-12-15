@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device
 
 
 
@@ -112,6 +112,20 @@ def set_temperature():
 
     return render_template('set_temperature.html', title=' Set Temperature', dic=current_temp_state)
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
+
+@app.route('/set_dev', methods=['POST'])
+@login_required
+def set_dev():
+    print('hola pituso')
+
+    print(request.form['location'],request.form['state'],request.form['set_point'])
+
+    if request.form['state']=='True':
+        set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],True,request.form['set_point'])
+    else:
+        set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
+
+    return "hola"
 
 @app.route('/set_lights', methods=['GET', 'POST'])
 @login_required

@@ -31,7 +31,7 @@ class Devices(db.Model):
     location=db.Column(db.String(64),default='default') #Nombre de la habitacion donde se encuentra el device
     dev_type=db.Column(db.Boolean,default=False) #True para booleano y False no booleano(dimmer)
     state=db.Column(db.Boolean,default=False) #On/Off 
-    set_point=db.Column(db.Integer,default=20) #En caso de dev_type=False y está expresado en porcentaje
+    set_point=db.Column(db.Integer,default=None) #En caso de dev_type=False y está expresado en porcentaje
     def __repr__(self):
         return '<str_id {},location {},dev_type {}>'.format(self.str_id,self.location,self.dev_type)
     

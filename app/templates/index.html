@@ -106,8 +106,8 @@
 	                  </div>
 	                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;width: 302px;">
 	                              <div class="onoffswitch">
-	                                  {%if vv['state']==True:%}
-	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}" value="On" checked>
+	                                  {%if vv['State']==True:%}
+	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="On" checked>
 	                                  {%else:%}
 	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="Off" >
 	                                  {%endif%}
@@ -118,21 +118,18 @@
 	          </div>
     	{%if vv['dev_type'] == False:%}
             <div class="alert alert-success" role="alert" id="activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;"> Changes were made madafaca!</div>
-          	{%if kk['state'] == True:%}
+          	{%if vv['State'] == True:%}
           		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;padding-left: 20px;">
           	{%else:%}
           		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;padding-left: 20px;">
         	{%endif%}
             	<form action="{{ url_for('set_lights') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             		<div class="form-group">
-              			<input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{kk['state']}}">
-              			<input type="text" style="display:none;"  name="place_str" value="{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}">
-              
-
+              			<input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{vv['State']}}">
             			<div class="row">
     						<div class="col-xs-10">
 		    					<div class="slidecontainer" style="padding-top: 26px;">
-                    				<input type="range" min="0" max="100" value="{{kk['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point_light">
+                    				<input type="range" min="0" max="100" step="5" value="{{vv['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point">
                    				</div>
 							</div>
 							<div class="col-xs-2" style="display: flex;justify-content: center;">
@@ -140,15 +137,6 @@
 							</div>
 						</div>
 
-    					<div class="=row">
-      						<div class="='col-md-12">
-        						<div class="form-group">
-       <!-- <button type="submit" id="submit"class="btn btn-primary">Register Light</button> -->
-       								 <input class="btn btn-primary" id="submit{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="Register Light">
-      							</div>
-        					</div>
-
-      					</div>
       				</div>
             	</form>
     {%else:%}
@@ -161,10 +149,7 @@
   
 {%endfor%}
   <script>
- $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function() {$("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');
-    // success callback
-});
-      });
+ 	$(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function() {$("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');});});
 
   	$(document).ready(function() {
   		var slider = document.getElementById("myRange");
@@ -173,17 +158,20 @@
 
 		slider.oninput = function() { output.innerHTML = this.value;}
 
-$("#myonoffswitch").click(function(){
-        $("#prendeapaga").toggle(500);
-      if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
-      else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
+	$("#myonoffswitch").click(function(){
+	        $("#prendeapaga").toggle(500);
+	      if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
+	      else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
 
-         });
+	         });
 
 
   	{% for k,v in devices.items()|sort: %}
   	{% for kk,vv in v.items()|sort: %}
-  	{%if vv['dev_type'] == False:%}
+  	{% if vv['dev_type'] == False: %}
+
+  		$(document).on('change', '#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()}).done(function() {$("#activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").fadeIn('slow').delay(1000).fadeOut('slow');});});
+
   		var slider{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}} = document.getElementById("myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}");
 		var output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}} = document.getElementById("demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}");
 		output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.innerHTML = slider{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.value;
@@ -192,11 +180,15 @@ $("#myonoffswitch").click(function(){
   		output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.innerHTML = this.value;}
   		$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").click(function(){
         $("#prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").toggle(500);
-      	if ($("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()=='On'){$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('Off');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('False');$.post("{{ url_for('pruebitas2') }}",{'state': 'False','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()})}
-      	else{$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('On');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('True');$.post("{{ url_for('pruebitas2') }}",{'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()});}
+      	if ($("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()=='On'){$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('Off');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'False','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()})}
+      	else{$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('On');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()});}});
+  	{%else:%}
 
-         });
-  		$("#submit{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").click(function(){$.post("{{ url_for('pruebitas2') }}",{'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()}).done(function() {$("#activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").fadeIn('slow').delay(1000).fadeOut('slow');});});
+  		$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").click(function(){
+        
+      	if ($("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()=='On'){$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('Off');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'False','set_point':"None"})}
+      	else{$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('On');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{k}}.{{kk}}",'state': 'True','set_point': 'None'});}});
+
   	{%endif%}
 
 
