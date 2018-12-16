@@ -74,13 +74,13 @@
               <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="{{temp['State']}}">
     
     <div class="row">
-    	<div class="col-xs-10">
+    	<div class="col-xs-9">
 		    <div class="slidecontainer" style="padding-top: 26px;">
                 <input type="range" min="15" max="30" value="{{temp['Set_Point']}}" class="slider" id="myRange"  name="set_temp">
                 
 		    </div>
 		</div>
-		<div class="col-xs-2" style="display: flex;justify-content: center;">
+		<div class="col-xs-3" style="display: flex;justify-content: center;">
 			<b><h3><span id="demo"></span>°C</h3></b> 
 		</div>
 		</div>
@@ -125,12 +125,12 @@
             		<div class="form-group">
               			<input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{vv['State']}}">
             			<div class="row">
-    						<div class="col-xs-10">
+    						<div class="col-xs-9">
 		    					<div class="slidecontainer" style="padding-top: 26px;">
                     				<input type="range" min="0" max="100" step="5" value="{{vv['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point">
                    				</div>
 							</div>
-							<div class="col-xs-2" style="display: flex;justify-content: center;">
+							<div class="col-xs-3" style="display: flex;justify-content: center;">
 								<b><h3><span id="demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></span>%</h3></b> 
 							</div>
 						</div>
