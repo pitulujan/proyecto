@@ -97,12 +97,12 @@
     {% for kk,vv in v.items()|sort: %}
     	
 	    	  <div class="row">
-	          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;width: 303px;">
+	          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
 	                          
 	                          <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
 	                          
-	                  </div>
-	                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;width: 302px;">
+	          </div>
+	                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 	                              <div class="onoffswitch">
 	                                  {%if vv['State']==True:%}
 	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="On" checked>
@@ -137,13 +137,13 @@
 
       				</div>
             	</form>
-    {%else:%}
+    
   		</div>
             	
         {%endif%}
-    	</div>
+    	
     {%endfor%}
-
+</div>
   
 {%endfor%}
   <script>
