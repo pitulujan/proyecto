@@ -44,6 +44,7 @@
 	}
 
 
+
     </style>
 
 
@@ -115,7 +116,6 @@
 	                         
 	          </div>
     	{%if vv['dev_type'] == False:%}
-            <div class="alert alert-success" role="alert" id="activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;"> Changes were made madafaca!</div>
           	{%if vv['State'] == True:%}
           		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;padding-left: 20px;">
           	{%else:%}
@@ -168,7 +168,7 @@
   	{% for kk,vv in v.items()|sort: %}
   	{% if vv['dev_type'] == False: %}
 
-  		$(document).on('change', '#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()}).done(function() {$("#activatechange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").fadeIn('slow').delay(1000).fadeOut('slow');});});
+  		$(document).on('change', '#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()}).done(function() {});});
 
   		var slider{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}} = document.getElementById("myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}");
 		var output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}} = document.getElementById("demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}");
