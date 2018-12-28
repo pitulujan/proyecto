@@ -120,7 +120,7 @@
           	{%else:%}
           		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;padding-left: 20px;">
         	{%endif%}
-            	<form action="{{ url_for('set_lights') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+            	<form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             		<div class="form-group">
               			<input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{vv['State']}}">
             			<div class="row">

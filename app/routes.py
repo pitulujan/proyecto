@@ -1,4 +1,3 @@
-
 from flask import render_template, flash, redirect, request, url_for,jsonify
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, ChangePassword
@@ -7,7 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event
 
 
 
@@ -94,67 +93,46 @@ def delete_user():
 
 
 
-@app.route('/set_temperature', methods=['GET', 'POST'])
+@app.route('/set_temperature', methods=['POST'])
 @login_required
 def set_temperature():
-
-    current_temp_state =get_temp_state() # VER QUE LE MANDO AL TEMPLATE; SI EL ESTADO O EL DIC
     
-    if request.method == 'POST':
+    if request.form['state']=='True':
         
-        if request.form['state']=='True':
-            
-            set_temp(True,request.form['set_point'],current_user.username)
-                        
-        else:
-            set_temp(False,request.form['set_point'],current_user.username)
+        set_temp(True,request.form['set_point'],current_user.username)
+                    
+    else:
+        set_temp(False,request.form['set_point'],current_user.username)
 
-    return render_template('set_temperature.html', title=' Set Temperature', dic=current_temp_state)
+    return 'Ok'
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
 @app.route('/set_dev', methods=['POST'])
 @login_required
 def set_dev():
-    print('hola pituso')
-
-    print(request.form['location'],request.form['state'],request.form['set_point'])
-
     if request.form['state']=='True':
         set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],True,request.form['set_point'])
     else:
         set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
 
-    return "hola"
+    return "Ok"
 
-@app.route('/set_lights', methods=['GET', 'POST'])
-@login_required
-def set_lights():
-
-    current_light_state =get_light_state()#-->puedo pasar un dic y que jinja2 se encargue de lo suyo atr perri
-          
-        
-    if request.method == 'POST':
-    
-        if request.form['state'] == 'True':
-            set_light(True,request.form['set_point'],current_user.username,request.form['place'])
-
-        else:
-            set_light(False,request.form['set_point'],current_user.username,request.form['place'])
-        
-        
-
-    return render_template('set_lights.html', title=' Set lights', dic=current_light_state)
-
-#Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
 @app.route('/schedule_events', methods=['GET', 'POST'])
 @login_required
 def schedule_events():
 
+
     if request.method == 'POST':
 
-        print(request.form.get('mail'),request.form.get('pass'))
-    return render_template('schedule_events.html', title=' Schedule Events')
+        print(request.form['date'],type(request.form['date']))
+    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events())
+
+@app.route('/delete_event', methods=['POST'])
+@login_required
+def delete_event():
+    delete_scheduled_event(request.form['event_id_to_delete'])
+    return 'Ok'
 
 @app.route('/pruebitas', methods=['GET', 'POST'])
 @login_required
