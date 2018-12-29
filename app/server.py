@@ -86,8 +86,8 @@ def get_devices():
     return Current_state_dic_rooms #--> que se la arrgle routes
 
 def get_scheduled_events():
-    #query_scheduled = Scheduled_events.query.all()
-    query_scheduled = User.query.all()
+    query_scheduled = Scheduled_events.query.all()
+    #query_scheduled = User.query.all()
     return query_scheduled
 
 

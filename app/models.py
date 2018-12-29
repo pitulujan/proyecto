@@ -38,7 +38,7 @@ class Devices(db.Model):
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(64))
+    user = db.Column(db.String(64),db.ForeignKey('user.username'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
     str_id=db.Column(db.String(64),default='default')
     location=db.Column(db.String(64),default='default')
@@ -59,5 +59,6 @@ class Scheduled_events(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
     str_id=db.Column(db.String(64))
     location=db.Column(db.String(64),default='default')
+    event_date=db.Column(db.String(32))
     pid=db.Column(db.String(40), index=True, unique=True)
 

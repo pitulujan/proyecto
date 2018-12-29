@@ -43,46 +43,30 @@
 <div class="row">
 	<table class="table">
     <tbody>
-        <tr><td>
+      {%for event in scheduled_events:%}
+    <tr><td>
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
-     <h1> <span class="glyphicon glyphicon-minus-sign" style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del"></span>  Holusssss</h1>
+     <h1> <span class="glyphicon glyphicon-minus-sign del" style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}"></span>  {{event.event_date.split(" ")[1]}}</h1>
+    
    </div>
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-   <h1 style="margin-top: 10px;"><span class="glyphicon glyphicon-menu-right editevent" href="#" style="color: #333;font-size: 15px;display:none;" id="cont"></span> </h1>
+   <h1 style="margin-top: 10px;"><span class="glyphicon glyphicon-menu-right editevent" href="#" style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h1>
 
 
 
-    <form action="" method="POST" ><button  class="btn btn-danger btn-block" Onclick="return ConfirmDelete();" id="cont2" style="display: none;" type="submit" value ="" name="delete" ><span class="glyphicon glyphicon-trash"></span> Delete</button> </form>
+    <form action="" method="POST" ><button  class="btn btn-danger btn-block delevent" Onclick="return ConfirmDelete();" id="cont2{{event.pid}}" style="display: none;margin-top: 20px;" type="submit" value ="" name="delete" ><span class="glyphicon glyphicon-trash"></span> Delete</button> </form>
    
    </div>
 </tr></td>
-<tr><td>
-<div class="row">
-    <div class="col-xs-8" >
-            <h1 style="margin-bottom: 0px;">10:00</h1>
-    </div>
-        <div >
-            <h4 style="margin-top: 0px;">Alarma</h4>
-        </div>
-
-   
-    <div class="col-xs-4" style="display: flex;justify-content: flex-end;">
-        <br/>
-        <br/>
-        <h3>Rolando</h3>
-     </div>
-</div>
-</tr></td>
-
-
+      {%endfor%}
 </tbody>
 </table>
 </div>
 
 {%for event in scheduled_events:%}
 
-<p>{{event.username}}</p>
+<p>{{event.user}}</p>
 {%endfor%}
 
 
@@ -138,13 +122,21 @@
   $(document).ready(function(){
     $("#edit").click(function(){
 
-        if ($("#edit").text()==' Edit'){$("#edit").text("Done");$("#del").toggle(500);$("#del2").toggle(500);$("#cont").toggle(500); }
-        else{$("#edit").text(" Edit");$('#cont2').hide(500);$('#cont').hide(500);$('#del').hide(500);} 
+        if ($("#edit").text()==' Edit'){
+          $("#edit").text("Done");
+          $(".del").toggle(500);
+          //$("#del2").toggle(500);
+          $(".editevent").toggle(500); }
+        else{
+          $("#edit").text(" Edit");
+          $('.delevent').hide(500);
+          $('.editevent').hide(500);
+          $('.del').hide(500);} 
                
                 });
-
-       $("#del").click(function(){$("#cont2").toggle(500);$("#cont").toggle(500);});
-
+      {%for event in scheduled_events:%}
+       $("#del{{event.pid}}").click(function(){$("#cont2{{event.pid}}").toggle(500);$("#cont{{event.pid}}").toggle(500);});
+       {%endfor%}
        $(".addevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');});
        
        $(".editevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
