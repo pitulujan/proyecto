@@ -119,6 +119,15 @@ def set_dev():
 @login_required
 def remove_device():
 
+	if request.method == 'POST':
+		print(request.form['data'])
+		return 'Ok'
+
+
+
+
+	return render_template('remove_device.html', title='Remove Device', devices=get_devices())
+
 
 
 
