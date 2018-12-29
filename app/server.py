@@ -10,19 +10,37 @@ Current_state_dic_rooms ={}
                         
  
                     
-def add_device(user_perm,str_id,location,dev_type,state,set_point):
+def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm es true si el usuario es admin (ergo pasarle el valor desde routes)
 
     if location not in Current_state_dic_rooms.keys():
         Current_state_dic_rooms[location] = {str_id:{'dev_type' : dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : user_perm}}
+        new_device=Devices(user_perm=user_perm,str_id=str_id, location=location,dev_type=dev_type,state=state,set_point=set_point)
     else:
         if str_id not in Current_state_dic_rooms[location]:
             Current_state_dic_rooms[location][str_id] = {'dev_type' : dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : user_perm}
-            new_device=Devices()
+            new_device=Devices(user_perm=user_perm,str_id=str_id, location=location,dev_type=dev_type,state=state,set_point=set_point)
         else:
             return 'Device "'+str_id+'" already exists, please try a different name'
+    db.session.add(new_device)
+    db.commit()
     return 'Device "'+str_id+'" added successfully' 
 
+def remove_device(location,str_id):
+    global Current_state_dic_rooms
+    device_to_remove=Devices.query.filter_by(location=location,str_id=str_id).first()
+    
+    shceduled_events_to_del=Scheduled_events.query.filter_by(location=location,str_id=str_id)
+    pids=[]
+    for pid in shceduled_events_to_del:
+        pids.append(pid.pid)
+    
+    if len(pids)!=0:
+        delete_scheduled_event(pids)
+        db.session.delete(shceduled_events_to_del)
 
+    db.session.delete(device_to_remove)
+    del Current_state_dic_rooms[location][str_id]
+    db.session.commit()
                     
 
 def tick():

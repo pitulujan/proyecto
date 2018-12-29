@@ -23,7 +23,7 @@
         
         <div class="navbar-header col-md-4 col-xs-4" style="display: flex;justify-content: center;"> 
 		     	
-		            <a id="hormin" class="navbar-brand" style="font-size: 20px;"></a>
+		         <a id="hormin" class="navbar-brand" style="font-size: 20px;"></a>
 		        
 		 </div>
         
@@ -96,7 +96,7 @@
                 </li>
                 <li class="sidebar-brand">
                     <a href="#" class="navbar-brand">
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{current_user.username}}
                     </a>
                 </li>
                 <li>
@@ -118,21 +118,19 @@
                 <li>
                   <a href="{{url_for('schedule_events')}}"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Tasks</a>
                 </li>
-                 <li>
-                  <a href="#"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Device</a>
-                </li>
-                <button class="dropdown-btn" data-toggle="collapse" id="prueba2"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Parameters 
+                 <button class="dropdown-btn" data-toggle="collapse" ><span  class="glyphicon glyphicon-wrench" ></span> Devices 
                     <i class="glyphicon glyphicon-triangle-bottom" id="pato" style="font-size: 20px" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-container collapse" >
-                    <li>
-                        <a href="{{ url_for('set_temperature') }}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Temperature</a>
-                    </li>
-
-                </div>
-                
-                <button class="dropdown-btn" data-toggle="collapse" id="prueba"><span  class="glyphicon glyphicon-cog" ></span> Settings 
-                    <i class="glyphicon glyphicon-triangle-bottom" id="pato" style="font-size: 20px" aria-hidden="true"></i>
+                 <li>
+                  <a href="#"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add </a>
+                </li>
+                 <li>
+                  <a href="#"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</a>
+                </li>
+                  </div>              
+                <button class="dropdown-btn" data-toggle="collapse" id="prueba2"><span  class="glyphicon glyphicon-cog" ></span> Settings 
+                    <i class="glyphicon glyphicon-triangle-bottom" id="pato2" style="font-size: 20px" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-container collapse" >
                     <li><a href="{{ url_for('change_password') }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Password</a></li>
@@ -235,7 +233,7 @@ for (i = 0; i < dropdown.length; i++) {
   });
 }
 
-$('#prueba').on('click', function(){
+$('.dropdown-btn').on('click', function(){
     var iSelector = $(this).find('i:first');
     if(iSelector.hasClass('glyphicon glyphicon-triangle-bottom')) {
         iSelector.removeClass('glyphicon glyphicon-triangle-bottom')
@@ -248,26 +246,7 @@ $('#prueba').on('click', function(){
 
 
 });
-$('#prueba2').on('click', function(){
-    var iSelector = $(this).find('i:first');
-    if(iSelector.hasClass('glyphicon glyphicon-triangle-bottom')) {
-        iSelector.removeClass('glyphicon glyphicon-triangle-bottom')
-        iSelector.addClass('glyphicon glyphicon-triangle-top')
-    }else{
-        iSelector.removeClass('glyphicon glyphicon-triangle-top')
-        iSelector.addClass('glyphicon glyphicon-triangle-bottom')
-
-    }
-
-
-});
-
-  function ConfirmLogout(){
-        return confirm("Are you sure you want to logout?");
-    }
-  $("#menu-toggle").click(function(e) {
-
-       
+  $("#menu-toggle").click(function(e) {       
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
 

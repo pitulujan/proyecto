@@ -15,9 +15,7 @@ get_initial_values()
 @app.route('/index')
 @login_required
 def index():
-    devices=get_devices()
-    temp=get_temp_state()
-    return render_template('index.html', title='Home', devices=devices,temp=temp)
+    return render_template('index.html', title='Home', devices=get_devices(),temp=get_temp_state())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -116,6 +114,13 @@ def set_dev():
         set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
 
     return "Ok"
+
+@app.route('/remove_device', methods=['GET','POST'])
+@login_required
+def remove_device():
+
+
+
 
 
 @app.route('/schedule_events', methods=['GET', 'POST'])

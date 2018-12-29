@@ -191,19 +191,8 @@
 
   	{%endfor%}
   	{%endfor%}
-$('.dropdown-btn').on('click', function(){
-    var iSelector = $(this).find('i:first');
-    if(iSelector.hasClass('glyphicon glyphicon-triangle-bottom')) {
-        iSelector.removeClass('glyphicon glyphicon-triangle-bottom')
-        iSelector.addClass('glyphicon glyphicon-triangle-top')
-    }else{
-        iSelector.removeClass('glyphicon glyphicon-triangle-top')
-        iSelector.addClass('glyphicon glyphicon-triangle-bottom')
-
-    }
-
-
-});});
+    
+});
   </script>
     
 {% endblock %}
