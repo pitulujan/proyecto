@@ -6,7 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev
 
 
 
@@ -120,8 +120,10 @@ def set_dev():
 def remove_device():
 
 	if request.method == 'POST':
-		print(request.form['data'])
-		return 'Ok'
+		print(request.form.get('delete'))
+		ans=remove_dev(request.form.get('delete'))
+		flash(ans)
+		return render_template('remove_device.html', title='Remove Device', devices=get_devices())
 
 
 

@@ -18,7 +18,7 @@
 	          </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-              <button class="btn btn-danger btn-block deleteButton" data-location='{{k}}'' data-str_id="{{kk.split(' ')[0]}}.{{kk.split(' ')[1]}}" ><span class="glyphicon glyphicon-trash"></span></button>
+              <button class="btn btn-danger btn-block deleteButton" data-location="{{'-'.join(k.split(' '))}}" data-str_id="{{'.'.join(kk.split(' '))}}" ><span class="glyphicon glyphicon-trash"></span></button>
 	  </div>
     	</div>
     {%endfor%}
@@ -44,7 +44,7 @@
             <!-- Modal Body -->
             <div class="modal-body">
 
-                <form role="form" action="{{ url_for('remove_device') }}" method="POST">
+                <form role="form" action="{{ url_for('remove_device') }}" method="POST" style="display: flex;justify-content: flex-end;"">
                 <div class="form-group">
                       <input id="device_to_rem" name="delete" val='' style="display: none;"/>
                   </div>
@@ -53,7 +53,7 @@
                         data-dismiss="modal">
                             Cancel
                 </button>
-                <button type="button" id="delete_btn" class="btn btn-danger" ><i class=""> </i>
+                <button type="submit" id="delete_btn" class="btn btn-danger" ><i class=""> </i>
                     Delete
                 </button>
         </form>
@@ -71,22 +71,12 @@
       $(".deleteButton").click(function(){
       var location = $(this).data('location');
       var str_id = $(this).data('str_id');
-      $(".modal-body #device_to_rem").val(location+'-'+str_id);
-      $("#myModalLabel").text('Are you sure you want to delete '+str_id.split('.')[0]+ ' ' +str_id.split('.')[1] + ' from '+location+' ?');
+      $(".modal-body #device_to_rem").val(location+'/'+str_id);
+      $("#myModalLabel").text('Are you sure you want to delete "'+(str_id.split('.')).join(' ')+ '" from "'+(location.split('-')).join(' ')+'" ?');
       $('#myModalNorm').modal('show');});
 
 
-      $("#delete_btn").click(function(){
-      $.post("{{ url_for('remove_device') }}",{'data': $("#device_to_rem").val()}).done();
-      $('#myModalNorm').modal('hide');
-      alert($("#device_to_rem").val())
-      $("#Terraza-Luz.Reja").empty();
-      
-      });
-
-
-
-      });
+        });
     </script>
 
     {% endblock %}
