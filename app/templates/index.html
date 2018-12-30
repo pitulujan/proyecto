@@ -66,7 +66,7 @@
   </div>
 
 {% for k,v in devices.items()|sort: %}
-   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{'-'.join(k.split(' '))}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
     	
     {% for kk,vv in v.items()|sort: %}
@@ -80,32 +80,32 @@
 	                    <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 	                              <div class="onoffswitch">
 	                                  {%if vv['State']==True:%}
-	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="On" checked>
+	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}" value="On" checked>
 	                                  {%else:%}
-	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" value="Off" >
+	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}" value="Off" >
 	                                  {%endif%}
-	                                  <label class="onoffswitch-label" for="myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></label>
+	                                  <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}"></label>
 	                              </div>
 	                    </div> 
 	                         
 	          </div>
     	{%if vv['dev_type'] == False:%}
           	{%if vv['State'] == True:%}
-          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:show;padding-left: 20px;">
+          		<div class="row" id="prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}" style="display:show;padding-left: 20px;">
           	{%else:%}
-          		<div class="row" id="prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" style="display:none;padding-left: 20px;">
+          		<div class="row" id="prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}" style="display:none;padding-left: 20px;">
         	{%endif%}
             	<form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             		<div class="form-group">
-              			<input type="text" style="display:none;"  id="statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="statevalue" value="{{vv['State']}}">
+              			<input type="text" style="display:none;"  id="statevalue{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}" name="statevalue" value="{{vv['State']}}">
             			<div class="row">
     						<div class="col-xs-9">
 		    					<div class="slidecontainer" style="padding-top: 26px;">
-                    				<input type="range" min="0" max="100" step="5" value="{{vv['set_point']}}" class="slider" id="myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}" name="set_point">
+                    				<input type="range" min="0" max="100" step="5" value="{{vv['set_point']}}" class="slider" id="myRange{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}" name="set_point">
                    				</div>
 							</div>
 							<div class="col-xs-3" style="display: flex;justify-content: center;">
-								<b><h3><span id="demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}"></span>%</h3></b> 
+								<b><h3><span id="demo{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}"></span>%</h3></b> 
 							</div>
 						</div>
 
@@ -142,24 +142,24 @@
   	{% for kk,vv in v.items()|sort: %}
   	{% if vv['dev_type'] == False: %}
 
-  		$(document).on('change', '#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()}).done(function() {});});
+  		$(document).on('change', '#myRange{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val()}).done(function() {});});
 
-  		var slider{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}} = document.getElementById("myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}");
-		var output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}} = document.getElementById("demo{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}");
-		output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.innerHTML = slider{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.value;
+  		var slider{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}} = document.getElementById("myRange{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}");
+		var output{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}} = document.getElementById("demo{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}");
+		output{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}.innerHTML = slider{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}.value;
 
-		slider{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.oninput = function() {
-  		output{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}.innerHTML = this.value;}
-  		$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").click(function(){
-        $("#prendeapaga{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").toggle(500);
-      	if ($("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()=='On'){$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('Off');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'False','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()})}
-      	else{$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('On');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'True','set_point':$("#myRange{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()});}});
+		slider{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}.oninput = function() {
+  		output{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}.innerHTML = this.value;}
+  		$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").click(function(){
+        $("#prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").toggle(500);
+      	if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val()})}
+      	else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val()});}});
   	{%else:%}
 
-  		$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").click(function(){
+  		$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").click(function(){
         
-      	if ($("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val()=='On'){$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('Off');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{k}}.{{kk}}",'state': 'False','set_point':"None"})}
-      	else{$("#myonoffswitch{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('On');$("#statevalue{{k}}{{kk.split(' ')[0]}}{{kk.split(' ')[1]}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{k}}.{{kk}}",'state': 'True','set_point': 'None'});}});
+      	if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':"None"})}
+      	else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(k.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point': 'None'});}});
 
   	{%endif%}
 
