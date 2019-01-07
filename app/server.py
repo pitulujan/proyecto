@@ -117,7 +117,7 @@ def get_scheduled_events():
     return query_scheduled
 
 
-def schedule_event(user,function,atribute,type=None,run_date=None,args=[],start_date=None,end_date=None,interval=None):
+def schedule_event(user,function,atribute,type=None,run_date=None,args=[],start_date=None,end_date=None,interval=None, date_of_the_week=None):
 
 
 

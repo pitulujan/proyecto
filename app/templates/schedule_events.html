@@ -92,9 +92,20 @@
                       <input type="datetime-local" class="form-control" id="dateid" name="mail"/>
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                      <input type="password" class="form-control"
-                          id="exampleInputPassword1" name="pass" placeholder="Password"/>
+                    <label for="locationid">Location</label>
+                     <!-- <input type="password" class="form-control" id="exampleInputPassword1" name="pass" placeholder="Password"/> -->
+                      <select id="locationid" class="form-control">
+                        {%for location in rooms_devices.keys()|sort:%}
+                          <option value="{{'_'.join(location.split(' '))}}">{{location}}</option>
+                        {% endfor %}
+                      </select>
+                       <label for="deviceid">Device</label>
+                      <select id="deviceid" class="form-control">
+                        {%for location,device in rooms_devices.items()|sort:%}
+                          <option class="'_'.join(location.split(' '))" value="'_'.join(device.split(' '))">{{device}}</option>
+                        {% endfor %}
+                      </select>
+
                   </div>
           
                 
@@ -117,9 +128,48 @@
 </div>
 </div>
 
+<div id="option1" class="group">asdf</div>
+<div id="option2" class="group">kljh</div>
+<div id="option3" class="group">zxcv</div>
+<div id="option4" class="group">qwerty</div>
+<select id="selectMe">
+  <option value="option1">option1</option>
+  <option value="option2">option2</option>
+  <option value="option3">option3</option>
+  <option value="option4">option4</option>
+</select>
+
+
  
 <script >
   $(document).ready(function(){
+
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+var minutes = today.getMinutes();
+var hours = today.getHours();
+ if(dd<10){
+        dd='0'+dd
+    } 
+    if(mm<10){
+        mm='0'+mm
+    } 
+
+//today = yyyy+'-'+mm+'-'+dd;
+today = yyyy+'-'+mm+'-'+dd+'T'+hours+':'+minutes;
+document.getElementById("dateid").setAttribute("min", today);
+  
+
+  $('.group').hide();
+  $('#option1').show();
+  $('#locationid').change(function () {
+  $('.group').hide();
+  $('#'+$(this).val()).show();})
+
+
+
     $("#edit").click(function(){
 
         if ($("#edit").text()==' Edit'){
