@@ -142,7 +142,7 @@ def schedule_events():
     if request.method == 'POST':
 
         print(request.form['date'],type(request.form['date']))
-    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events())
+    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 
 @app.route('/delete_event', methods=['POST'])
 @login_required

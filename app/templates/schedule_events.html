@@ -101,10 +101,16 @@
                       </select>
                        <label for="deviceid">Device</label>
                       <select id="deviceid" class="form-control">
-                        {%for location,device in rooms_devices.items()|sort:%}
-                          <option class="'_'.join(location.split(' '))" value="'_'.join(device.split(' '))">{{device}}</option>
-                        {% endfor %}
+                        {%for number,key in enumerate(rooms_devices.keys()|sort):%}
+                        {%if number == 0:%}
+                        {%for devices in rooms_devices[key]:%}
+                        <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
+                        {%endfor%}
+                        {%endif%}
+                        {%endfor%}
+                        
                       </select>
+                        
 
                   </div>
           
@@ -162,13 +168,20 @@ today = yyyy+'-'+mm+'-'+dd+'T'+hours+':'+minutes;
 document.getElementById("dateid").setAttribute("min", today);
   
 
-  $('.group').hide();
-  $('#option1').show();
+
   $('#locationid').change(function () {
-  $('.group').hide();
-  $('#'+$(this).val()).show();})
+    $('#deviceid').html('');
+      {%for location,devices in rooms_devices.items()|sort:%}
+        if($('#locationid').val()=='{{location}}'){
+         {%for device in devices:%} 
+        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+         {% endfor %}
+    }
+                        
 
+      {% endfor %}
 
+});
 
     $("#edit").click(function(){
 
