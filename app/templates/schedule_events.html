@@ -18,6 +18,26 @@
 .modal-body .form-horizontal .col-sm-offset-2 {
     margin-left: 15px;
 }
+.weekDays-selector input {
+  display: none!important;
+}
+
+.weekDays-selector input[type=checkbox] + label {
+  display: inline-block;
+  border-radius: 6px;
+  background: #dddddd;
+  height: 40px;
+  width: 30px;
+  margin-right: 3px;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.weekDays-selector input[type=checkbox]:checked + label {
+  background:  #333;
+  color: #ffffff;
+}
 </style>
     
     <div class="row">
@@ -63,11 +83,6 @@
 </tbody>
 </table>
 </div>
-
-{%for event in scheduled_events:%}
-
-<p>{{event.user}}</p>
-{%endfor%}
 
 
 <!-- Modal -->
@@ -153,17 +168,6 @@
 </div>
 </div>
 </div>
-
-<div id="option1" class="group">asdf</div>
-<div id="option2" class="group">kljh</div>
-<div id="option3" class="group">zxcv</div>
-<div id="option4" class="group">qwerty</div>
-<select id="selectMe">
-  <option value="option1">option1</option>
-  <option value="option2">option2</option>
-  <option value="option3">option3</option>
-  <option value="option4">option4</option>
-</select>
 
 
  
