@@ -35,7 +35,7 @@
 }
 
 .weekDays-selector input[type=checkbox]:checked + label {
-  background:  #333;
+  background:  #337ab7;
   color: #ffffff;
 }
 </style>
@@ -107,8 +107,8 @@
                       <input type="datetime-local" class="form-control" id="dateid" name="mail"/>
                   </div>
 
-
-                  <div class="weekDays-selector">
+                  <label for="divdays">Repeat</label>
+                  <div class="weekDays-selector" id=divdays>
                     <input type="checkbox" id="weekday-mon" name="day" value="mon" class="weekday" />
                     <label for="weekday-mon">M</label>
                     <input type="checkbox" id="weekday-tue" name="day" value="tue" class="weekday" />
@@ -231,10 +231,8 @@ document.getElementById("dateid").setAttribute("min", today);
        $("#submit_event").click(function(){
 
         var selectedDay = new Array();
-      $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
-
-      alert("Number of selected Days: "+selectedDay.length+"\n"+"And, they are: "+selectedDay);
-
+        $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
+        $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
         $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val()});
         $('#modalschedule').modal('hide');
 
