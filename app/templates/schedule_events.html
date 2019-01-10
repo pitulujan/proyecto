@@ -205,7 +205,7 @@ document.getElementById("dateid").setAttribute("min", today);
        $(".editevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
        
        $("#submit_event").click(function(){
-        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val()});
+        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': '','location':$("#locationid").val(),'device':$('#deviceid').val()});
         $('#modalschedule').modal('hide');
 
 

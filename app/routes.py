@@ -140,8 +140,12 @@ def schedule_events():
 
 
     if request.method == 'POST':
+        print('hola')
 
-        print(request.form['date'],type(request.form['date']))
+        print(request.form['date'])
+        print(request.form['location'])
+        print(request.form['device'])
+        return "OK"
     return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 
 @app.route('/delete_event', methods=['POST'])
