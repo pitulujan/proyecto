@@ -183,7 +183,7 @@
             </div>
             <!-- Modal Footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">
                             Cancel
                 </button>
                 <button type="button" class="btn btn-primary" id=submit_event>
@@ -273,8 +273,23 @@ document.getElementById("dateid").setAttribute("min", today);
         $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
         $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()});
         $('#modalschedule').modal('hide');
+        $("#prendeapaga").attr('display','none');
+        $("#myRange").val('0')
+        output.innerHTML = 0;  
+        $("#myonoffswitch").val('Off')  
+        $("#statevalue").val('False')
+        $("#myonoffswitch").click()
 
+        });
 
+       $("#cancel").click(function(){
+        $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
+        $("#prendeapaga").attr('display','none');
+        $("#myRange").val('0')
+        output.innerHTML = 0;   
+        $("#myonoffswitch").val('Off')   
+        $("#statevalue").val('False')
+        $("#myonoffswitch").click()
         });
 
   function ConfirmDelete(username){
