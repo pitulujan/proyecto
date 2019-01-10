@@ -147,6 +147,8 @@ def schedule_events():
         print(request.form['device'])
         print(request.form.getlist('repeat[]'))
         print(type(request.form.getlist('repeat[]')))
+        print(request.form['state'])
+        print(request.form['set_point'])
         return "OK"
     return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 

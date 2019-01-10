@@ -1,12 +1,11 @@
 <!--https://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal  https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_datetime-local_defaultvalue-->
 {% extends 'base2.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
 {% block app_content %}
 
+<link rel="stylesheet" href="/static/style_slider.css">
 
 <style type="text/css">
-	.modal-body .form-horizontal .col-sm-2,
+.modal-body .form-horizontal .col-sm-2,
 .modal-body .form-horizontal .col-sm-10 {
     width: 100%
 
@@ -146,13 +145,42 @@
                         
                       </select>
                         
-
+                    </div>
+                    <div class="row">
+                  <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                          
+                         <h5 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">Tamo Probando</h5>
+                          
                   </div>
-          
-                
-                
+
+                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;">
+                      <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
+                        <label class="onoffswitch-label" for="myonoffswitch"></label>
+                      </div>
+                    </div>
             </div>
-            
+
+            <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
+              <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+                <div class="form-group">
+                    <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
+                  <div class="row">
+                <div class="col-xs-9">
+                  <div class="slidecontainer" style="padding-top: 26px;">
+                            <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
+                          </div>
+              </div>
+              <div class="col-xs-3" style="display: flex;justify-content: center;">
+                <b><h3><span id="demo"></span>%</h3></b> 
+              </div>
+            </div>
+
+              </div>
+              </form>
+    
+            </div>
+            </div>
             <!-- Modal Footer -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -191,7 +219,17 @@ var hours = today.getHours();
 today = yyyy+'-'+mm+'-'+dd+'T'+hours+':'+minutes;
 document.getElementById("dateid").setAttribute("min", today);
   
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
 
+    slider.oninput = function() { output.innerHTML = this.value;}
+    $("#myonoffswitch").click(function(){
+          $("#prendeapaga").toggle(500);
+        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
+        else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
+
+           });
 
   $('#locationid').change(function () {
     $('#deviceid').html('');
@@ -233,7 +271,7 @@ document.getElementById("dateid").setAttribute("min", today);
         var selectedDay = new Array();
         $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
         $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
-        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val()});
+        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()});
         $('#modalschedule').modal('hide');
 
 
