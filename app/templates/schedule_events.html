@@ -60,7 +60,7 @@
     </div>
 
 <div class="row">
-	<table class="table">
+	<table class="table" id="eventlistid">
     <tbody>
       {%for event in scheduled_events:%}
     <tr><td>
@@ -259,19 +259,87 @@ document.getElementById("dateid").setAttribute("min", today);
           $('.del').hide(500);} 
                
                 });
+
+    $(".editevent").delegate("span","click",function(){$("#dateid").val("");$('#modalschedule').modal('show');}); // NO ANDAAAAA
       {%for event in scheduled_events:%}
        $("#del{{event.pid}}").click(function(){$("#cont2{{event.pid}}").toggle(500);$("#cont{{event.pid}}").toggle(500);});
        {%endfor%}
        $(".addevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');});
        
-       $(".editevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
+       //$(".editevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
        
        $("#submit_event").click(function(){
 
         var selectedDay = new Array();
         $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
         $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
-        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()});
+        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
+
+
+
+     var father = $("<tr></tr>");
+     var child = $("<td></td>");
+    
+    var div = $("<div></div>")
+           .attr("class", "col-xs-6")
+           .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
+    var a = $("<h1></h1>").text("dd/mm/yy");
+            
+     $("<span></span>")
+            .attr("class","glyphicon glyphicon-minus-sign del")
+            .attr("style","color: #f70707;display:none;padding-right: 10px;font-size: 25px;")
+            .attr("id","esteyalovamoaave")
+           .prependTo(a);
+
+
+
+     
+     a.appendTo(div);
+     div.appendTo(child);
+
+     var div = $("<div></div>")
+           .attr("class", "col-xs-6")
+           .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
+    var a = $("<h1></h1>")
+            .attr("style","margin-top: 10px;");
+            
+    $("<span></span>")
+            .attr("class","glyphicon glyphicon-menu-right editevent")
+            .attr("style","color: #333;font-size: 15px;display:none;")
+            .attr("id","esteyalovamoaavetambien")
+            .attr("href","#")
+           .appendTo(a);
+     a.appendTo(div);
+
+     var form = $("<form></form>")
+     .attr("action","")
+     .attr("method","POST");
+     
+
+    var button =  $("<button></button")
+     .attr("class","btn btn-danger btn-block delevent")
+     .attr("id","jesusabra")
+     .attr("style","display: none;margin-top: 20px;")
+     .attr("type","submit")
+     .attr("name","delete")
+     .attr("value","")
+     .text("Delete")
+     .appendTo(form);
+
+      $("<span></span>")
+            .attr("class","glyphicon glyphicon-trash")
+           .appendTo(button);
+     form.appendTo(div);
+
+     div.appendTo(child);
+
+    child.appendTo(father)
+     $('#eventlistid tr:last').after(father); //$('#myTable').append('<tr><td>my data</td><td>more data</td></tr>'); por si no hay ningun tr habra que ver
+    
+
+
+
+});
         $('#modalschedule').modal('hide');
         $("#prendeapaga").attr('display','none');
         $("#myRange").val('0')
