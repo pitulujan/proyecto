@@ -117,15 +117,26 @@ def get_scheduled_events():
     return query_scheduled
 
 
-def schedule_event(user,function,atribute,type=None,run_date=None,args=[],start_date=None,end_date=None,interval=None, date_of_the_week=None):
+def schedule_event(user,function,atribute,run_date=None,args=[],start_date=None, day_of_week=[]):
+
+    id_job=user+'_'+datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    day=start_date.split('T')[0]
+    hour= start_date.split('T')[1].split(':')[0]
+    minute= start_date.split('T')[1].split(':')[1]
+
+    if len(day_of_week)!=0:
+        scheduler.add_job(alarm, 'cron', start_date=day, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id='Pitu 11')
+    else:
+        scheduler.add_job(alarm, 'date', run_date='2018-10-21 20:42:00', args=[datetime.now()],id='Pitu 5')
 
 
 
-    scheduler.add_job(alarm, 'date', run_date='2018-10-21 20:42:00', args=[datetime.now()],id='Pitu 5')
+    
 
-    #scheduler.add_job(alarm, 'interval', seconds=5, start_date='2018-10-10 09:30:00', end_date='2019-06-15 11:00:00',args=[datetime.now()],id='Pitu1')
+    #scheduler.add_job(alarm, 'interval', seconds=5, start_date='2018-10-10 09:30:00', end_date='2019-06-15 11:00:00',args=[datetime.now()],id='Pitu1') ->Este ya fue 
 
-    scheduler.add_job(alarm, 'cron', start_date='2019-1-12',day_of_week='sat,wed', hour=11, minute=58 , args=[datetime.now()],id='Pitu 11')
+    
     #datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
