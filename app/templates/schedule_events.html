@@ -202,65 +202,65 @@
 <script >
   $(document).ready(function(){
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth()+1; //January is 0!
-var yyyy = today.getFullYear();
-var minutes = today.getMinutes();
-var hours = today.getHours();
- if(dd<10){
-        dd='0'+dd
-    } 
-    if(mm<10){
-        mm='0'+mm
-    } 
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    var minutes = today.getMinutes();
+    var hours = today.getHours();
+     if(dd<10){
+            dd='0'+dd
+        } 
+        if(mm<10){
+            mm='0'+mm
+        } 
 
-//today = yyyy+'-'+mm+'-'+dd;
-today = yyyy+'-'+mm+'-'+dd+'T'+hours+':'+minutes;
-document.getElementById("dateid").setAttribute("min", today);
+    //today = yyyy+'-'+mm+'-'+dd;
+    today = yyyy+'-'+mm+'-'+dd+'T'+hours+':'+minutes;
+    document.getElementById("dateid").setAttribute("min", today);
   
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
     output.innerHTML = slider.value;
 
     slider.oninput = function() { output.innerHTML = this.value;}
+    
     $("#myonoffswitch").click(function(){
-          $("#prendeapaga").toggle(500);
-        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
-        else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
+                                          $("#prendeapaga").toggle(500);
+                                          if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
+                                          else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
 
-           });
+                                             });
 
   $('#locationid').change(function () {
-    $('#deviceid').html('');
-      {%for location,devices in rooms_devices.items()|sort:%}
-        if($('#locationid').val()=='{{location}}'){
-         {%for device in devices:%} 
-        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
-         {% endfor %}
-    }
-                        
+                                        $('#deviceid').html('');
+                                            {%for location,devices in rooms_devices.items()|sort:%}
+                                        if($('#locationid').val()=='{{location}}'){
+                                            {%for device in devices:%} 
+                                        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                            {% endfor %}
+                                        }
+                                                            
+                                          {% endfor %}
 
-      {% endfor %}
-
-});
+                                    });
 
     $("#edit").click(function(){
+                                  if ($("#edit").text()==' Edit'){
+                                    $("#edit").text("Done");
+                                    $(".del").toggle(500);
+                                    $(".editevent").toggle(500); }
+                                  else{
+                                    $("#edit").text(" Edit");
+                                    $('.delevent').hide(500);
+                                    $('.editevent').hide(500);
+                                    $('.del').hide(500);} 
+                                         
+                                          });
 
-        if ($("#edit").text()==' Edit'){
-          $("#edit").text("Done");
-          $(".del").toggle(500);
-          //$("#del2").toggle(500);
-          $(".editevent").toggle(500); }
-        else{
-          $("#edit").text(" Edit");
-          $('.delevent').hide(500);
-          $('.editevent').hide(500);
-          $('.del').hide(500);} 
-               
-                });
-
-    $(document).on("click","span.editevent",function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
+    $(document).on("click","span.editevent",function(){
+                                                        $("#dateid").val("");
+                                                        $('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
     
     $(document).on("click","span.del",function(){
                                                   var pid = $(this).data('pid');
@@ -269,10 +269,6 @@ document.getElementById("dateid").setAttribute("min", today);
                                                   }); //-->falta editar para que saque la info de la futura lista de eventos
      
 
-
-      //{%for event in scheduled_events:%}
-       //$("#del{{event.pid}}").click(function(){$("#cont2{{event.pid}}").toggle(500);$("#cont{{event.pid}}").toggle(500);});
-       //{%endfor%}
 
 
        $(".addevent").click(function(){ $("#dateid").val("");
@@ -283,23 +279,22 @@ document.getElementById("dateid").setAttribute("min", today);
 
        
        $("#submit_event").click(function(){
-
-        var selectedDay = new Array();
-        $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
-        $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
-        $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
-
+                                            var selectedDay = new Array();
+                                            $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
+                                            $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
+                                            $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
 
 
-     var father = $("<tr></tr>");
-     var child = $("<td></td>");
+
+    var father = $("<tr></tr>");
+    var child = $("<td></td>");
     
     var div = $("<div></div>")
            .attr("class", "col-xs-6")
            .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
     var a = $("<h1></h1>").text("dd/mm/yy");
             
-     $("<span></span>")
+    $("<span></span>")
             .attr("class","glyphicon glyphicon-minus-sign del")
             .attr("style","color: #f70707;display:none;padding-right: 10px;font-size: 25px;")
             .attr("data-pid","pid")
@@ -308,10 +303,10 @@ document.getElementById("dateid").setAttribute("min", today);
 
 
      
-     a.appendTo(div);
-     div.appendTo(child);
+    a.appendTo(div);
+    div.appendTo(child);
 
-     var div = $("<div></div>")
+    var div = $("<div></div>")
            .attr("class", "col-xs-6")
            .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
     var a = $("<h1></h1>")
@@ -326,23 +321,23 @@ document.getElementById("dateid").setAttribute("min", today);
      a.appendTo(div);
 
      var form = $("<form></form>")
-     .attr("action","")
-     .attr("method","POST");
+               .attr("action","")
+               .attr("method","POST");
      
 
     var button =  $("<button></button")
-     .attr("class","btn btn-danger btn-block delevent")
-     .attr("id","cont2pid")
-     .attr("style","display: none;margin-top: 20px;")
-     .attr("type","submit")
-     .attr("name","delete")
-     .attr("value","")
-     .text("Delete")
-     .appendTo(form);
+                 .attr("class","btn btn-danger btn-block delevent")
+                 .attr("id","cont2pid")
+                 .attr("style","display: none;margin-top: 20px;")
+                 .attr("type","submit")
+                 .attr("name","delete")
+                 .attr("value","")
+                 .text("Delete")
+                 .appendTo(form);
 
       $("<span></span>")
-            .attr("class","glyphicon glyphicon-trash")
-           .appendTo(button);
+                        .attr("class","glyphicon glyphicon-trash")
+                        .appendTo(button);
      form.appendTo(div);
 
      div.appendTo(child);

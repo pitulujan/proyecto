@@ -123,14 +123,15 @@ def schedule_event(user,function,atribute,type=None,run_date=None,args=[],start_
 
     scheduler.add_job(alarm, 'date', run_date='2018-10-21 20:42:00', args=[datetime.now()],id='Pitu 5')
 
-    scheduler.add_job(alarm, 'interval', seconds=5, start_date='2018-10-10 09:30:00', end_date='2019-06-15 11:00:00',args=[datetime.now()],id='Pitu1')
+    #scheduler.add_job(alarm, 'interval', seconds=5, start_date='2018-10-10 09:30:00', end_date='2019-06-15 11:00:00',args=[datetime.now()],id='Pitu1')
 
+    scheduler.add_job(alarm, 'cron', start_date='2019-1-12',day_of_week='sat,wed', hour=11, minute=58 , args=[datetime.now()],id='Pitu 11')
     #datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
 
 
-    return
+    return pid 
 
 def reschedule_event():
     pass
