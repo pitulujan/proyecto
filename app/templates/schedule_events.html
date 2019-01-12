@@ -66,7 +66,7 @@
     <tr><td>
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
-     <h1> <span class="glyphicon glyphicon-minus-sign del" style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}"></span>  {{event.event_date}}</h1>
+     <h1> <span class="glyphicon glyphicon-minus-sign del" style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}"></span>  {{event.event_date}}</h1>
     
    </div>
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -260,13 +260,27 @@ document.getElementById("dateid").setAttribute("min", today);
                
                 });
 
-    $(".editevent").delegate("span","click",function(){$("#dateid").val("");$('#modalschedule').modal('show');}); // NO ANDAAAAA
-      {%for event in scheduled_events:%}
-       $("#del{{event.pid}}").click(function(){$("#cont2{{event.pid}}").toggle(500);$("#cont{{event.pid}}").toggle(500);});
-       {%endfor%}
-       $(".addevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');});
+    $(document).on("click","span.editevent",function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
+    
+    $(document).on("click","span.del",function(){
+                                                  var pid = $(this).data('pid');
+                                                  $("#cont2"+pid).toggle(500);
+                                                  $("#cont"+pid).toggle(500);
+                                                  }); //-->falta editar para que saque la info de la futura lista de eventos
+     
+
+
+      //{%for event in scheduled_events:%}
+       //$("#del{{event.pid}}").click(function(){$("#cont2{{event.pid}}").toggle(500);$("#cont{{event.pid}}").toggle(500);});
+       //{%endfor%}
+
+
+       $(".addevent").click(function(){ $("#dateid").val("");
+                                        $("#statevalue").val('False')
+                                        $("#myonoffswitch").val('Off')   
+                                        $('#modalschedule').modal('show');});
        
-       //$(".editevent").click(function(){$("#dateid").val("");$('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
+
        
        $("#submit_event").click(function(){
 
@@ -288,7 +302,7 @@ document.getElementById("dateid").setAttribute("min", today);
      $("<span></span>")
             .attr("class","glyphicon glyphicon-minus-sign del")
             .attr("style","color: #f70707;display:none;padding-right: 10px;font-size: 25px;")
-            .attr("id","esteyalovamoaave")
+            .attr("data-pid","pid")
            .prependTo(a);
 
 
@@ -306,7 +320,7 @@ document.getElementById("dateid").setAttribute("min", today);
     $("<span></span>")
             .attr("class","glyphicon glyphicon-menu-right editevent")
             .attr("style","color: #333;font-size: 15px;display:none;")
-            .attr("id","esteyalovamoaavetambien")
+            .attr("id","contpid")
             .attr("href","#")
            .appendTo(a);
      a.appendTo(div);
@@ -318,7 +332,7 @@ document.getElementById("dateid").setAttribute("min", today);
 
     var button =  $("<button></button")
      .attr("class","btn btn-danger btn-block delevent")
-     .attr("id","jesusabra")
+     .attr("id","cont2pid")
      .attr("style","display: none;margin-top: 20px;")
      .attr("type","submit")
      .attr("name","delete")
@@ -344,9 +358,7 @@ document.getElementById("dateid").setAttribute("min", today);
         $("#prendeapaga").attr('display','none');
         $("#myRange").val('0')
         output.innerHTML = 0;  
-        $("#myonoffswitch").val('Off')  
-        $("#statevalue").val('False')
-        $("#myonoffswitch").click()
+        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$("#myonoffswitch").click()}
 
         });
 
@@ -355,9 +367,7 @@ document.getElementById("dateid").setAttribute("min", today);
         $("#prendeapaga").attr('display','none');
         $("#myRange").val('0')
         output.innerHTML = 0;   
-        $("#myonoffswitch").val('Off')   
-        $("#statevalue").val('False')
-        $("#myonoffswitch").click()
+        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$("#myonoffswitch").click()}
         });
 
   function ConfirmDelete(username){
