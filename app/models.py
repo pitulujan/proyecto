@@ -60,5 +60,7 @@ class Scheduled_events(db.Model):
     str_id=db.Column(db.String(64))
     location=db.Column(db.String(64),default='default')
     event_date=db.Column(db.String(32))
+    event_type=db.Column(db.String(8))
+    event_cron=db.Column(db.String(32))
     pid=db.Column(db.String(40), index=True, unique=True)
 

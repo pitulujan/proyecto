@@ -111,24 +111,33 @@ def get_temp_state():
 def get_devices():
     return Current_state_dic_rooms #--> que se la arrgle routes
 
-def get_scheduled_events():
-    query_scheduled = Scheduled_events.query.all()
-    #query_scheduled = User.query.all()
+def get_scheduled_events(*args):
+
+    if args:
+        query_scheduled = Scheduled_events.query.filter_by(str_id=args[0],location=args[1], event_date=args[2]).first()
+    else:
+        query_scheduled = Scheduled_events.query.all()
+    
     return query_scheduled
 
 
-def schedule_event(user,function,atribute,run_date=None,args=[],start_date=None, day_of_week=[]):
+def schedule_event(user,str_id,location,function,atribute,args=[],start_date=None, day_of_week=[]):
 
-    id_job=user+'_'+datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    scheduled_events = get_scheduled_events(str_id,location,)
 
-    day=start_date.split('T')[0]
+    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    id_job=user+'_'+date
+
+    date=start_date.split('T')[0]
+    date_date=start_date.replace('T',' ')+':00'
     hour= start_date.split('T')[1].split(':')[0]
     minute= start_date.split('T')[1].split(':')[1]
 
     if len(day_of_week)!=0:
-        scheduler.add_job(alarm, 'cron', start_date=day, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id='Pitu 11')
+        scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
+        scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron')
     else:
-        scheduler.add_job(alarm, 'date', run_date='2018-10-21 20:42:00', args=[datetime.now()],id='Pitu 5')
+        scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
 
 
 
