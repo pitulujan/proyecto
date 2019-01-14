@@ -1,5 +1,5 @@
-from datetime import datetime
-import sqlite3
+from datetime import timedelta
+import datetime
 from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log, Temperature, Scheduled_events
 from app import db
@@ -128,53 +128,93 @@ def schedule_event(user,str_id,location,date,args=[], day_of_week=[]):
 
     if check_date == True:
 
-        ans={'status'=400,'pid'=''}
+        ans={'status':400,'pid':''}
 
         return jsonify(ans)
 
-    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    id_job=user+'_'+date
-
-    date=start_date.split('T')[0]
-    date_date=start_date.replace('T',' ')+':00'
-    hour= start_date.split('T')[1].split(':')[0]
-    minute= start_date.split('T')[1].split(':')[1]
-
-
-
-    if len(day_of_week)!=0:
-
-        scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
-        scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron') #para que lo haga ese dia y despues repita
-        
-        event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_date='cron',event_cron='.'.join(day_of_week), pid=id_job)
-        
-        
-    
-
     else:
 
-        scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
-        event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_date='date',event_cron=None, pid=id_job)
+        date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        id_job=user+'_'+date
+
+        date=start_date.split('T')[0]
+        date_date=start_date.replace('T',' ')+':00'
+        hour= start_date.split('T')[1].split(':')[0]
+        minute= start_date.split('T')[1].split(':')[1]
+
+
+
+        if len(day_of_week)!=0:
+
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
+            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron') #para que lo haga ese dia y despues repita
+            
+            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(day_of_week), pid=id_job)
+            
+            
+        
+
+        else:
+
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
+            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None, pid=id_job)
 
 
 
 
-    db.session.add(event_to_schedule)
-    db.session.commit()
+        db.session.add(event_to_schedule)
+        db.session.commit()
 
-    ans={'status'=200,'pid'=id_job}
-    return jsonify(ans)
+        ans={'status':200,'pid':id_job}
+        return jsonify(ans)
 
 
 
 
 def check_days(date,day_of_week):
 
+    #aca hay primero que ver si alguna tupla str_id y location coinciden, si no es asi, return false, sino ahi ver len(day_of_week)
+
+    if len(day_of_week)!=0:
+
+        def next_weekday(d, weekday_list):
+
+            days=[]
+            for weekday in weekday_list:
+                days_ahead = weekday - d.weekday()
+                if days_ahead <= 0: # Target day already happened this week
+                    days_ahead += 7
+                days.append(d + datetime.timedelta(days_ahead))
+            return days
+
+        d=datetime.date(2019,1,15)
+        weekday=[0,2,4]
+
+        dia_que_quiero = datetime.date(2019,4,12)
+
+        array_dates = next_weekday(d,weekday)
+
+        print(array_dates)
+
+        for date in array_dates:
+            aux_date=date
+            while aux_date <=dia_que_quiero:
+                if aux_date == dia_que_quiero:
+                    print('hijo de mill',aux_date)
+                    break
+                else:
+                    aux_date+=timedelta(days=7)
+
+        print('fin')
+
+    else:
 
 
 
-    return pid 
+
+
+
+    return ans
 
 def reschedule_event():
     pass
