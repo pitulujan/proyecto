@@ -3,6 +3,7 @@ import sqlite3
 from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log, Temperature, Scheduled_events
 from app import db
+from flask import jsonify
 
 
 Current_state_dic_temp= {}
@@ -121,9 +122,15 @@ def get_scheduled_events(*args):
     return query_scheduled
 
 
-def schedule_event(user,str_id,location,function,atribute,args=[],start_date=None, day_of_week=[]):
+def schedule_event(user,str_id,location,date,args=[], day_of_week=[]):
 
-    scheduled_events = get_scheduled_events(str_id,location,)
+    check_date=check_days(date,day_of_week)
+
+    if check_date == True:
+
+        ans={'status'=400,'pid'=''}
+
+        return jsonify(ans)
 
     date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     id_job=user+'_'+date
@@ -133,20 +140,36 @@ def schedule_event(user,str_id,location,function,atribute,args=[],start_date=Non
     hour= start_date.split('T')[1].split(':')[0]
     minute= start_date.split('T')[1].split(':')[1]
 
+
+
     if len(day_of_week)!=0:
+
         scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
-        scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron')
+        scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron') #para que lo haga ese dia y despues repita
+        
+        event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_date='cron',event_cron='.'.join(day_of_week), pid=id_job)
+        
+        
+    
+
     else:
+
         scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
+        event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_date='date',event_cron=None, pid=id_job)
 
 
 
-    
 
-    #scheduler.add_job(alarm, 'interval', seconds=5, start_date='2018-10-10 09:30:00', end_date='2019-06-15 11:00:00',args=[datetime.now()],id='Pitu1') ->Este ya fue 
+    db.session.add(event_to_schedule)
+    db.session.commit()
 
-    
-    #datetime.now().strftime("%Y-%m-%d %H:%M")
+    ans={'status'=200,'pid'=id_job}
+    return jsonify(ans)
+
+
+
+
+def check_days(date,day_of_week):
 
 
 
