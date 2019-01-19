@@ -114,7 +114,7 @@ def get_devices():
 def get_scheduled_events(*args):
 
     if args:
-        query_scheduled = Scheduled_events.query.filter_by(str_id=args[0],location=args[1], event_date=args[2]).first()
+        query_scheduled = Scheduled_events.query.filter_by(str_id=args[0],location=args[1]).all()
     else:
         query_scheduled = Scheduled_events.query.all()
     
@@ -182,33 +182,34 @@ def check_days(date,day_of_week,str_id,location):
     else:
         
         for scheduled_event in events: 
-            if scheduled_event.event_type == 'date' and len(day_of_week)==0 and schedule_event.event_date == date: #len()==0 implica date y no cron(date)
+            if scheduled_event.event_type == 'date' and len(day_of_week)==0 and scheduled_event.event_date == date: #len()==0 implica date y no cron(date)
                 flag=True 
                 break 
-            elif scheduled_event.event_type == 'cron' and len(day_of_week)!=0 and schedule_event.event_date.split(' ')[1] == date.split(' ')[1]: #si ambos son cron y la hora coincide, checkeo dias
-                for day in schedule_event.event_cron.split('.'):
+            elif scheduled_event.event_type == 'cron' and len(day_of_week)!=0 and scheduled_event.event_date.split(' ')[1] == date.split(' ')[1]: #si ambos son cron y la hora coincide, checkeo dias
+                for day in scheduled_event.event_cron.split('.'):
                     if day in day_of_week:
                         flag=True
                         break
 
 
-            elif schedule_event.event_date.split(' ')[1] == date.split(' ')[1]: #solo entro en caso de que matcheen las horas
+            elif scheduled_event.event_date.split(' ')[1] == date.split(' ')[1]: #solo entro en caso de que matcheen las horas
 
 
-                if schedule_event.event_type == 'cron':
-                    d=datetime.strptime(schedule_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
-                    weekday=list(map(int,day_of_week)) #paso la lista de strings a lista de ints
+                if scheduled_event.event_type == 'cron':
+                    print('bien')
+                    d=datetime.strptime(scheduled_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
+                    print('d',d)
+                    weekday=list(map(int,scheduled_event.event_cron.split('.'))) #paso la lista de strings a lista de ints
+                    print('weekday',weekday)
                     dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
                 else:
                     #mismo que el anterior solo que se invierte el orden de dia que quiero y dia que tengo 
                     d=datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
                     weekday=list(map(int,day_of_week)) #paso la lista de strings a lista de ints
-                    dia_que_quiero =datetime.strptime(schedule_event.event_date.split(' ')[0],'%Y-%m-%d').date()
+                    dia_que_quiero =datetime.strptime(scheduled_event.event_date.split(' ')[0],'%Y-%m-%d').date()
 
 
-                array_dates = next_weekday(d,weekday)
 
-                print(array_dates)
                 def next_weekday(d, weekday_list):
 
                     days=[]
@@ -218,10 +219,12 @@ def check_days(date,day_of_week,str_id,location):
                             days_ahead += 7
                         days.append(d + timedelta(days_ahead))
                     return days
+                array_dates = next_weekday(d,weekday)
 
+                print(array_dates)
 
-                for date in array_dates:
-                    aux_date=date
+                for datee in array_dates:
+                    aux_date=datee
                     while aux_date <=dia_que_quiero:
                         if aux_date == dia_que_quiero:
                             print('hijo de mill',aux_date)
