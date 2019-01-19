@@ -122,9 +122,10 @@ def get_scheduled_events(*args):
     return query_scheduled
 
 
-def schedule_event(user,str_id,location,date,args=[], day_of_week=[]):
-
-    check_date=check_days(date,day_of_week)
+def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
+    
+    date_date=start_date.replace('T',' ')+':00'
+    check_date=check_days(date_date,day_of_week,str_id,location)
 
     if check_date == True:
 
@@ -134,11 +135,11 @@ def schedule_event(user,str_id,location,date,args=[], day_of_week=[]):
 
     else:
 
-        date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        id_job=user+'_'+date
+        dat=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        id_job=user+'_'+dat
 
         date=start_date.split('T')[0]
-        date_date=start_date.replace('T',' ')+':00'
+
         hour= start_date.split('T')[1].split(':')[0]
         minute= start_date.split('T')[1].split(':')[1]
 
@@ -171,9 +172,29 @@ def schedule_event(user,str_id,location,date,args=[], day_of_week=[]):
 
 
 
-def check_days(date,day_of_week):
+def check_days(date,day_of_week,str_id,location):
 
     #aca hay primero que ver si alguna tupla str_id y location coinciden, si no es asi, return false, sino ahi ver len(day_of_week)
+
+    event = get_scheduled_events(str_id,location)  #--> Ojo que esto puede ser una lista 
+
+    if event == None:
+        return False   
+    else:
+
+        for scheduled_event in event:
+            #if scheduled_event.event_date.split(' ')[1] == 
+            pass
+
+
+
+
+        dia_que_quiero = datetime.date(2019,4,12)
+
+        array_dates = next_weekday(d,weekday)
+
+        print(array_dates)
+
 
     if len(day_of_week)!=0:
 
@@ -190,11 +211,6 @@ def check_days(date,day_of_week):
         d=datetime.date(2019,1,15)
         weekday=[0,2,4]
 
-        dia_que_quiero = datetime.date(2019,4,12)
-
-        array_dates = next_weekday(d,weekday)
-
-        print(array_dates)
 
         for date in array_dates:
             aux_date=date
@@ -208,6 +224,8 @@ def check_days(date,day_of_week):
         print('fin')
 
     else:
+        
+        pass
 
 
 
