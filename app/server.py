@@ -120,9 +120,11 @@ def get_scheduled_events(*args):
     
     return query_scheduled
 
+def alarm(pitu):
+    print(pitu)
 
 def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
-    
+    str_id=str_id.replace('_',' ')
     date_date=start_date.replace('T',' ')+':00'
     check_date=check_days(date_date,day_of_week,str_id,location)
 
@@ -135,7 +137,7 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
     else:
 
         dat=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        id_job=user+'_'+dat
+        id_job=user+'_'+dat.replace(' ','_')
 
         date=start_date.split('T')[0]
 
@@ -149,7 +151,7 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
             scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron') #para que lo haga ese dia y despues repita
             
-            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(day_of_week), pid=id_job)
+            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(day_of_week), pid=id_job+'_cron')
             
             
         
@@ -196,11 +198,8 @@ def check_days(date,day_of_week,str_id,location):
 
 
                 if scheduled_event.event_type == 'cron':
-                    print('bien')
                     d=datetime.strptime(scheduled_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
-                    print('d',d)
                     weekday=list(map(int,scheduled_event.event_cron.split('.'))) #paso la lista de strings a lista de ints
-                    print('weekday',weekday)
                     dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
                 else:
                     #mismo que el anterior solo que se invierte el orden de dia que quiero y dia que tengo 
