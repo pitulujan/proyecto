@@ -1,5 +1,4 @@
-from datetime import timedelta
-import datetime
+from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log, Temperature, Scheduled_events
 from app import db
@@ -176,52 +175,55 @@ def check_days(date,day_of_week,str_id,location):
 
     #aca hay primero que ver si alguna tupla str_id y location coinciden, si no es asi, return false, sino ahi ver len(day_of_week)
 
-    event = get_scheduled_events(str_id,location)  #--> Ojo que esto puede ser una lista 
+    events = get_scheduled_events(str_id,location)  #--> Ojo que esto puede ser una lista 
 
-    if event == None:
+    if events == None:
         return False   
     else:
+        
+        for scheduled_event in events: 
+            if scheduled_event.event_type == 'date' and len(day_of_week)==0: #len()==0 implica date y no cron
+                if schedule_event.event_date == date:
+                    return True  
+            elif scheduled_event.event_type =='cron' and len(day_of_week)==0:
 
-        for scheduled_event in event:
-            #if scheduled_event.event_date.split(' ')[1] == 
-            pass
-
-
-
-
-        dia_que_quiero = datetime.date(2019,4,12)
-
-        array_dates = next_weekday(d,weekday)
-
-        print(array_dates)
+                d=datetime.strptime(schedule_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
+                weekday=list(map(int,day_of_week)) #paso la lista de strings a lista de ints
+                dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
 
 
-    if len(day_of_week)!=0:
+                array_dates = next_weekday(d,weekday)
 
-        def next_weekday(d, weekday_list):
+                print(array_dates)
+                def next_weekday(d, weekday_list):
 
-            days=[]
-            for weekday in weekday_list:
-                days_ahead = weekday - d.weekday()
-                if days_ahead <= 0: # Target day already happened this week
-                    days_ahead += 7
-                days.append(d + datetime.timedelta(days_ahead))
-            return days
+                days=[]
+                for weekday in weekday_list:
+                    days_ahead = weekday - d.weekday()
+                    if days_ahead <= 0: # Target day already happened this week
+                        days_ahead += 7
+                    days.append(d + timedelta(days_ahead))
+                return days
 
-        d=datetime.date(2019,1,15)
-        weekday=[0,2,4]
+                aux = False
+                for date in array_dates:
+                    aux_date=date
+                    while aux_date <=dia_que_quiero:
+                        if aux_date == dia_que_quiero:
+                            print('hijo de mill',aux_date)
+                            aux = True
+                            break
+                        else:
+                            aux_date+=timedelta(days=7)
 
 
-        for date in array_dates:
-            aux_date=date
-            while aux_date <=dia_que_quiero:
-                if aux_date == dia_que_quiero:
-                    print('hijo de mill',aux_date)
-                    break
-                else:
-                    aux_date+=timedelta(days=7)
 
-        print('fin')
+            
+            
+
+            
+
+            
 
     else:
         
