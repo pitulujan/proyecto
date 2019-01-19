@@ -182,14 +182,26 @@ def check_days(date,day_of_week,str_id,location):
     else:
         
         for scheduled_event in events: 
-            if scheduled_event.event_type == 'date' and len(day_of_week)==0: #len()==0 implica date y no cron
-                if schedule_event.event_date == date:
-                    return True  
-            elif scheduled_event.event_type =='cron' and len(day_of_week)==0:
+            if scheduled_event.event_type == 'date' and len(day_of_week)==0 and schedule_event.event_date == date: #len()==0 implica date y no cron(date)
+                return True  
+            elif scheduled_event.event_type == 'cron' and len(day_of_week)!=0 and schedule_event.event_date.split(' ')[1] == date.split(' ')[1]: #si ambos son cron y la hora coincide, checkeo dias
+                for day in schedule_event.event_cron.split('.'):
+                    if day in day_of_week:
+                        return True
 
-                d=datetime.strptime(schedule_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
-                weekday=list(map(int,day_of_week)) #paso la lista de strings a lista de ints
-                dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
+
+            elif schedule_event.event_date.split(' ')[1] == date.split(' ')[1]: #solo entro en caso de que matcheen las horas
+
+
+                if schedule_event.event_type == 'cron':
+                    d=datetime.strptime(schedule_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
+                    weekday=list(map(int,day_of_week)) #paso la lista de strings a lista de ints
+                    dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
+                else:
+                    #mismo que el anterior solo que se invierte el orden de dia que quiero y dia que tengo 
+                    d=datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
+                    weekday=list(map(int,day_of_week)) #paso la lista de strings a lista de ints
+                    dia_que_quiero =datetime.strptime(schedule_event.event_date.split(' ')[0],'%Y-%m-%d').date()
 
 
                 array_dates = next_weekday(d,weekday)
@@ -215,6 +227,9 @@ def check_days(date,day_of_week,str_id,location):
                             break
                         else:
                             aux_date+=timedelta(days=7)
+
+                if aux:
+                    return True
 
 
 
