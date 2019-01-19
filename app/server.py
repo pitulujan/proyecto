@@ -176,18 +176,20 @@ def check_days(date,day_of_week,str_id,location):
     #aca hay primero que ver si alguna tupla str_id y location coinciden, si no es asi, return false, sino ahi ver len(day_of_week)
 
     events = get_scheduled_events(str_id,location)  #--> Ojo que esto puede ser una lista 
-
+    flag = False
     if events == None:
         return False   
     else:
         
         for scheduled_event in events: 
             if scheduled_event.event_type == 'date' and len(day_of_week)==0 and schedule_event.event_date == date: #len()==0 implica date y no cron(date)
-                return True  
+                flag=True 
+                break 
             elif scheduled_event.event_type == 'cron' and len(day_of_week)!=0 and schedule_event.event_date.split(' ')[1] == date.split(' ')[1]: #si ambos son cron y la hora coincide, checkeo dias
                 for day in schedule_event.event_cron.split('.'):
                     if day in day_of_week:
-                        return True
+                        flag=True
+                        break
 
 
             elif schedule_event.event_date.split(' ')[1] == date.split(' ')[1]: #solo entro en caso de que matcheen las horas
@@ -209,47 +211,26 @@ def check_days(date,day_of_week,str_id,location):
                 print(array_dates)
                 def next_weekday(d, weekday_list):
 
-                days=[]
-                for weekday in weekday_list:
-                    days_ahead = weekday - d.weekday()
-                    if days_ahead <= 0: # Target day already happened this week
-                        days_ahead += 7
-                    days.append(d + timedelta(days_ahead))
-                return days
+                    days=[]
+                    for weekday in weekday_list:
+                        days_ahead = weekday - d.weekday()
+                        if days_ahead <= 0: # Target day already happened this week
+                            days_ahead += 7
+                        days.append(d + timedelta(days_ahead))
+                    return days
 
-                aux = False
+
                 for date in array_dates:
                     aux_date=date
                     while aux_date <=dia_que_quiero:
                         if aux_date == dia_que_quiero:
                             print('hijo de mill',aux_date)
-                            aux = True
+                            flag = True
                             break
                         else:
                             aux_date+=timedelta(days=7)
 
-                if aux:
-                    return True
-
-
-
-            
-            
-
-            
-
-            
-
-    else:
-        
-        pass
-
-
-
-
-
-
-    return ans
+    return flag
 
 def reschedule_event():
     pass
