@@ -58,7 +58,7 @@
 		        
 		 </div>
     </div>
-
+<div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
 <div class="row">
 	<table class="table" id="eventlistid">
     <tbody>
@@ -283,7 +283,10 @@
                                             $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
                                             $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
                                             $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
-
+                                              console.log(result)
+                                              if (result['status']==200) {
+                                              
+   
 
 
     var father = $("<tr></tr>");
@@ -345,7 +348,7 @@
     child.appendTo(father)
      $('#eventlistid tr:last').after(father); //$('#myTable').append('<tr><td>my data</td><td>more data</td></tr>'); por si no hay ningun tr habra que ver
     
-
+  } else {$("#errormessage").fadeIn('slow').delay(1000).fadeOut('slow');};
 
 
 });

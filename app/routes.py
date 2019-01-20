@@ -140,19 +140,8 @@ def schedule_events():
 
 
     if request.method == 'POST':
-        
-        '''
-        print(request.form['date'])
-        print(request.form['location'])
-        print(request.form['device'])
-        print(request.form.getlist('repeat[]'))
-        print(type(request.form.getlist('repeat[]')))
-        print(request.form['state'])
-        print(request.form['set_point'])
-        '''
-        json = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
-        print(json['pid'])
-        return json #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
+        answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
+        return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
     return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 
 @app.route('/delete_event', methods=['POST'])

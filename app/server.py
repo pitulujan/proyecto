@@ -136,8 +136,8 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
 
     else:
 
-        dat=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        id_job=user+'_'+dat.replace(' ','_')
+        dat=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        id_job=user+'_'+dat
 
         date=start_date.split('T')[0]
 
