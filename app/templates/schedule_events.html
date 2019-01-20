@@ -59,6 +59,7 @@
 		 </div>
     </div>
 <div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
+
 <div class="row">
 	<table class="table" id="eventlistid">
     <tbody>
@@ -74,7 +75,7 @@
 
 
 
-    <form action="" method="POST" ><button  class="btn btn-danger btn-block delevent" Onclick="return ConfirmDelete();" id="cont2{{event.pid}}" style="display: none;margin-top: 20px;" type="submit" value ="" name="delete" ><span class="glyphicon glyphicon-trash"></span> Delete</button> </form>
+    <button  class="btn btn-danger btn-block delevent"  style="display: none;margin-top: 20px;" type="submit" data-title="Delete" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash"></span> Delete</button> 
    
    </div>
 </tr></td>
@@ -348,7 +349,7 @@
     child.appendTo(father)
      $('#eventlistid tr:last').after(father); //$('#myTable').append('<tr><td>my data</td><td>more data</td></tr>'); por si no hay ningun tr habra que ver
     
-  } else {$("#errormessage").fadeIn('slow').delay(1000).fadeOut('slow');};
+  } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');};
 
 
 });
