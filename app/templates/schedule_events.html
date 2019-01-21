@@ -60,6 +60,11 @@
     </div>
 <div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
 
+           {%if not scheduled_events :%}
+            <row>
+            <center><h2>You have no scheduled events <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+            </row>
+            {%else:%}
 <div class="row">
 	<table class="table" id="eventlistid">
     <tbody>
@@ -84,7 +89,7 @@
 </table>
 </div>
 
-
+{%endif%}
 
 <div class="modal fade" id="modaldelete" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel" aria-hidden="true">
@@ -97,22 +102,22 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                <center><h4 class="modal-title" id="myModalLabel"></h4></center>
+                <center><h4 class="modal-title" id="titlemodaldelete"></h4></center>
             </div>
 
             <!-- Modal Body -->
-            <div class="modal-body">
+            <div class="modal-body delmodal">
 
                 <form role="form" action="" method="POST">
                 <div class="form-group">
-                      <input id="audioName" name="delete" value="" style="display: none;"/>
+                      <input id="modal_delete_event" name="delete"  style="display: none;"/>
                   </div>
 
                 <button type="button" class="btn btn-default"
                         data-dismiss="modal">
                             Cancel
                 </button>
-                <button type="submit" id="delete_btn" class="btn btn-danger"><i class=""> </i>
+                <button type="button" id="delete_event" class="btn btn-danger">
                     Delete
                 </button>
         </form>
@@ -312,6 +317,9 @@
 
     $(document).on("click","button.delevent",function(){
                                                         var pid = $(this).data('pid');
+                                                        console.log(pid)
+                                                        $("#modal_delete_event").attr('value',pid);
+                                                        $("#titlemodaldelete").text('Are you sure you want to delete this event?');
                                                         $('#modaldelete').modal('show');});
      
 
@@ -321,6 +329,11 @@
                                         $("#statevalue").val('False')
                                         $("#myonoffswitch").val('Off')   
                                         $('#modalschedule').modal('show');});
+
+       $("#delete_event").click(function(){
+                                            $.post("{{ url_for('delete_event') }}",{'event_id_to_delete':$("#modal_delete_event").val()});
+                                            $('#modaldelete').modal('hide');
+                                          });
        
 
        
@@ -415,8 +428,6 @@
         if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$("#myonoffswitch").click()}
         });
 
-  function ConfirmDelete(username){
-        return confirm("Are you sure you want to delete this event?");}
 
 
 });

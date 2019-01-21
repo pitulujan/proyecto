@@ -54,8 +54,8 @@ def remove_dev(location_str_id):
 def tick():
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
-#scheduler.start()
+#scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
+scheduler.start()
 
 def get_initial_values():
 
@@ -244,6 +244,9 @@ def delete_scheduled_event(id_event):
             scheduler.remove_job(pid)
     else:
         scheduler.remove_job(id_event)
+        event = Scheduled_events.query.filter_by(pid=id_event).first()
+        db.session.delete(event)
+        db.session.commit()
 
     return
 
