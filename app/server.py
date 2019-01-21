@@ -243,7 +243,14 @@ def delete_scheduled_event(id_event):
         for pid in id_event:
             scheduler.remove_job(pid)
     else:
-        scheduler.remove_job(id_event)
+        aux=id_event.split('_')
+        if 'cron' in aux:
+            aux.remove('cron')
+            scheduler.remove_job(id_event)
+            scheduler.remove_job('_'.join(aux))
+
+        else:
+            scheduler.remove_job(id_event)
         event = Scheduled_events.query.filter_by(pid=id_event).first()
         db.session.delete(event)
         db.session.commit()

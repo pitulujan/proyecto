@@ -61,10 +61,21 @@
 <div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
 
            {%if not scheduled_events :%}
-            <row>
+            <row id="no_scheduled_events">
             <center><h2>You have no scheduled events <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
             </row>
+            <div class="row">
+            <table class="table" id="eventlistid">
+            <tbody>
+            </tbody>
+            </table>
+            </div>
             {%else:%}
+
+            <row id="no_scheduled_events" style="display: none;" >
+            <center><h2>You have no scheduled events <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+            </row>
+
 <div class="row">
 	<table class="table" id="eventlistid">
     <tbody>
@@ -336,6 +347,8 @@
                                             $.post("{{ url_for('delete_event') }}",{'event_id_to_delete':$("#modal_delete_event").val()});
                                             $('#modaldelete').modal('hide');
                                             $("#tr"+pid).remove();
+                                                if ($('#eventlistid tr').length == 0 ) {
+                                                  $("#no_scheduled_events").show();}
                                           });
        
        
@@ -409,7 +422,13 @@
      div.appendTo(child);
 
     child.appendTo(father)
-     $('#eventlistid tr:last').after(father); //$('#myTable').append('<tr><td>my data</td><td>more data</td></tr>'); por si no hay ningun tr habra que ver
+
+    if ($('#eventlistid tr').length == 0 ) {
+      $('#eventlistid').append(father);
+      $("#no_scheduled_events").hide();
+
+    } else {$('#eventlistid tr:last').after(father);}
+  
     
   } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');};
 
