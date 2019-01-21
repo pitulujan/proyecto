@@ -349,9 +349,11 @@
                                             $("#tr"+pid).remove();
                                                 if ($('#eventlistid tr').length == 0 ) {
                                                   $("#no_scheduled_events").show();
-                                                  console.log('forro1')
-                                                  $("#edit").text("Done");
-                                                  console.log('forro2')
+                                                   $("#edit").text(" Edit");
+                                    $('.delevent').hide(500);
+                                    $('.editevent').hide(500);
+                                    $('.del').hide(500);
+                                                 
 
                                                 }
                                           });
