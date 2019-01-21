@@ -69,7 +69,7 @@
 	<table class="table" id="eventlistid">
     <tbody>
       {%for event in scheduled_events:%}
-    <tr><td>
+    <tr id="tr{{event.pid}}"><td>
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
      <h1> <span class="glyphicon glyphicon-minus-sign del" style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}"></span>  {{event.event_date}}</h1>
@@ -331,11 +331,13 @@
                                         $('#modalschedule').modal('show');});
 
        $("#delete_event").click(function(){
+                                            var pid = $("#modal_delete_event").val();
+                                            console.log(pid);
                                             $.post("{{ url_for('delete_event') }}",{'event_id_to_delete':$("#modal_delete_event").val()});
                                             $('#modaldelete').modal('hide');
+                                            $("#tr"+pid).remove();
                                           });
        
-
        
        $("#submit_event").click(function(){
                                             var selectedDay = new Array();
@@ -348,7 +350,8 @@
    
 
 
-    var father = $("<tr></tr>");
+    var father = $("<tr></tr>")
+                  .attr("id","tr"+result['pid']);
     var child = $("<td></td>");
     
     var div = $("<div></div>")
