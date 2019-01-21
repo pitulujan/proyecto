@@ -376,6 +376,7 @@
             .attr("class","glyphicon glyphicon-minus-sign del")
             .attr("style","color: #f70707;display:none;padding-right: 10px;font-size: 25px;")
             .attr("data-pid",result['pid'])
+            .attr("onclick","")
            .prependTo(a);
 
 
@@ -394,7 +395,7 @@
             .attr("class","glyphicon glyphicon-menu-right editevent")
             .attr("style","color: #333;font-size: 15px;display:none;")
             .attr("id","cont"+result['pid'])
-            .attr("href","#")
+            .attr("onclick","")
            .appendTo(a);
      a.appendTo(div);
 
@@ -415,6 +416,7 @@
 
       $("<span></span>")
                         .attr("class","glyphicon glyphicon-trash")
+                        .attr("onclick","")
                         .appendTo(button);
      //form.appendTo(div);
      button.appendTo(div);
