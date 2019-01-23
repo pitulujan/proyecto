@@ -151,8 +151,20 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
             scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron') #para que lo haga ese dia y despues repita
             
-            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(day_of_week), pid=id_job+'_cron')
+            days={'0':'Mon','1':'Tue','2':'Wed','3':'Thu','4':'Fri','5':'Sat','6':'Sun'}
+            cron_days=[]   
+            for day in day_of_week:
+                cron_days.append(days[day])
+
+            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(cron_days), pid=id_job+'_cron')
             
+
+
+
+
+            hour_minute = hour+':'+minute
+
+            ans={'status':200,'pid':id_job,'date':date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
             
         
 
@@ -160,14 +172,14 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
 
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None, pid=id_job)
-
+            ans={'status':200,'pid':id_job,'date':date,'hour':hour,'type':'date','location':location,'str_id':str_id}
 
 
 
         db.session.add(event_to_schedule)
         db.session.commit()
 
-        ans={'status':200,'pid':id_job}
+        
         return jsonify(ans)
 
 

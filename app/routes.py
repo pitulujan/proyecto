@@ -138,23 +138,11 @@ def remove_device():
 @login_required
 def schedule_events():
 
+
     if request.method == 'POST':
         answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
         return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
-    else:
-
-        days={'0':'Mon','1':'Tue','2':'Wed','3':'Thu','4':'Fri','5':'Sat','6':'Sun'}
-        scheduled_events=get_scheduled_events()
-        
-        for event in scheduled_events:
-            event_cron=[]
-            if event.event_type == 'cron':
-                for num in event.event_cron.split('.'):
-                    event_cron.append(days[num])
-                event.event_cron=event_cron
-
-        
-        return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=scheduled_events,enumerate=enumerate)
+    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 
 @app.route('/delete_event', methods=['POST'])
 @login_required

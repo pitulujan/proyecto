@@ -92,8 +92,8 @@
    
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
     <row id="datehour">
-      <h2 style="margin-top: 5px;margin-bottom: 5px;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
-      <h3 style="margin-top: 10px;margin-bottom: 5px;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron)}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
+      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
+      <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
       <button  class="btn btn-danger btn-block delevent"  style="display: none;margin-top: 20px;" type="submit" data-title="Delete" id="cont2{{event.pid}}" data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span> Delete</button> 
        </row>
    </div>
@@ -380,7 +380,12 @@
     var div = $("<div></div>")
            .attr("class", "col-xs-6")
            .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
-    var a = $("<h1></h1>").text("dd/mm/yy");
+    
+
+    var row = $("<row></row>")
+    var a = $("<h2></h2>")
+              .text(result['location'])
+              .attr('style',"margin-top: 5px;margin-bottom: 5px;");
             
     $("<span></span>")
             .attr("class","glyphicon glyphicon-minus-sign del")
@@ -389,17 +394,41 @@
             .attr("onclick","")
            .prependTo(a);
 
+    var b = $("<h3></h3>")
+              .text(result['str_id'])
+              .attr('style',"margin-top: 10px;margin-bottom: 5px;");
+
+
+    $("<span></span>")
+            .attr("class","del")
+            .attr("style","display:none;padding-left: 40px;font-size: 25px;")
+            .attr("onclick","")
+           .prependTo(b);
+
+
+
+
 
 
      
-    a.appendTo(div);
+    a.appendTo(row);
+    b.appendTo(row)
+    row.appendTo(div)
     div.appendTo(child);
 
     var div = $("<div></div>")
            .attr("class", "col-xs-6")
            .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
-    var a = $("<h1></h1>")
-            .attr("style","margin-top: 10px;");
+    
+
+   
+    //  <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
+
+
+    var row = $("<row></row>");
+    var a = $("<h2></h2>")
+            .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+            .text(result['hour']);
             
     $("<span></span>")
             .attr("class","glyphicon glyphicon-menu-right editevent")
@@ -407,11 +436,11 @@
             .attr("id","cont"+result['pid'])
             .attr("onclick","")
            .appendTo(a);
-     a.appendTo(div);
+     a.appendTo(row);
 
-   //  var form = $("<form></form>")
-   //            .attr("action","")
-    //           .attr("method","POST");
+     var b = $("<h3></h3>")
+
+
      
 
     var button =  $("<button></button")
