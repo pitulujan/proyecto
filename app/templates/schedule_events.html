@@ -83,16 +83,19 @@
     <tr id="tr{{event.pid}}"><td>
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
-     <h1> <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}" ></span>  {{event.event_date}}</h1>
-    
+      <row id="locstr">
+        <h2 style="margin-top: 5px;margin-bottom: 5px;"> <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}" ></span>  {{event.location}}</h2>
+        <h3 style="margin-top: 10px;margin-bottom: 5px;" id="str_id_row"><span class="del" onclick='' style="display:none;padding-left: 40px;font-size: 25px;" ></span> {{event.str_id}}</h3>
+      </row>
+
    </div>
-   <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-   <h1 style="margin-top: 10px;"><span class="glyphicon glyphicon-menu-right editevent" onclick='' style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h1>
-
-
-
-    <button  class="btn btn-danger btn-block delevent"  style="display: none;margin-top: 20px;" type="submit" data-title="Delete" id="cont2{{event.pid}}" data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span> Delete</button> 
    
+   <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+    <row id="datehour">
+      <h2 style="margin-top: 5px;margin-bottom: 5px;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
+      <h3 style="margin-top: 10px;margin-bottom: 5px;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron)}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
+      <button  class="btn btn-danger btn-block delevent"  style="display: none;margin-top: 20px;" type="submit" data-title="Delete" id="cont2{{event.pid}}" data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span> Delete</button> 
+       </row>
    </div>
 </tr></td>
       {%endfor%}
@@ -306,13 +309,15 @@
     $("#edit").click(function(){
                                   if ($("#edit").text()==' Edit'){
                                     $("#edit").text("Done");
-                                    $(".del").toggle(500);
-                                    $(".editevent").toggle(500); }
+                                    $(".del").toggle(300);
+                                    $(".editevent").toggle(300);
+                                    
+                                     }
                                   else{
                                     $("#edit").text(" Edit");
-                                    $('.delevent').hide(500);
-                                    $('.editevent').hide(500);
-                                    $('.del').hide(500);} 
+                                    $('.delevent').hide(300);
+                                    $('.editevent').hide(300);
+                                    $('.del').hide(300);} 
                                          
                                           });
 
@@ -349,12 +354,10 @@
                                             $("#tr"+pid).remove();
                                                 if ($('#eventlistid tr').length == 0 ) {
                                                   $("#no_scheduled_events").show();
-                                                   $("#edit").text(" Edit");
-                                    $('.delevent').hide(500);
-                                    $('.editevent').hide(500);
-                                    $('.del').hide(500);
-                                                 
-
+                                                  $("#edit").text(" Edit");
+                                                  $('.delevent').hide(500);
+                                                  $('.editevent').hide(500);
+                                                  $('.del').hide(500);
                                                 }
                                           });
        
