@@ -164,7 +164,7 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
 
             hour_minute = hour+':'+minute
 
-            ans={'status':200,'pid':id_job,'date':date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
+            ans={'status':200,'pid':id_job+'_cron','date':date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
             
         
 
@@ -208,10 +208,14 @@ def check_days(date,day_of_week,str_id,location):
 
             elif scheduled_event.event_date.split(' ')[1] == date.split(' ')[1]: #solo entro en caso de que matcheen las horas
 
+                days={'Mon':'0','Tue':'1','Wed':'2','Thu':'3','Fri':'4','Sat':'5','Sun':'6'}
+                aux=[]
+                for day in scheduled_event.event_cron.split('.'):
+                    aux.append(days[day])
 
                 if scheduled_event.event_type == 'cron':
                     d=datetime.strptime(scheduled_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
-                    weekday=list(map(int,scheduled_event.event_cron.split('.'))) #paso la lista de strings a lista de ints
+                    weekday=list(map(int,aux)) #paso la lista de strings a lista de ints
                     dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
                 else:
                     #mismo que el anterior solo que se invierte el orden de dia que quiero y dia que tengo 
@@ -259,7 +263,13 @@ def delete_scheduled_event(id_event):
         if 'cron' in aux:
             aux.remove('cron')
             scheduler.remove_job(id_event)
-            scheduler.remove_job('_'.join(aux))
+            
+            try:
+                scheduler.remove_job('_'.join(aux)) 
+            except Exception as e:
+                pass
+            
+            
 
         else:
             scheduler.remove_job(id_event)
