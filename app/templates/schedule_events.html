@@ -422,9 +422,6 @@
     
 
    
-    //  <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
-
-
     var row = $("<row></row>");
     var a = $("<h2></h2>")
             .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
@@ -438,10 +435,30 @@
            .appendTo(a);
      a.appendTo(row);
 
-     var b = $("<h3></h3>")
-
-
+     if (result['type']== 'cron'){
      
+              var b = $("<h3></h3>")
+                                  .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                  .text(result['cron_days'].join('-'));
+
+
+
+
+            } else {
+
+              var b = $("<h3></h3>")
+                                  .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                  .text(result['date']);
+            };
+     
+
+          $("<span></span>")
+              .attr("class","editevent")
+              .attr("onclick","")
+              .append(b);
+      b.appendTo(row);
+      row.appendTo(div);
+
 
     var button =  $("<button></button")
                  .attr("class","btn btn-danger btn-block delevent")
