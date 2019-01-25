@@ -195,7 +195,7 @@
                         {% endfor %}
                       </select>
                        <label for="deviceid">Device</label>
-                      <select id="deviceid" class="form-control">
+                      <select id="deviceid" class="form-control" data-type='perro'>
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
                         {%if number == 0:%}
                         {%for devices in rooms_devices[key]:%}
@@ -214,7 +214,7 @@
                           
                   </div>
 
-                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;">
+                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;" >
                       <div class="onoffswitch">
                         <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
                         <label class="onoffswitch-label" for="myonoffswitch"></label>
@@ -285,9 +285,18 @@
     output.innerHTML = slider.value;
 
     slider.oninput = function() { output.innerHTML = this.value;}
+
+    var dic = {
+                {%for location,devices in rooms_devices.items()|sort:%}
+                {%for device,item in devices.items():%} 
+                '{{'_'.join(device.split(' '))}}' : '{{item.dev_type}}',
+
+                {% endfor %}
+                {% endfor %}  
+              };  
     
-    $("#myonoffswitch").click(function(){
-                                          $("#prendeapaga").toggle(500);
+  $("#myonoffswitch").click(function(){   if (dic[$("#deviceid").val()]== 'False'){
+                                          $("#prendeapaga").toggle(500);}
                                           if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
                                           else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
 
@@ -297,7 +306,7 @@
                                         $('#deviceid').html('');
                                             {%for location,devices in rooms_devices.items()|sort:%}
                                         if($('#locationid').val()=='{{location}}'){
-                                            {%for device in devices:%} 
+                                            {%for device,item in devices.items():%} 
                                         $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
                                             {% endfor %}
                                         }
@@ -305,6 +314,7 @@
                                           {% endfor %}
 
                                     });
+  
 
     $("#edit").click(function(){
                                   if ($("#edit").text()==' Edit'){

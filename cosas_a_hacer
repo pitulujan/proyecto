@@ -58,3 +58,8 @@ armar diccionario server por habitacion -->cuando se crea un device se lo mete e
 en set lights cazar por class los divs asi no se repite el javascript al pedo (los cazo por el id y los meti adentro del for, no hace falta)
 
 
+
+---------------------------------UPDATE 1/24/2019------------------------------------
+
+falta auto eliminar los eventos una vez que ocurrieron (si son dates) --> posible solucion : en los metodos que se llaman si el event type es date que lo borre
+
