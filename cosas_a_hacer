@@ -47,6 +47,9 @@ Crear habitaciones ---> ubicar disposivos por habitacion (en el sidenav)
 +Agregar dispositvo (dropdown fijo con los dispositivos que hay ) --> asignar habitacion (o crear una nueva) -->
 
 
+checkear remove device por el tema de eliminar eventos , depende pid y si paso o no la fecha
+
+
 cambiar todo el server para que matchee con la nueva base de datos
 
 crear metodo para agregar un dispositivo en memoria (agregarlo al diccionario)

@@ -47,16 +47,16 @@
               </div>
 
          <div class="navbar-header col-md-8 col-xs-8" style="display: flex;justify-content: center;"> 
-		     	
-		            <a  class="navbar-brand" style="font-size: 20px;color:#333"><span class="glyphicon glyphicon-calendar"></span> {{ title}}</a>
-		        
-		 </div>
+                
+                    <a  class="navbar-brand" style="font-size: 20px;color:#333"><span class="glyphicon glyphicon-calendar"></span> {{ title}}</a>
+                
+         </div>
 
-		 <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;"> 
-		     	
-		            <a class="navbar-brand addevent"  href="#"  style="font-size: 20px;padding-right: 0px;"><span class="glyphicon glyphicon-plus"></span></a>
-		        
-		 </div>
+         <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;"> 
+                
+                    <a class="navbar-brand addevent"  href="#"  style="font-size: 20px;padding-right: 0px;"><span class="glyphicon glyphicon-plus"></span></a>
+                
+         </div>
     </div>
 <div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
 
@@ -77,10 +77,12 @@
             </row>
 
 <div class="row">
-	<table class="table" id="eventlistid">
+    <table class="table" id="eventlistid">
     <tbody>
       {%for event in scheduled_events:%}
     <tr id="tr{{event.pid}}"><td>
+
+      
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
       <row id="locstr">
@@ -93,10 +95,14 @@
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
     <row id="datehour">
       <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
+      
       <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
+      
       <button  class="btn btn-danger btn-block delevent"  style="display: none;margin-top: 20px;" type="submit" data-title="Delete" id="cont2{{event.pid}}" data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span> Delete</button> 
        </row>
    </div>
+
+   
 </tr></td>
       {%endfor%}
 </tbody>

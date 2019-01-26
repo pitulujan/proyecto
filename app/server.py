@@ -33,16 +33,16 @@ def remove_dev(location_str_id):
 
     global Current_state_dic_rooms
     device_to_remove=Devices.query.filter_by(location=location,str_id=str_id).first()
-    """
-    shceduled_events_to_del=Scheduled_events.query.filter_by(location=location,str_id=str_id)
+    
+    scheduled_events_to_del=Scheduled_events.query.filter_by(location=location,str_id=str_id)
     pids=[]
-    for pid in shceduled_events_to_del:
+    for pid in scheduled_events_to_del:
         pids.append(pid.pid)
     
     if len(pids)!=0:
         delete_scheduled_event(pids)
-        db.session.delete(shceduled_events_to_del)
-    """
+        db.session.delete(scheduled_events_to_del)
+    
     db.session.delete(device_to_remove)
     del Current_state_dic_rooms[location][str_id]
     if len(Current_state_dic_rooms[location]) == 0:

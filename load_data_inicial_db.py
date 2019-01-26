@@ -27,10 +27,6 @@ db.session.add(device4)
 db.session.commit()
 
 
-event_test_uno= Scheduled_events(user='Pitu',str_id='Luz Mesada',location='Cocina',event_date='2019-2-10 09:30:00',event_type='cron',event_cron='0.2.4', pid='tuvieja')
-event_test_dos= Scheduled_events(user='Pitu',str_id='Luz Puerta',location='Cocina',event_date='2019-2-10 09:30:00',event_type='cron',event_cron='2.3', pid='tuviejapuerta')
-event_test_tres= Scheduled_events(user='Pitu',str_id='Luz Mesada',location='Cocina',event_date='2019-2-15 09:30:00',event_type='date',event_cron=None,pid='tuviejamesada')
-
 
 
 
