@@ -125,6 +125,9 @@ def alarm(pitu):
 
 def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
     str_id=str_id.replace('_',' ')
+
+    if len(start_date.split(':'))==3:
+        start_date=start_date[:-3]
     date_date=start_date.replace('T',' ')+':00'
     check_date=check_days(date_date,day_of_week,str_id,location)
 
