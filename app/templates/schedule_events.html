@@ -345,6 +345,7 @@
                                                         $("#dateid").val(date.replace(' ','T'));
                                                         $("#locationid").val(location);
                                                         $('#locationid').trigger('change');
+                                                        $("#deviceid").val(str_id.replace(' ','_'));
                                                         $('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
     
     $(document).on("click","span.del",function(){
