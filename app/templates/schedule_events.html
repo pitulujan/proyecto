@@ -3,7 +3,7 @@
 {% block app_content %}
 
 <link rel="stylesheet" href="/static/style_slider.css">
- <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- arregla el tema del zoom en el modal, la romi toda -->
 
 <style type="text/css">
 .modal-body .form-horizontal .col-sm-2,
@@ -87,7 +87,7 @@
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
       <row id="locstr">
-        <h2 style="margin-top: 5px;margin-bottom: 5px;"> <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}" ></span>  {{event.location}}</h2>
+        <h2 style="margin-top: 5px;margin-bottom: 5px;"> <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}"  ></span>  {{event.location}}</h2>
         <h3 style="margin-top: 10px;margin-bottom: 5px;" id="str_id_row"><span class="del" onclick='' style="display:none;padding-left: 40px;font-size: 25px;" ></span> {{event.str_id}}</h3>
       </row>
 
@@ -95,7 +95,7 @@
    
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
     <row id="datehour">
-      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
+      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' data-pid={{event.pid}} data-date="{{event.event_date}}" data-location="{{event.location}}" data-str_id="{{event.str_id}}" style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
       
       <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
       
@@ -202,7 +202,7 @@
                         {% endfor %}
                       </select>
                        <label for="deviceid">Device</label>
-                      <select id="deviceid" class="form-control" data-type='perro'>
+                      <select id="deviceid" class="form-control" >
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
                         {%if number == 0:%}
                         {%for devices in rooms_devices[key]:%}
@@ -339,7 +339,12 @@
                                           });
 
     $(document).on("click","span.editevent",function(){
-                                                        $("#dateid").val("");
+                                                        var date = $(this).data('date');
+                                                        var location = $(this).data('location');
+                                                        var str_id = $(this).data('str_id');
+                                                        $("#dateid").val(date.replace(' ','T'));
+                                                        $("#locationid").val(location);
+                                                        $('#locationid').trigger('change');
                                                         $('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
     
     $(document).on("click","span.del",function(){
