@@ -3,6 +3,7 @@
 {% block app_content %}
 
 <link rel="stylesheet" href="/static/style_slider.css">
+ <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <style type="text/css">
 .modal-body .form-horizontal .col-sm-2,
@@ -82,7 +83,7 @@
       {%for event in scheduled_events:%}
     <tr id="tr{{event.pid}}"><td>
 
-      
+
    
     <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
       <row id="locstr">
