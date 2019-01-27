@@ -167,7 +167,7 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
 
             hour_minute = hour+':'+minute
 
-            ans={'status':200,'pid':id_job+'_cron','date':date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
+            ans={'status':200,'pid':id_job+'_cron','date':date_date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
             
         
 
@@ -175,7 +175,7 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
 
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None, pid=id_job)
-            ans={'status':200,'pid':id_job,'date':date,'hour':hour,'type':'date','location':location,'str_id':str_id}
+            ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id}
 
 
 

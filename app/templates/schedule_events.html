@@ -95,7 +95,7 @@
    
    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
     <row id="datehour">
-      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' data-pid={{event.pid}} data-date="{{event.event_date}}" data-location="{{event.location}}" data-str_id="{{event.str_id}}" style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
+      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' data-pid={{event.pid}} data-date="{{event.event_date}}" data-location="{{event.location}}" data-str_id="{{event.str_id}}" data-days={{event.event_cron}} style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
       
       <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
       
@@ -176,20 +176,20 @@
 
                   <label for="divdays">Repeat</label>
                   <div class="weekDays-selector" id=divdays>
-                    <input type="checkbox" id="weekday-mon" name="day" value="0" class="weekday" />
-                    <label for="weekday-mon">M</label>
-                    <input type="checkbox" id="weekday-tue" name="day" value="1" class="weekday" />
-                    <label for="weekday-tue">T</label>
-                    <input type="checkbox" id="weekday-wed" name="day" value="2" class="weekday" />
-                    <label for="weekday-wed">W</label>
-                    <input type="checkbox" id="weekday-thu" name="day" value="3" class="weekday" />
-                    <label for="weekday-thu">T</label>
-                    <input type="checkbox" id="weekday-fri" name="day" value="4" class="weekday" />
-                    <label for="weekday-fri">F</label>
-                    <input type="checkbox" id="weekday-sat" name="day" value="5" class="weekday" />
-                    <label for="weekday-sat">S</label>
-                    <input type="checkbox" id="weekday-sun" name="day" value="6" class="weekday" />
-                    <label for="weekday-sun">S</label>
+                    <input type="checkbox" id="weekday-Mon" name="day" value="0" class="weekday" />
+                    <label for="weekday-Mon">M</label>
+                    <input type="checkbox" id="weekday-Tue" name="day" value="1" class="weekday" />
+                    <label for="weekday-Tue">T</label>
+                    <input type="checkbox" id="weekday-Wed" name="day" value="2" class="weekday" />
+                    <label for="weekday-Wed">W</label>
+                    <input type="checkbox" id="weekday-Thu" name="day" value="3" class="weekday" />
+                    <label for="weekday-Thu">T</label>
+                    <input type="checkbox" id="weekday-Fri" name="day" value="4" class="weekday" />
+                    <label for="weekday-Fri">F</label>
+                    <input type="checkbox" id="weekday-Sat" name="day" value="5" class="weekday" />
+                    <label for="weekday-Sat">S</label>
+                    <input type="checkbox" id="weekday-Sun" name="day" value="6" class="weekday" />
+                    <label for="weekday-Sun">S</label>
                   </div>
 
 
@@ -346,7 +346,10 @@
                                                         $("#locationid").val(location);
                                                         $('#locationid').trigger('change');
                                                         $("#deviceid").val(str_id.replace(' ','_'));
-                                                        $('#modalschedule').modal('show');}); //-->falta editar para que saque la info de la futura lista de eventos
+                                                        $('#modalschedule').modal('show');
+
+
+                                                      }); 
     
     $(document).on("click","span.del",function(){
                                                   var pid = $(this).data('pid');
@@ -361,8 +364,6 @@
                                                         $("#titlemodaldelete").text('Are you sure you want to delete this event?');
                                                         $('#modaldelete').modal('show');});
      
-
-
 
        $(".addevent").click(function(){ $("#dateid").val("");
                                         $("#statevalue").val('False')
@@ -394,8 +395,6 @@
                                               if (result['status']==200) {
                                               
    
-
-
     var father = $("<tr></tr>")
                   .attr("id","tr"+result['pid']);
     var child = $("<td></td>");
@@ -428,12 +427,6 @@
             .attr("onclick","")
            .prependTo(b);
 
-
-
-
-
-
-     
     a.appendTo(row);
     b.appendTo(row)
     row.appendTo(div)
@@ -448,32 +441,39 @@
     var row = $("<row></row>");
     var a = $("<h2></h2>")
             .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
-            .text(result['hour']);
+            .text(result['date'].split(' ')[1].split(':').slice(0,2).join(':'));
             
-    $("<span></span>")
-            .attr("class","glyphicon glyphicon-menu-right editevent")
-            .attr("style","color: #333;font-size: 15px;display:none;")
-            .attr("id","cont"+result['pid'])
-            .attr("onclick","")
-           .appendTo(a);
-     a.appendTo(row);
-
      if (result['type']== 'cron'){
      
               var b = $("<h3></h3>")
                                   .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
                                   .text(result['cron_days'].join('-'));
-
-
-
+              var cron_days = result['cron_days'].join('.');
 
             } else {
 
               var b = $("<h3></h3>")
                                   .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
-                                  .text(result['date']);
+                                  .text(result['date'].split(' ')[0]);
+
+              var cron_days = 'None';
             };
      
+
+
+    $("<span></span>")
+            .attr("class","glyphicon glyphicon-menu-right editevent")
+            .attr("style","color: #333;font-size: 15px;display:none;")
+            .attr("id","cont"+result['pid'])
+            .attr("onclick","")
+            .attr("data-date",result['date'])
+            .attr("data-location",result['location'])
+            .attr("data-str_id",result['str_id'])
+            .attr("data-days",cron_days)
+           .appendTo(a);
+     a.appendTo(row);
+
+
 
           $("<span></span>")
               .attr("class","editevent")
@@ -497,7 +497,6 @@
                         .attr("class","glyphicon glyphicon-trash")
                         .attr("onclick","")
                         .appendTo(button);
-     //form.appendTo(div);
      button.appendTo(div);
 
      div.appendTo(child);
