@@ -192,10 +192,10 @@
                     <label for="weekday-Sun">S</label>
                   </div>
 
+                  <div class="form-group" style="display: none;" > <input type="text" id="pidplacer" name="pidplace" value="None"></div>
 
                   <div class="form-group">
                     <label for="locationid">Location</label>
-                     <!-- <input type="password" class="form-control" id="exampleInputPassword1" name="pass" placeholder="Password"/> -->
                       <select id="locationid" class="form-control">
                         {%for location in rooms_devices.keys()|sort:%}
                           <option value="{{'_'.join(location.split(' '))}}">{{location}}</option>
@@ -204,11 +204,11 @@
                        <label for="deviceid">Device</label>
                       <select id="deviceid" class="form-control" >
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
-                        {%if number == 0:%}
-                        {%for devices in rooms_devices[key]:%}
-                        <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
-                        {%endfor%}
-                        {%endif%}
+                          {%if number == 0:%}
+                            {%for devices in rooms_devices[key]:%}
+                               <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
+                            {%endfor%}
+                          {%endif%}
                         {%endfor%}
                         
                       </select>
@@ -342,12 +342,25 @@
                                                         var date = $(this).data('date');
                                                         var location = $(this).data('location');
                                                         var str_id = $(this).data('str_id');
+                                                        var days =$(this).data('days');
+                                                        var pid = $(this).data('pid');
+                                                        $("#pidplacer").attr('value',pid);
                                                         $("#dateid").val(date.replace(' ','T'));
                                                         $("#locationid").val(location);
                                                         $('#locationid').trigger('change');
                                                         $("#deviceid").val(str_id.replace(' ','_'));
-                                                        $('#modalschedule').modal('show');
 
+                                                        
+                                                        if (days != 'None'){
+                                                          days_split = days.split('.');
+                                                        for (var i = 0; i < days_split.length; i++) {
+                                                          $('#weekday-'+days_split[i]).prop('checked', true);
+
+                                                        }};
+
+                                                        $("#myModalLabel").text('Edit Event');
+
+                                                        $('#modalschedule').modal('show');
 
                                                       }); 
     
@@ -355,7 +368,7 @@
                                                   var pid = $(this).data('pid');
                                                   $("#cont2"+pid).toggle(500);
                                                   $("#cont"+pid).toggle(500);
-                                                  }); //-->falta editar para que saque la info de la futura lista de eventos
+                                                  }); 
 
     $(document).on("click","button.delevent",function(){
                                                         var pid = $(this).data('pid');
@@ -366,8 +379,9 @@
      
 
        $(".addevent").click(function(){ $("#dateid").val("");
-                                        $("#statevalue").val('False')
-                                        $("#myonoffswitch").val('Off')   
+                                        $("#statevalue").val('False');
+                                        $("#myonoffswitch").val('Off');
+                                        $("#myModalLabel").text('Schedule New Event');
                                         $('#modalschedule').modal('show');});
 
        $("#delete_event").click(function(){
@@ -376,7 +390,7 @@
                                             $.post("{{ url_for('delete_event') }}",{'event_id_to_delete':$("#modal_delete_event").val()});
                                             $('#modaldelete').modal('hide');
                                             $("#tr"+pid).remove();
-                                                if ($('#eventlistid tr').length == 0 ) {
+                                              if ($('#eventlistid tr').length == 0 ) {
                                                   $("#no_scheduled_events").show();
                                                   $("#edit").text(" Edit");
                                                   $('.delevent').hide(500);
@@ -390,9 +404,9 @@
                                             var selectedDay = new Array();
                                             $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
                                             $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
-                                            $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
+                                            $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'pid':$("#pidplacer").val()}).done(function(result) {
                                               console.log(result)
-                                              if (result['status']==200) {
+                                            if (result['status']==200) {
                                               
    
     var father = $("<tr></tr>")
@@ -470,6 +484,7 @@
             .attr("data-location",result['location'])
             .attr("data-str_id",result['str_id'])
             .attr("data-days",cron_days)
+            .attr("data-pid",result['pid'])
            .appendTo(a);
      a.appendTo(row);
 
@@ -510,11 +525,12 @@
     } else {$('#eventlistid tr:last').after(father);}
   
     
-  } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');};
+  } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');}
 
 
 });
         $('#modalschedule').modal('hide');
+        $("#pidplacer").attr('value','None');
         $("#prendeapaga").attr('display','none');
         $("#myRange").val('0')
         output.innerHTML = 0;  
@@ -522,16 +538,14 @@
 
         });
 
-       $("#cancel").click(function(){
+        $("#cancel").click(function(){
+        $("#pidplacer").attr('value','None');
         $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
         $("#prendeapaga").attr('display','none');
         $("#myRange").val('0')
         output.innerHTML = 0;   
         if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$("#myonoffswitch").click()}
         });
-
-
-
 });
 
 

@@ -140,16 +140,29 @@ def schedule_events():
 
 
     if request.method == 'POST':
-        print(request.form['date'])
+        print(request.form['pid'])
         answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
         return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
     return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
+
+@app.route('/reschedule_event', methods=['POST'])
+@login_required
+def reschedule_event():
+    answer = reschedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],day_of_week=request.form.getlist('repeat[]'))
+    return answer
 
 @app.route('/delete_event', methods=['POST'])
 @login_required
 def delete_event():
     delete_scheduled_event(request.form['event_id_to_delete'])
     return 'Ok'
+
+
+
+
+
+
+
 
 @app.route('/pruebitas', methods=['GET', 'POST'])
 @login_required
