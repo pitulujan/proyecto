@@ -123,7 +123,7 @@ def get_scheduled_events(*args):
 def alarm(pitu):
     print(pitu)
 
-def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
+def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[]):
     str_id=str_id.replace('_',' ')
 
     if len(start_date.split(':'))==3:
@@ -147,8 +147,6 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
         hour= start_date.split('T')[1].split(':')[0]
         minute= start_date.split('T')[1].split(':')[1]
 
-
-
         if len(day_of_week)!=0:
 
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
@@ -161,15 +159,10 @@ def schedule_event(user,str_id,location,start_date,args=[], day_of_week=[]):
 
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(cron_days), pid=id_job+'_cron')
             
-
-
-
-
             hour_minute = hour+':'+minute
 
             ans={'status':200,'pid':id_job+'_cron','date':date_date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
             
-        
 
         else:
 
