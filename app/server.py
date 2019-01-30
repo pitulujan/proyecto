@@ -129,7 +129,16 @@ def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[])
     if len(start_date.split(':'))==3:
         start_date=start_date[:-3]
     date_date=start_date.replace('T',' ')+':00'
-    check_date=check_days(date_date,day_of_week,str_id,location)
+    print(pidd)
+    check_date=check_days(date_date,day_of_week,str_id,location,pidd)
+    reschedule=False
+
+    if pidd != 'None' and check_date == False:
+        event_to_reschedule = Scheduled_events.query.filter_by(pid=pidd).first()
+        reschedule = True
+        db.session.delete(event_to_reschedule)
+        db.session.commit()
+
 
     if check_date == True:
 
@@ -161,14 +170,14 @@ def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[])
             
             hour_minute = hour+':'+minute
 
-            ans={'status':200,'pid':id_job+'_cron','date':date_date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id}
+            ans={'status':200,'pid':id_job+'_cron','date':date_date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id,'reschedule': reschedule,'old_pid':pidd}
             
 
         else:
 
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None, pid=id_job)
-            ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id}
+            ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd}
 
 
 
@@ -181,7 +190,7 @@ def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[])
 
 
 
-def check_days(date,day_of_week,str_id,location):
+def check_days(date,day_of_week,str_id,location,pidd):
 
     #aca hay primero que ver si alguna tupla str_id y location coinciden, si no es asi, return false, sino ahi ver len(day_of_week)
 
@@ -193,23 +202,26 @@ def check_days(date,day_of_week,str_id,location):
         
         for scheduled_event in events: 
             if scheduled_event.event_type == 'date' and len(day_of_week)==0 and scheduled_event.event_date == date: #len()==0 implica date y no cron(date)
-                flag=True 
-                break 
+                if pidd != scheduled_event.pid:
+                    flag=True 
+                    break 
             elif scheduled_event.event_type == 'cron' and len(day_of_week)!=0 and scheduled_event.event_date.split(' ')[1] == date.split(' ')[1]: #si ambos son cron y la hora coincide, checkeo dias
                 for day in scheduled_event.event_cron.split('.'):
                     if day in day_of_week:
-                        flag=True
-                        break
+                        if pidd != scheduled_event.pid:
+                            flag=True
+                            break
 
 
             elif scheduled_event.event_date.split(' ')[1] == date.split(' ')[1]: #solo entro en caso de que matcheen las horas
 
-                days={'Mon':'0','Tue':'1','Wed':'2','Thu':'3','Fri':'4','Sat':'5','Sun':'6'}
-                aux=[]
-                for day in scheduled_event.event_cron.split('.'):
-                    aux.append(days[day])
+
 
                 if scheduled_event.event_type == 'cron':
+                    days={'Mon':'0','Tue':'1','Wed':'2','Thu':'3','Fri':'4','Sat':'5','Sun':'6'}
+                    aux=[]
+                    for day in scheduled_event.event_cron.split('.'):
+                        aux.append(days[day])
                     d=datetime.strptime(scheduled_event.event_date.split(' ')[0],'%Y-%m-%d').date() #dia minimo a partir del cual el cron empieza a funcionar
                     weekday=list(map(int,aux)) #paso la lista de strings a lista de ints
                     dia_que_quiero =datetime.strptime(date.split(' ')[0],'%Y-%m-%d').date()
@@ -238,9 +250,10 @@ def check_days(date,day_of_week,str_id,location):
                     aux_date=datee
                     while aux_date <=dia_que_quiero:
                         if aux_date == dia_que_quiero:
-                            print('hijo de mill',aux_date)
-                            flag = True
-                            break
+                            if pidd != scheduled_event.pid:
+                                print('hijo de mill',aux_date)
+                                flag = True
+                                break
                         else:
                             aux_date+=timedelta(days=7)
 

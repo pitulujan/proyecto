@@ -407,6 +407,8 @@
                                             $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'pid':$("#pidplacer").val()}).done(function(result) {
                                               console.log(result)
                                             if (result['status']==200) {
+
+    if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();}
                                               
    
     var father = $("<tr></tr>")
