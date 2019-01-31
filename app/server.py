@@ -120,10 +120,10 @@ def get_scheduled_events(*args):
     
     return query_scheduled
 
-def alarm(pitu):
-    print(pitu)
+def alarm(pitu,japon):
+    print(pitu,japon)
 
-def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[]):
+def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_point,args=[], day_of_week=[]):
     str_id=str_id.replace('_',' ')
 
     if len(start_date.split(':'))==3:
@@ -148,6 +148,10 @@ def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[])
 
     else:
 
+        if param_state == 'On':
+            param_state=True
+        else:
+            param_state=False
         dat=datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         id_job=user+'_'+dat
 
@@ -158,26 +162,26 @@ def schedule_event(user,str_id,location,start_date,pidd,args=[], day_of_week=[])
 
         if len(day_of_week)!=0:
 
-            scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
-            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[datetime.now()],id=id_job+'_cron') #para que lo haga ese dia y despues repita
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point],id=id_job)
+            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point],id=id_job+'_cron') #para que lo haga ese dia y despues repita
             
             days={'0':'Mon','1':'Tue','2':'Wed','3':'Thu','4':'Fri','5':'Sat','6':'Sun'}
             cron_days=[]   
             for day in day_of_week:
                 cron_days.append(days[day])
 
-            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(cron_days), pid=id_job+'_cron')
+            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='cron',event_cron='.'.join(cron_days),event_param_state=param_state,event_param_setpoint=param_set_point, pid=id_job+'_cron')
             
             hour_minute = hour+':'+minute
 
-            ans={'status':200,'pid':id_job+'_cron','date':date_date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id,'reschedule': reschedule,'old_pid':pidd}
+            ans={'status':200,'pid':id_job+'_cron','date':date_date,'hour':hour_minute,'type':'cron','cron_days':cron_days,'location':location,'str_id':str_id,'reschedule': reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
             
 
         else:
 
-            scheduler.add_job(alarm, 'date', run_date=date_date, args=[datetime.now()],id=id_job)
-            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None, pid=id_job)
-            ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd}
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point],id=id_job)
+            event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None,event_param_state=param_state,event_param_setpoint=param_set_point, pid=id_job)
+            ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
 
 
 
