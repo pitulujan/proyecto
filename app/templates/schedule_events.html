@@ -344,6 +344,11 @@
                                           {% endfor %}
 
                                     });
+
+  $('#deviceid').change(function () {if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
+                                                                              $("#prendeapaga").attr("style","display:none;padding-left: 20px;");
+                                        $("#myRange").val('0')
+                                        output.innerHTML = 0;  }          });
   
 
     $("#edit").click(function(){
@@ -404,7 +409,7 @@
                                                         if (param_state == 'True'){
                                                           if ($("#myonoffswitch").val()=='Off'){
                                                           $("#myonoffswitch").click();}
-                                                          if (dic[str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;"); console.log('forro');} else {
+                                                          if (dic[str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {
                                                           $("#myRange").val('param_set_point')
                                                           output.innerHTML = param_set_point;
                                                           $("#prendeapaga").attr("style","display:block;padding-left: 20px;"); }
