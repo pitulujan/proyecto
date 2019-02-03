@@ -349,22 +349,30 @@
     $("#edit").click(function(){
                                   if ($("#edit").text()==' Edit'){
                                     $("#edit").text("Done");
-                                    //$(".del").toggle(300);
-                                    //$(".editevent").toggle(300);
-                                    $(".datesandhours").toggleClass("col-xs-5",300);
-                                    $(".spandeleteevent").toggle();
-                                    $(".locationstrid").toggleClass("col-xs-5",300);
-                                    $(".spaneditevent").toggle();
+                                    $(".datesandhours").removeClass("col-xs-6",300);
+                                    $(".datesandhours").addClass("col-xs-5",300);
+                                    $(".locationstrid").removeClass("col-xs-6",300);
+                                    $(".locationstrid").addClass("col-xs-5",300);
+                                    $(".spandeleteevent").show();
+                                    $(".spaneditevent").show();
                                     
                                     
                                      }
                                   else{
                                     $("#edit").text(" Edit");
-                                    $('.delevent').hide(300);
-                                    $(".spaneditevent").toggle();                                    
-                                    $(".datesandhours").toggleClass("col-xs-5",300);
-                                    $(".spandeleteevent").toggle();
-                                    $(".locationstrid").toggleClass("col-xs-5",300);} 
+                                    $(".datesandhours").removeClass("col-xs-5",300);
+                                    $(".datesandhours").addClass("col-xs-6",300);
+                                    
+
+                                    $(".locationstrid").removeClass("col-xs-5",300);
+                                    $(".locationstrid").addClass("col-xs-6",300);
+                                    $(".spaneditevent").hide();
+                                    $(".spandeleteevent").hide(); 
+                                    $(".datesandhours").show();
+                                    $(".tryingtodel").hide();
+                                    
+
+                                  } 
                                          
                                           });
 
