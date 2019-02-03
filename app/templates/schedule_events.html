@@ -253,22 +253,22 @@
             </div>
 
             <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
-              <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
-                <div class="form-group">
-                    <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
-                  <div class="row">
-                <div class="col-xs-9">
-                  <div class="slidecontainer" style="padding-top: 26px;">
-                            <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
-                          </div>
-              </div>
-              <div class="col-xs-3" style="display: flex;justify-content: center;">
-                <b><h3><span id="demo"></span>%</h3></b> 
-              </div>
-            </div>
+                        <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+                              <div class="form-group">
+                                          <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
+                                          <div class="row">
+                                                <div class="col-xs-9">
+                                                  <div class="slidecontainer" style="padding-top: 26px;">
+                                                      <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
+                                                  </div>
+                                                </div>
+                                                <div class="col-xs-3" style="display: flex;justify-content: center;">
+                                                    <b><h3><span id="demo"></span>%</h3></b> 
+                                                </div>
+                                        </div>
 
-              </div>
-              </form>
+                            </div>
+                        </form>
     
             </div>
             </div>
@@ -381,7 +381,10 @@
                                                         $("#locationid").val(location);
                                                         $('#locationid').trigger('change');
                                                         $("#deviceid").val(str_id.replace(' ','_'));
-
+                                                        console.log(str_id);
+                                                        console.log(dic);
+                                                        console.log(str_id.split(' ').join('_'));
+                                                        
                                                         
                                                         if (days != 'None'){
                                                           days_split = days.split('.');
@@ -393,13 +396,16 @@
                                                         if (param_state == 'True'){
                                                           if ($("#myonoffswitch").val()=='Off'){
                                                           $("#myonoffswitch").click();}
-                                                          
+                                                          if (dic[str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;"); console.log('forro');} else {
                                                           $("#myRange").val('param_set_point')
-                                                          output.innerHTML = param_set_point; 
+                                                          output.innerHTML = param_set_point;
+                                                          $("#prendeapaga").attr("style","display:block;padding-left: 20px;"); }
+                                                          //if ($("#prendeapaga").is(":hidden")) {$("#prendeapaga").toggle(500);}
                                                         }
                                                         else {if ($("#myonoffswitch").val()=='On'){
-                                                          $("#myonoffswitch").click();}}
-
+                                                          $("#myonoffswitch").click();
+                                                        }}
+                                                         //if ($("#prendeapaga").is(":visible")) {$("#prendeapaga").toggle(500);}
                                                         $("#myModalLabel").text('Edit Event');
 
                                                         $('#modalschedule').modal('show');
@@ -428,12 +434,13 @@
                                         //$("#statevalue").val('False');
                                         //$("#myonoffswitch").val('Off');
                                         $("#pidplacer").attr('value','None');
-                                        $("#prendeapaga").attr('display','none');
-                                        $("#myRange").val('0')
-                                        output.innerHTML = 0;  
+
                                         $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
                                         
-                                        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();}
+                                        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
+                                                                              $("#prendeapaga").attr("style","display:none;");
+                                        $("#myRange").val('0')
+                                        output.innerHTML = 0;  }
                                         
                                         $("#myModalLabel").text('Schedule New Event');
                                         $('#modalschedule').modal('show');});
@@ -448,7 +455,7 @@
                                                   $("#no_scheduled_events").show();
                                                   $("#edit").text(" Edit");
                                                   $('.delevent').hide(500);
-                                                  $('.editevent').hide(500);
+                                                  $('.editevent').hide(500); //--> ver estos ids
                                                   $('.del').hide(500);
                                                 }
                                           });
@@ -510,6 +517,7 @@
 
     var div3 = $("<div></div>")
            .attr("class", "col-xs-6 datesandhours")
+           .attr("id", "cont"+result['pid'])
            .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
 
 
@@ -543,12 +551,12 @@
 
     var div4 = $("<div></div>")
            .attr("class", "col-xs-1 spaneditevent")
+           .attr("id", "spanedit"+result['pid'])
            .attr("style","display: none;margin-top: 25px;padding-left: 20px;");
 
      $("<span></span>")
             .attr("class","glyphicon glyphicon-menu-right editevent")
             .attr("style","color: #333;font-size: 15px;")
-            .attr("id","cont"+result['pid'])
             .attr("onclick","")
             .attr("data-date",result['date'])
             .attr("data-location",result['location'])
@@ -563,6 +571,7 @@
 
     var div5 = $("<div></div>")
            .attr("class", "col-xs-6 tryingtodel")
+           .attr("id", "cont2"+result['pid'])
            .attr("style","display: flex;justify-content: flex-center;display: none;");
 
     var div6 = $("<div></div>")
@@ -575,8 +584,7 @@
 
     var button =  $("<button></button")
                  .attr("class","btn btn-danger btn-block delevent")
-                 .attr("id","cont2"+result['pid'])
-                 .attr("style","display: none;margin-top: 20px;")
+                 .attr("style","margin-top: 20px;")
                  .attr("type","submit")
                  .attr("name","delete")
                  .attr("data-pid",result['pid'])
