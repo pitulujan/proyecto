@@ -83,25 +83,48 @@
       {%for event in scheduled_events:%}
     <tr id="tr{{event.pid}}"><td>
 
-
+    <div class="col-xs-1 spandeleteevent" style="display: none;margin-top: 25px;padding-right: 20px;">
+     
+    <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}" ></span>
+   </div>
    
-    <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 10px;">
-      <row id="locstr">
-        <h2 style="margin-top: 5px;margin-bottom: 5px;"> <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;display:none;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}"  ></span>  {{event.location}}</h2>
-        <h3 style="margin-top: 10px;margin-bottom: 5px;" id="str_id_row"><span class="del" onclick='' style="display:none;padding-left: 40px;font-size: 25px;" ></span> {{event.str_id}}</h3>
+    <div class="col-xs-6 locationstrid" style="display: flex;justify-content: flex-start;padding-left: 10px;">
+      <row >
+        <h2 style="margin-top: 5px;margin-bottom: 5px;">   {{event.location}}</h2>
+        <h3 style="margin-top: 10px;margin-bottom: 5px;" id="str_id_row"><span onclick='' style="display:none;padding-left: 40px;font-size: 25px;" ></span> {{event.str_id}}</h3>
       </row>
 
    </div>
+
+
    
-   <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-    <row id="datehour">
-      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}}<span class="glyphicon glyphicon-menu-right editevent" onclick='' data-pid={{event.pid}} data-date="{{event.event_date}}" data-location="{{event.location}}" data-str_id="{{event.str_id}}" data-days={{event.event_cron}} data-param_state={{event.event_param_state}} data-param_set_point={{event.event_param_setpoint}} style="color: #333;font-size: 15px;display:none;" id="cont{{event.pid}}"></span> </h2>
+   <div class="col-xs-6 datesandhours" id="cont{{event.pid}}" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+    <row >
+      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}} </h2>
       
       <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
       
-      <button  class="btn btn-danger btn-block delevent"  style="display: none;margin-top: 20px;" type="submit" data-title="Delete" id="cont2{{event.pid}}" data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span> Delete</button> 
+      
        </row>
    </div>
+
+   <div class="col-xs-1 spaneditevent" id="spanedit{{event.pid}}" style="display: none;margin-top: 25px;padding-left: 20px;">
+     <span class="glyphicon glyphicon-menu-right editevent" onclick='' data-pid={{event.pid}} data-date="{{event.event_date}}" data-location="{{event.location}}" data-str_id="{{event.str_id}}" data-days={{event.event_cron}} data-param_state={{event.event_param_state}} data-param_set_point={{event.event_param_setpoint}} style="color: #333;font-size: 15px;" id="cont{{event.pid}}"></span>
+
+   </div>
+
+  
+    <div class="col-xs-6 tryingtodel" id="cont2{{event.pid}}" style="display: flex;justify-content: flex-center;display: none;">
+      <div class="col-xs-4"></div>
+      <div class="col-xs-8">
+      <button  class="btn btn-danger btn-block delevent"  style="margin-top: 20px;" type="submit" data-title="Delete"  data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span> Delete</button> 
+    </div>
+
+    </div>
+
+   
+
+
 
    
 </tr></td>
@@ -326,15 +349,22 @@
     $("#edit").click(function(){
                                   if ($("#edit").text()==' Edit'){
                                     $("#edit").text("Done");
-                                    $(".del").toggle(300);
-                                    $(".editevent").toggle(300);
+                                    //$(".del").toggle(300);
+                                    //$(".editevent").toggle(300);
+                                    $(".datesandhours").toggleClass("col-xs-5",300);
+                                    $(".spandeleteevent").toggle();
+                                    $(".locationstrid").toggleClass("col-xs-5",300);
+                                    $(".spaneditevent").toggle();
+                                    
                                     
                                      }
                                   else{
                                     $("#edit").text(" Edit");
                                     $('.delevent').hide(300);
-                                    $('.editevent').hide(300);
-                                    $('.del').hide(300);} 
+                                    $(".spaneditevent").toggle();                                    
+                                    $(".datesandhours").toggleClass("col-xs-5",300);
+                                    $(".spandeleteevent").toggle();
+                                    $(".locationstrid").toggleClass("col-xs-5",300);} 
                                          
                                           });
 
@@ -378,8 +408,12 @@
     
     $(document).on("click","span.del",function(){
                                                   var pid = $(this).data('pid');
-                                                  $("#cont2"+pid).toggle(500);
-                                                  $("#cont"+pid).toggle(500);
+                                                  $("#spanedit"+pid).toggle();
+                                                  $("#cont2"+pid).toggle();
+                                                  $("#cont"+pid).toggle();
+                                                  //$(".datesandhours").toggle();
+                                                  
+                                                  
                                                   }); 
 
     $(document).on("click","button.delevent",function(){
@@ -431,49 +465,54 @@
     if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();}
                                               
    
+   
+
+
+
+
+
     var father = $("<tr></tr>")
                   .attr("id","tr"+result['pid']);
     var child = $("<td></td>");
     
-    var div = $("<div></div>")
-           .attr("class", "col-xs-6")
-           .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
-    
+    var div1 = $("<div></div>")
+           .attr("class", "col-xs-1 spandeleteevent")
+           .attr("style","display: none;margin-top: 25px;padding-right: 20px;");
 
-    var row = $("<row></row>")
+    $("<span></span>")
+            .attr("class","glyphicon glyphicon-minus-sign del")
+            .attr("style","color: #f70707;padding-right: 10px;font-size: 25px;")
+            .attr("data-pid",result['pid'])
+            .attr("onclick","")
+            .appendTo(div1);
+    div1.appendTo(child);
+
+    
+    var div2=$("<div></div>")
+                            .attr("class","col-xs-6 locationstrid")
+                            .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
+
+
+
+    var row = $("<row></row>");
     var a = $("<h2></h2>")
               .text(result['location'])
               .attr('style',"margin-top: 5px;margin-bottom: 5px;");
             
-    $("<span></span>")
-            .attr("class","glyphicon glyphicon-minus-sign del")
-            .attr("style","color: #f70707;display:none;padding-right: 10px;font-size: 25px;")
-            .attr("data-pid",result['pid'])
-            .attr("onclick","")
-           .prependTo(a);
-
     var b = $("<h3></h3>")
               .text(result['str_id'])
               .attr('style',"margin-top: 10px;margin-bottom: 5px;");
-
-
-    $("<span></span>")
-            .attr("class","del")
-            .attr("style","display:none;padding-left: 40px;font-size: 25px;")
-            .attr("onclick","")
-           .prependTo(b);
-
     a.appendTo(row);
-    b.appendTo(row)
-    row.appendTo(div)
-    div.appendTo(child);
+    b.appendTo(row);
+    row.appendTo(div2);
+    div2.appendTo(child);
 
-    var div = $("<div></div>")
-           .attr("class", "col-xs-6")
+
+    var div3 = $("<div></div>")
+           .attr("class", "col-xs-6 datesandhours")
            .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
-    
 
-   
+
     var row = $("<row></row>");
     var a = $("<h2></h2>")
             .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
@@ -494,12 +533,21 @@
 
               var cron_days = 'None';
             };
-     
 
 
-    $("<span></span>")
+
+    a.appendTo(row);
+    b.appendTo(row);
+    row.appendTo(div3);
+    div3.appendTo(child);
+
+    var div4 = $("<div></div>")
+           .attr("class", "col-xs-1 spaneditevent")
+           .attr("style","display: none;margin-top: 25px;padding-left: 20px;");
+
+     $("<span></span>")
             .attr("class","glyphicon glyphicon-menu-right editevent")
-            .attr("style","color: #333;font-size: 15px;display:none;")
+            .attr("style","color: #333;font-size: 15px;")
             .attr("id","cont"+result['pid'])
             .attr("onclick","")
             .attr("data-date",result['date'])
@@ -509,18 +557,21 @@
             .attr("data-param_state",result['param_state'])
             .attr("data-param_set_point",result['param_set_point'])
             .attr("data-pid",result['pid'])
-           .appendTo(a);
-     a.appendTo(row);
+           .appendTo(div4);
+     div4.appendTo(child);
+    
 
+    var div5 = $("<div></div>")
+           .attr("class", "col-xs-6 tryingtodel")
+           .attr("style","display: flex;justify-content: flex-center;display: none;");
 
-
-          $("<span></span>")
-              .attr("class","editevent")
-              .attr("onclick","")
-              .append(b);
-      b.appendTo(row);
-      row.appendTo(div);
-
+    var div6 = $("<div></div>")
+           .attr("class", "col-xs-4")
+           .appendTo(div5);
+    
+    var div7 = $("<div></div>")
+           .attr("class", "col-xs-8");
+           
 
     var button =  $("<button></button")
                  .attr("class","btn btn-danger btn-block delevent")
@@ -529,18 +580,18 @@
                  .attr("type","submit")
                  .attr("name","delete")
                  .attr("data-pid",result['pid'])
-                 .text("Delete")
-                 //.appendTo(form);
+                 .text("Delete");
 
-      $("<span></span>")
+    $("<span></span>")
                         .attr("class","glyphicon glyphicon-trash")
                         .attr("onclick","")
                         .appendTo(button);
-     button.appendTo(div);
+     button.appendTo(div7);
 
-     div.appendTo(child);
+     div7.appendTo(div5);
+     div5.appendTo(child);
 
-    child.appendTo(father)
+    child.appendTo(father);
 
     if ($('#eventlistid tr').length == 0 ) {
       $('#eventlistid').append(father);
