@@ -7,6 +7,7 @@ from flask import jsonify
 
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
+flag= False
                         
  
                     
@@ -291,4 +292,8 @@ def delete_scheduled_event(id_event):
         db.session.commit()
 
     return
+
+def get_new_device():
+    global flag
+    return flag
 

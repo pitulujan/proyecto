@@ -6,7 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_device
 
 
 
@@ -180,3 +180,10 @@ def pruebitas2():
     if request.method == 'POST':
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
     return render_template('pruebitas2.html')
+
+
+
+@app.context_processor
+def new_device_notifier():
+    flag = get_new_device()
+    return dict(flag=flag)
