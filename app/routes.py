@@ -1,12 +1,13 @@
 from flask import render_template, flash, redirect, request, url_for,jsonify
 from app import app, db
+import json
 from app.forms import LoginForm, RegistrationForm, ChangePassword
 from app.manage_users import *
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_device
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_device,edit_device_server
 
 
 
@@ -133,6 +134,12 @@ def remove_device():
 @app.route('/edit_device', methods=['GET','POST'])
 @login_required
 def edit_device():
+
+    if request.method == 'POST':
+        print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'])
+        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'])
+        return answer
+
 
     return render_template('edit_device.html',title='Edit Device', devices=get_devices())
 
