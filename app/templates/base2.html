@@ -160,7 +160,7 @@
                     	{% with messages = get_flashed_messages() %}
         {% if messages %}
            
-            <div class="alert alert-info" role="alert">{{  messages|first }}</div>
+            <div class="alert alert-info" id="flash_message" role="alert">{{  messages|first }}</div>
            
         {% endif %}
         {% endwith %}
@@ -180,7 +180,11 @@
 </body>
 <script >
 
-
+    $(function() {
+   $('#flash_message').delay().fadeIn('slow', function() {
+      $(this).delay(2500).fadeOut('slow');
+   });
+});
 
   $(document).ready(function() {
 

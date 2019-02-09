@@ -138,7 +138,8 @@ def edit_device():
     if request.method == 'POST':
         print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'])
         answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'])
-        return answer
+        flash(answer['message'])
+        return jsonify(answer)
 
 
     return render_template('edit_device.html',title='Edit Device', devices=get_devices())

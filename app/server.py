@@ -326,7 +326,7 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
         db.session.delete(device_to_edit)
         db.session.commit()
 
-        return jsonify({'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location})
+        return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
 
 

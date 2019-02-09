@@ -116,6 +116,12 @@
 
     slider.oninput = function() { output.innerHTML = this.value;}
 
+    $(function() {
+   $('#flash_message').delay().fadeIn('slow', function() {
+      $(this).delay(2500).fadeOut('slow');
+   });
+});
+
       $("#myonoffswitch").click(function(){
 
                                           if ($("#dataplacer").data('dev_type') == 'False'){
@@ -173,8 +179,8 @@
                                                                       $("#answer_message").addClass("alert alert-danger");}}
 
           $("#answer_message").text(result['message']);
-          $("#answer_message").fadeIn('slow').delay(2000).fadeOut('slow');
-          //location.reload(true);
+          //$("#answer_message").fadeIn('slow').delay(2000).fadeOut('slow');
+          location.reload(true);
         });
         $('#modaleditdevice').modal('hide');
       });
