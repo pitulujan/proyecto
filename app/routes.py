@@ -130,7 +130,11 @@ def remove_device():
 
 	return render_template('remove_device.html', title='Remove Device', devices=get_devices())
 
+@app.route('/edit_device', methods=['GET','POST'])
+@login_required
+def edit_device():
 
+    return render_template('edit_device.html',title='Edit Device', devices=get_devices())
 
 
 

@@ -238,19 +238,19 @@
                         
                     </div>
                     <div class="row">
-                  <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
-                          
-                         <h5 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">Tamo Probando</h5>
-                          
-                  </div>
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
+                                  
+                                 <h5 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">  <b>On/Off</b></h5>
+                                  
+                          </div>
 
-                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;" >
-                      <div class="onoffswitch">
-                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
-                        <label class="onoffswitch-label" for="myonoffswitch"></label>
-                      </div>
-                    </div>
-            </div>
+                            <div class="col-xs-6" style="display: flex;justify-content: flex-end;" >
+                              <div class="onoffswitch">
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
+                                <label class="onoffswitch-label" for="myonoffswitch"></label>
+                              </div>
+                            </div>
+                  </div>
 
             <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
                         <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
@@ -277,7 +277,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">
                             Cancel
                 </button>
-                <button type="button" class="btn btn-primary" id=submit_event>
+                <button type="button" class="btn btn-primary" id="submit_event">
                     Save changes
                 </button>
             </div>
@@ -449,7 +449,7 @@
                                         $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
                                         
                                         if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
-                                                                              $("#prendeapaga").attr("style","display:none;");
+                                                                              $("#prendeapaga").attr("style","display:none;padding-left: 20px;");
                                         $("#myRange").val('0')
                                         output.innerHTML = 0;  }
                                         

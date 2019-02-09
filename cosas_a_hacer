@@ -56,7 +56,7 @@ crear metodo para agregar un dispositivo en memoria (agregarlo al diccionario)
 
 crear modelo en base de datos para los dispositivos nuevos
 
-armar diccionario server por habitacion -->cuando se crea un device se lo mete en una habitacion y lo meto al dicc de una
+armar diccionario server por habitacion --> cuando se crea un device se lo mete en una habitacion y lo meto al dicc de una
 
 en set lights cazar por class los divs asi no se repite el javascript al pedo (los cazo por el id y los meti adentro del for, no hace falta)
 
@@ -65,4 +65,11 @@ en set lights cazar por class los divs asi no se repite el javascript al pedo (l
 ---------------------------------UPDATE 1/24/2019------------------------------------
 
 falta auto eliminar los eventos una vez que ocurrieron (si son dates) --> posible solucion : en los metodos que se llaman si el event type es date que lo borre
+
+Hay que ver si el dispositivo esta online u offline (falta de bateria o whatever) y avisar
+
+Hay que poder reconfigurar un device (lo muevo de la coicina al living por ejemplo (yendo de la cama al lilving?))
+
+
+ARREGLAR DICCIONARIO DE SCHEDULE EVENTS PARA QUE SEA TAMBIEN POR LOCATION Y NO SOLO POR STR_ID
 
