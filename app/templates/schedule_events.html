@@ -321,14 +321,19 @@
 
     var dic = {
                 {%for location,devices in rooms_devices.items()|sort:%}
+                {%if location != 'default'%}
+
                 {%for device,item in devices.items():%} 
-                '{{'_'.join(device.split(' '))}}' : '{{item.dev_type}}',
+                '{{'_'.join(location.split(' '))+'_'.join(device.split(' '))}}' : '{{item.dev_type}}',
 
                 {% endfor %}
+                {% endif %}
                 {% endfor %}  
               };  
     
-  $("#myonoffswitch").click(function(){   if (dic[$("#deviceid").val()]== 'False'){
+  $("#myonoffswitch").click(function(){   console.log($("#locationid").val()+$("#deviceid").val());
+                                          if (dic[$("#locationid").val()+$("#deviceid").val()]== 'False'){
+
                                           $("#prendeapaga").toggle(500);}
                                           if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
                                           else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
@@ -410,7 +415,7 @@
                                                           console.log('deberia');
                                                           if ($("#myonoffswitch").val()=='Off'){
                                                           $("#myonoffswitch").click();}
-                                                          if (dic[str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {
+                                                          if (dic[location.split(' ').join('_')+str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {
                                                           $("#myRange").val('param_set_point')
                                                           output.innerHTML = param_set_point;
                                                           $("#prendeapaga").attr("style","display:block;padding-left: 20px;"); }

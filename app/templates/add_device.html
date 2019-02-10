@@ -1,0 +1,20 @@
+{% extends "base2.html" %}
+{% block app_content %}
+
+{%if flag==1%}
+
+
+
+{%else%}
+
+<row id="no_scheduled_events">
+ <center><h2>No new devices were found <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+</row>
+
+
+
+
+
+{%endif%}
+
+{% endblock %}
