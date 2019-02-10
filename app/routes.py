@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_device,edit_device_server
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_device,edit_device_server,generate_dummy_device_test
 
 
 
@@ -172,6 +172,15 @@ def delete_event():
 
 
 
+@app.route('/generate_dummy_device', methods=['GET', 'POST'])
+@login_required
+def generate_dummy_device():
+
+    if request.method == 'POST':
+        generate_dummy_device_test()
+        return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
+
+    return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
 
 

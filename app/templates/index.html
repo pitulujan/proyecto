@@ -61,6 +61,7 @@
   </div>
 
 {% for k,v in devices.items()|sort: %}
+{%if k != 'default' %}
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{'-'.join(k.split(' '))}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
     	
@@ -113,7 +114,7 @@
     	
     {%endfor%}
 </div>
-  
+ {%endif%} 
 {%endfor%}
   <script>
  	$(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done();});
@@ -134,6 +135,7 @@
 
 
   	{% for k,v in devices.items()|sort: %}
+    {%if k != 'default' %}
   	{% for kk,vv in v.items()|sort: %}
   	{% if vv['dev_type'] == False: %}
 
@@ -160,6 +162,7 @@
 
 
   	{%endfor%}
+    {%endif%}
   	{%endfor%}
     
 });

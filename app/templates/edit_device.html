@@ -6,10 +6,9 @@
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- arregla el tema del zoom en el modal, la romi toda -->
 
 
-<div class="alert alert-success" role="alert" id="answer_message" style="display:none;"> </div>
-
 
 {% for k,v in devices.items()|sort: %}
+  {%if k != 'default' %}
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
     	
@@ -28,6 +27,7 @@
     	</div>
     {%endfor%}
   </div>
+  {%endif%}
     {%endfor%}
 
 
@@ -116,11 +116,7 @@
 
     slider.oninput = function() { output.innerHTML = this.value;}
 
-    $(function() {
-   $('#flash_message').delay().fadeIn('slow', function() {
-      $(this).delay(2500).fadeOut('slow');
-   });
-});
+
 
       $("#myonoffswitch").click(function(){
 

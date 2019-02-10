@@ -221,7 +221,10 @@
                     <label for="locationid">Location</label>
                       <select id="locationid" class="form-control">
                         {%for location in rooms_devices.keys()|sort:%}
+                        {%if location != 'default'%}
                           <option value="{{'_'.join(location.split(' '))}}">{{location}}</option>
+                        }
+                        {% endif %}
                         {% endfor %}
                       </select>
                        <label for="deviceid">Device</label>

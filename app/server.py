@@ -328,6 +328,30 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
 
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
+def get_new_devices():
+    global flag
+    new_devices = Devices.query.filter_by(new_device=True).all()
+
+    if new_devices != None:
+        flag= True
+    else:
+        flag = False
+    
+    return new_devices
+
+def generate_dummy_device_test():
+    ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
+    global flag
+    
+    if 'default' not in Current_state_dic_rooms.keys():
+        Current_state_dic_rooms['default'] = {'default':{'dev_type' : False , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False}}
+    else:
+        
+        Current_state_dic_rooms['default']['default'+str(len(Current_state_dic_rooms['default']))] = {'dev_type' : False , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False} 
+
+    flag = True 
+    return
+
 
 
             
