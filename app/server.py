@@ -330,7 +330,10 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
 
 def get_new_devices():
 
-    return Current_state_dic_rooms['default']
+    if 'default' in Current_state_dic_rooms.keys():
+        return Current_state_dic_rooms['default']
+    else:
+        return None
 
 def generate_dummy_device_test():
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
