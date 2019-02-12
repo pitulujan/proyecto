@@ -15,7 +15,7 @@
 	    	  <div class="row" >
 	          <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
 	                          
-	                          <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;">{{k}}</h3>
+	                          <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;">New Device</h3>
 	                          
 	          </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
@@ -167,7 +167,7 @@
       $("#submit_changes").click(function(){
 
 
-        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplaceradd").data('old_location'),'old_str_id':$("#dataplaceradd").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')

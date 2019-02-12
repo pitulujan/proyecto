@@ -80,3 +80,5 @@ Ver el tema de si se agregan mas de un dispositivo al mismo tiempo que no se pis
 ---------------------------------UPDATE 10/2/2019 --------------------------------------
 
 Pensar en algun tipo de mac address en la tabla de devices en la db para identificarlos de manera unica cuando los agrego (tal mac es tal disposivivo, sino como se cuando agrego 3 al mismo tiempo cual es cual?)
+
+modificar el add_device para que use la mac adress del end device
