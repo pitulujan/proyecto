@@ -9,7 +9,7 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device
 
-
+#pitu
 
 get_initial_values()
 @app.route('/')
