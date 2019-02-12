@@ -335,15 +335,15 @@ def get_new_devices():
     else:
         return None
 
-def generate_dummy_device_test():
+def generate_dummy_device_test(dev_type):
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
     global flag
     
     if 'default' not in Current_state_dic_rooms.keys():
-        Current_state_dic_rooms['default'] = {'default':{'dev_type' : False , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False}}
+        Current_state_dic_rooms['default'] = {'default':{'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False}}
     else:
         
-        Current_state_dic_rooms['default']['default '+str(len(Current_state_dic_rooms['default']))] = {'dev_type' : False , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False} 
+        Current_state_dic_rooms['default']['default_'+str(len(Current_state_dic_rooms['default']))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False} 
 
     flag = True 
     return

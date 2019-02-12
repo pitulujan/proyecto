@@ -177,7 +177,8 @@ def delete_event():
 def generate_dummy_device():
 
     if request.method == 'POST':
-        generate_dummy_device_test()
+
+        generate_dummy_device_test(request.form.get('dev_type'))
         return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')

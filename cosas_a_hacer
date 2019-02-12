@@ -71,6 +71,12 @@ Hay que ver si el dispositivo esta online u offline (falta de bateria o whatever
 Hay que poder reconfigurar un device (lo muevo de la coicina al living por ejemplo (yendo de la cama al lilving?)) LISTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 
-ARREGLAR DICCIONARIO DE SCHEDULE EVENTS PARA QUE SEA TAMBIEN POR LOCATION Y NO SOLO POR STR_ID
+ARREGLAR DICCIONARIO DE SCHEDULE EVENTS PARA QUE SEA TAMBIEN POR LOCATION Y NO SOLO POR STR_ID ---> LISTOOOOOOOOOOOOOOOOOOOOOOOOOO
 
-Ver el tema de si se agregan mas de un dispositivo al mismo tiempo que no se pisen los nmbres por default (y ahi?)
+Ver el tema de si se agregan mas de un dispositivo al mismo tiempo que no se pisen los nmbres por default (y ahi?) --> LISTOOOO (str(len(cuuren..['default'])))
+
+
+
+---------------------------------UPDATE 10/2/2019 --------------------------------------
+
+Pensar en algun tipo de mac address en la tabla de devices en la db para identificarlos de manera unica cuando los agrego (tal mac es tal disposivivo, sino como se cuando agrego 3 al mismo tiempo cual es cual?)

@@ -1,12 +1,22 @@
 {% extends "base2.html" %}
 {% block app_content %}
 
- <form role="form" action="{{url_for('generate_dummy_device')}}" method="POST" id="form_id">
+<form role="form" action="{{url_for('generate_dummy_device')}}" method="POST" id="form_id">
+      <br>            
+	<div class="form-group">
+                    <label for="dev_type">Dev_type</label>
+                      <select id="dev_type" class="form-control" name="dev_type">
+
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+
+                      </select>
+
                   <div class="form-group">
                   	<br>
                   	<button class="btn btn-primary">Add New Dummy Device</button>
                   </div>
-              </form>
+</form>
 
 
 

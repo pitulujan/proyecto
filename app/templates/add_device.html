@@ -20,7 +20,7 @@
 	          </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
 
-              <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}" data-dev_type="{{v.dev_type}}" ></span>
+              <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}"  data-dev_type="{{v.dev_type}}" ></span>
 	  </div>
     	</div>
 
@@ -30,7 +30,7 @@
 
 
 
-    <div class="modal fade" id="modaleditdevice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modaladdevent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="margin-top: 60px;">
             <!-- Modal Header -->
@@ -57,7 +57,7 @@
                       <input type="text" class="form-control" id="device_name" name="name" value="Name" onfocus="if (this.value=='Name') this.value='';"/ >
                   </div>
 
-                  <div class="form-group" style="display: none;" > <input type="text" id="dataplacer" name="dataplace" data-dev_type="" ></div>
+                  <div class="form-group" style="display: none;" > <input type="text" id="dataplaceradd" name="dataplace" value="" data-dev_type="" data-location='' / ></div>
 
                 <div class="row">
                           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
@@ -121,7 +121,7 @@
 {%endif%}
 
 
- <script type="text/javascript">
+ <script>
 
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
@@ -132,43 +132,42 @@
 
 
       $("#myonoffswitch").click(function(){
+                                          if ($("#myonoffswitch").val()=='On'){
+                                          	$("#myonoffswitch").val('Off');
+                                          	$("#statevalue").val('False');
+                                          	
+                                          	$("#prendeapaga").attr("style","display:none;padding-left: 20px;");
+                                          }
+                                          else{
 
-                                          if ($("#dataplacer").data('dev_type') == 'False'){
-                                                                                    $("#prendeapaga").toggle(500);}
-                                          if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
-                                          else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
+                                          	$("#myonoffswitch").val('On');
+                                          	$("#statevalue").val('True');
+                                          	if ($("#dataplaceradd").val() == 'False'){
+                                          	$("#prendeapaga").attr("style","display:block;padding-left: 20px;");
+                                          }
+                                          }
 
                                              });
       
       $(document).on("click","span.editdevice",function(){
+      													if ($("#myonoffswitch").val()=='On'){
+      														$("#prendeapaga").attr("style","display:none;padding-left: 20px;");
+      														$("#myonoffswitch").click();}
 
                                                         var location = $(this).data('location');
                                                         var dev_type = $(this).data('dev_type');
-                                                        $("#dataplacer").attr('data-dev_type',dev_type);
-                                                        $("#dataplacer").attr('data-old_location',location);
 
-                                                          if (state == 'True'){
-                                                          console.log('deberia');
-                                                          if ($("#myonoffswitch").val()=='Off'){
-                                                          $("#myonoffswitch").click();}
-                                                          if (dev_type=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {
-                                                          $("#myRange").val('param_set_point')
-                                                          output.innerHTML = set_point;
-                                                          $("#prendeapaga").attr("style","display:block;padding-left: 20px;"); }
-                                                          //if ($("#prendeapaga").is(":hidden")) {$("#prendeapaga").toggle(500);}
-                                                        }
-                                                        else {if ($("#myonoffswitch").val()=='On'){
-                                                          $("#myonoffswitch").click();
-                                                        }}
-
-
-        $('#modaleditdevice').modal('show');});
+                                                        $("#dataplaceradd").val(dev_type);
+                                                        $("#dataplaceradd").data('data-old_location',location);
+														$('#modaladdevent').modal('show');
+                                                          
+        });
 
 
       $("#submit_changes").click(function(){
 
 
-        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplacer").data('old_location'),'old_str_id':$("#dataplacer").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
+        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplaceradd").data('old_location'),'old_str_id':$("#dataplaceradd").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
@@ -185,7 +184,7 @@
           //$("#answer_message").fadeIn('slow').delay(2000).fadeOut('slow');
           location.reload(true);
         });
-        $('#modaleditdevice').modal('hide');
+        $('#modaladdevent').modal('hide');
       });
     </script>
 
