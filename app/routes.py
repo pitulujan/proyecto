@@ -11,7 +11,7 @@ from app.server import set_temp, get_temp_state, get_initial_values, get_devices
 
 #pitu
 
-#get_initial_values()
+get_initial_values()
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -136,8 +136,8 @@ def remove_device():
 def edit_device():
 
     if request.method == 'POST':
-        print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'])
-        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'])
+        #print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
         flash(answer['message'])
         return jsonify(answer)
 
@@ -186,6 +186,8 @@ def generate_dummy_device():
 @app.route('/add_device', methods=['GET', 'POST'])
 @login_required
 def add_device():
+    if request.method == 'POST':
+        print(request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
 
 
     return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices())

@@ -22,7 +22,7 @@
 	          </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
 
-              <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}" data-str_id="{{kk}}" data-state="{{vv.State}}" data-set_point="{{vv.set_point}}" data-dev_type="{{vv.dev_type}}" ></span>
+              <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}" data-str_id="{{kk}}" data-state="{{vv.State}}" data-set_point="{{vv.set_point}}" data-dev_type="{{vv.dev_type}}" data-mac_address="{{vv.mac_address}}" ></span>
 	  </div>
     	</div>
     {%endfor%}
@@ -134,11 +134,13 @@
                                                         var state = $(this).data('state');
                                                         var set_point = $(this).data('set_point');
                                                         var dev_type = $(this).data('dev_type');
+                                                        var mac_address = $(this).data('mac_address');
                                                         $("#device_location").val(location);
                                                         $("#device_name").val(str_id);
                                                         $("#dataplacer").attr('data-dev_type',dev_type);
                                                         $("#dataplacer").attr('data-old_location',location);
                                                         $("#dataplacer").attr('data-old_str_id',str_id);
+                                                        $("#dataplacer").attr('data-mac_address',mac_address);
 
                                                           if (state == 'True'){
                                                           console.log('deberia');
@@ -161,7 +163,7 @@
       $("#submit_changes").click(function(){
 
 
-        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplacer").data('old_location'),'old_str_id':$("#dataplacer").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val()}).done(function(result) {
+        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplacer").data('old_location'),'old_str_id':$("#dataplacer").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'mac_address':$("#dataplacer").data('mac_address')}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
