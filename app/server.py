@@ -54,9 +54,9 @@ def remove_dev(location_str_id):
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
-scheduler = config_scheduler()
+#scheduler = config_scheduler()
 #scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
-scheduler.start()
+#scheduler.start()
 
 def get_initial_values():
 
@@ -65,9 +65,9 @@ def get_initial_values():
     query_devices=Devices.query.all()
     for location in query_devices:
         if location.location in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'new_device': location.new_device, 'offline':location.offline}
+            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'new_device': location.new_device, 'offline':location.offline,'mac_address':location.mac_address}
         else:
-            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm,'new_device': location.new_device, 'offline':location.offline}}
+            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm,'new_device': location.new_device, 'offline':location.offline,'mac_address':location.mac_address}}
 
     query_temp=Temperature.query.first()
     Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
@@ -340,10 +340,10 @@ def generate_dummy_device_test(dev_type):
     global flag
     
     if 'default' not in Current_state_dic_rooms.keys():
-        Current_state_dic_rooms['default'] = {'default':{'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False}}
+        Current_state_dic_rooms['default'] = {'default':{'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False, 'mac_address':'08:00:27:60:03:90'}}
     else:
         
-        Current_state_dic_rooms['default']['default_'+str(len(Current_state_dic_rooms['default']))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False} 
+        Current_state_dic_rooms['default']['default_'+str(len(Current_state_dic_rooms['default']))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False,'mac_address':'08:00:27:60:03:9'+str(len(Current_state_dic_rooms['default']))} 
 
     flag = True 
     return

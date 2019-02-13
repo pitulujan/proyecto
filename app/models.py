@@ -34,6 +34,7 @@ class Devices(db.Model):
     set_point=db.Column(db.Integer,default=None) #En caso de dev_type=False y está expresado en porcentaje
     new_device = db.Column(db.Boolean,default=True) # Este campo se setea en True cuando el device es nuevo y no esta configurado, post configuracion, False
     offline = db.Column(db.Boolean, default=False) # Si el dispositivo no se reporta en un tiempo dado, pasa automaticamente a offline True
+    mac_address=db.Column(db.String(128),unique=True)
     def __repr__(self):
         return '<str_id {},location {},dev_type {}>'.format(self.str_id,self.location,self.dev_type)
     
