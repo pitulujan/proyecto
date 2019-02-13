@@ -7,6 +7,7 @@ from flask import jsonify
 
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
+New_devices={}
 flag= False
                         
  
@@ -294,7 +295,6 @@ def delete_scheduled_event(id_event):
     return
 
 def get_new_device():
-    global flag
     return flag
 
 def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set_point,mac_address):
@@ -303,7 +303,7 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
     trying_to_change = Devices.query.filter_by(location=new_location,str_id=new_str_id).first()
 
     if trying_to_change != None:
-        return jsonify({'status': 400, 'message' : "There's already a device with that name in that location"})
+        return {'status': 400, 'message' : "There's already a device with that name in that location"}
     else:
 
         if state == 'On':
@@ -329,28 +329,61 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
         
         #db.session.delete(device_to_edit)
         db.session.commit()
-        #db.session.add(device_to_add)
+        #db.session.add(device_to_add)device_to_add = Devices(user_perm=device_to_edit.user_perm,str_id=new_str_id,location=new_location,dev_type=device_to_edit.dev_type,state=state,set_point=set_point,new_device=False,mac_address=mac_address)
         #db.session.commit()
 
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
+def add_new_device_server(location,str_id,state,set_point,mac_address):
+    
+    trying_to_add = Devices.query.filter_by(location=location,str_id=str_id).first()
+
+    if trying_to_add != None:
+        return {'status': 400, 'message' : "There's already a device with that name in that location"}
+    else:
+        if state == 'On':
+            state = True
+        else:
+            state = False
+
+        device_to_add = Devices(user_perm=New_devices[mac_address]['user_perm'],str_id=str_id,location=location,dev_type=New_devices[mac_address]['dev_type'],state=state,set_point=set_point,new_device=False,mac_address=mac_address)
+        
+
+        if location not in Current_state_dic_rooms.keys():
+            Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address}}
+        else:
+            if str_id not in Current_state_dic_rooms[location]:
+                Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address}
+
+        db.session.add(device_to_add)
+        db.session.commit()
+        New_devices.pop(mac_address)
+        if len(New_devices.keys())==0:  
+            flag = False
+        return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(New_devices.keys())}
+
 def get_new_devices():
 
-    if 'default' in Current_state_dic_rooms.keys():
-        return Current_state_dic_rooms['default']
+    if len(New_devices.keys())!=0:
+        return New_devices
     else:
         return None
 
 def generate_dummy_device_test(dev_type):
+    if dev_type == 'True':
+        dev_type = True
+    else:
+        dev_type = False 
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
     global flag
     
-    if 'default' not in Current_state_dic_rooms.keys():
-        Current_state_dic_rooms['default'] = {'default':{'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False, 'mac_address':'08:00:27:60:03:90'}}
+    if '08:00:27:60:03:90' not in New_devices.keys():
+        New_devices['08:00:27:60:03:90'] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False, 'mac_address':'08:00:27:60:03:90'}
     else:
         
-        Current_state_dic_rooms['default']['default_'+str(len(Current_state_dic_rooms['default']))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False,'mac_address':'08:00:27:60:03:9'+str(len(Current_state_dic_rooms['default']))} 
+        New_devices['08:00:27:60:03:9'+str(len(New_devices.keys()))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False,'mac_address':'08:00:27:60:03:9'+str(len(New_devices.keys()))} 
 
+    print(New_devices)
     flag = True 
     return
 

@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/static/style_slider.css">
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- arregla el tema del zoom en el modal, la romi toda -->
 
-{%if flag==1%}
+{%if flag==1 %}
  <table class="table">
     <tbody>
 
@@ -15,7 +15,7 @@
 	    	  <div class="row" >
 	          <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
 	                          
-	                          <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;">Device {{v.mac_address}}</h3>
+	                          <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;">Device {{k}}</h3>
 	                          
 	          </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
@@ -184,7 +184,9 @@
 
           $("#answer_message").text(result['message']);
           //$("#answer_message").fadeIn('slow').delay(2000).fadeOut('slow');
-          location.reload(true);
+          if (result['ndkl']!=0){
+          location.reload(true);}
+          else {window.location.replace("{{url_for('index')}}");}
         });
         $('#modaladdevent').modal('hide');
       });
