@@ -310,7 +310,11 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
             state = True
         else:
             state = False 
-        device_to_add = Devices(user_perm=device_to_edit.user_perm,str_id=new_str_id,location=new_location,dev_type=device_to_edit.dev_type,state=state,set_point=set_point,new_device=False,mac_address=mac_address)
+        device_to_edit.location = new_location
+        device_to_edit.str_id= new_str_id
+        device_to_edit.state= state
+        device_to_edit.set_point = set_point
+        #device_to_add = Devices(user_perm=device_to_edit.user_perm,str_id=new_str_id,location=new_location,dev_type=device_to_edit.dev_type,state=state,set_point=set_point,new_device=False,mac_address=mac_address)
 
         if new_location not in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[new_location] = {new_str_id:{'dev_type' : device_to_edit.dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : device_to_edit.user_perm,'mac_address': mac_address}}
@@ -323,10 +327,10 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
         if (len(Current_state_dic_rooms[old_location])==0):
             Current_state_dic_rooms.pop(old_location)
         
-        db.session.delete(device_to_edit)
+        #db.session.delete(device_to_edit)
         db.session.commit()
-        db.session.add(device_to_add)
-        db.session.commit()
+        #db.session.add(device_to_add)
+        #db.session.commit()
 
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
