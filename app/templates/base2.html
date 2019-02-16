@@ -142,6 +142,15 @@
                      <li><a href="{{ url_for('delete_user') }}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete User</a></li>
                      {%endif%}
                 </div>
+
+                 <button class="dropdown-btn" data-toggle="collapse" id="prueba2"><span  class="glyphicon glyphicon-cog" ></span> Dev Ops 
+                    <i class="glyphicon glyphicon-triangle-bottom" id="pato2" style="font-size: 20px" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-container collapse" >
+                    <li><a href="{{ url_for('generate_dummy_device') }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Dummy Dev</a></li>
+                    <li><a href="{{ url_for('post_tests') }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Post Tests</a></li>
+
+                </div>
                 
                 {%endif%}
                 </div>

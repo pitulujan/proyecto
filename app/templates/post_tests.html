@@ -1,0 +1,24 @@
+{% extends "base2.html" %}
+{% block app_content %}
+
+<form role="form" action="{{url_for('post_tests')}}" method="POST" id="form_id">
+      <br>            
+	<div class="form-group">
+                    <label for="post_test">Post Type</label>
+                      <select id="post_test" class="form-control" name="post_test">
+
+                          <option value="True">JSON</option>
+                          <option value="False">XML</option>
+
+                      </select>
+
+                  <div class="form-group">
+                  	<br>
+                  	<button class="btn btn-primary">Post</button>
+                  </div>
+</form>
+
+
+
+
+{% endblock %}
