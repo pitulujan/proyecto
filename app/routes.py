@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, request, url_for,jsonify
+from flask import render_template, flash, redirect, request, url_for,jsonify,g
 from app import app, db
 import json
 from app.forms import LoginForm, RegistrationForm, ChangePassword
@@ -215,17 +215,18 @@ def pruebitas2():
     return render_template('pruebitas2.html')
 
 
-
-@app.context_processor
-def new_device_notifier():
-    flag = get_new_device()
-    return dict(flag=flag)
-
 @app.before_request
-def before_request():
-    if True:
-        print ("HEADERS", request.headers)
-        print ("REQ_path", request.path)
-        print ("ARGS",request.args)
-        print ("DATA",request.data)
-        print ("FORM",request.form)
+def new_device_notifier_after():
+    g.flag = get_new_device()
+
+@app.after_request
+def new_device_notifier(response):
+    g.flag = get_new_device()
+    print (g.flag)
+    return response 
+
+    if path == '/add_device' and method == 'POST':
+        print(get_new_device())
+        g.flag = get_new_device()
+
+

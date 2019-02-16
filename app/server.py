@@ -55,9 +55,9 @@ def remove_dev(location_str_id):
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
-#scheduler = config_scheduler()
+scheduler = config_scheduler()
 #scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
-#scheduler.start()
+scheduler.start()
 
 def get_initial_values():
 
@@ -335,6 +335,7 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
 def add_new_device_server(location,str_id,state,set_point,mac_address):
+    global flag
     
     trying_to_add = Devices.query.filter_by(location=location,str_id=str_id).first()
 
@@ -359,6 +360,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
         db.session.commit()
         New_devices.pop(mac_address)
         if len(New_devices.keys())==0:  
+            print('flag server entro bien ')
             flag = False
         return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(New_devices.keys())}
 
