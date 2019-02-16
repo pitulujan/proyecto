@@ -172,6 +172,33 @@ def delete_event():
 
 
 
+@app.route('/add_device', methods=['GET', 'POST'])
+@login_required
+def add_device():
+    if request.method == 'POST':
+        answer=add_new_device_server(request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        flash(answer['message'])
+        return jsonify(answer)
+
+    return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices())
+
+
+
+@app.before_request
+def new_device_notifier_after():
+    g.flag = get_new_device()
+
+@app.after_request
+def new_device_notifier(response):
+    g.flag = get_new_device()
+    print (g.flag)
+    return response 
+
+    if path == '/add_device' and method == 'POST':
+        print(get_new_device())
+        g.flag = get_new_device()
+
+
 
 @app.route('/generate_dummy_device', methods=['GET', 'POST'])
 @login_required
@@ -208,25 +235,6 @@ def post_tests():
 
     return render_template('post_tests.html',title = 'Post Tests')
 
-@app.route('/add_device', methods=['GET', 'POST'])
-@login_required
-def add_device():
-    if request.method == 'POST':
-        answer=add_new_device_server(request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
-        flash(answer['message'])
-        return jsonify(answer)
-
-    return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices())
-
-
-@app.route('/pruebitas', methods=['GET', 'POST'])
-@login_required
-def pruebitas():
-    rec_dict=['Hi,', "I'm", 'Jim', 'Martin.', "I'm", 'managing', 'director', 'and', 'our', 'federal', 'tax', 'services', 'group', 'did', 'uniform', 'compensation', 'or', 'unicab', 'falls', 'under', 'Section', '263', 'a', 'report', 'taxpayers', 'to', 'capitalize', 'direct', 'and', 'indirect', 'cost', 'to', 'pop', 'reproduce', 'some', 'property', 'of', 'our', 'pre', 'sale', 'one', 'type', 'of', 'cost', 'to', 'has', 'to', 'be', 'capitalized', 'is', 'the', 'book', 'packs', 'difference', 'in', 'cost', 'that', 'relate', 'to', 'the', 'the', 'property', "that's", 'producer', 'crock', 'for', 'resale.', 'So', 'for', 'example', 'bonus', 'depreciation,', "it's", 'awesome', 'a', 'jerk', 'off', 'that', 'tax', 'payers', 'will', 'cap', 'lies', 'under', 'the', 'unit', 'Camp', 'rules', 'and', 'with', 'the', 'new', '100%', 'bonus', 'depreciation', 'rules', 'as', 'well', 'sort', 'of', 'tax', 'form.', 'Thanks,', 'Chris', 'Kattan', 'up', 'type', 'lodging', 'a', 'significant', 'amount', 'of', 'bonus', 'depreciation', 'to', 'ending', 'inventory', 'one', 'way', 'to', 'avoid.', 'This', 'is', 'to', "Lexi's", 'store', 'from', 'the', 'ratio', 'or', 'heart', 'message.', 'So', 'for', 'taxpayers', 'using', 'a', 'simple', '5', 'production', 'method', 'or', 'simple', '5', 'resale', 'message,', 'the', 'higher', 'election', 'could', 'significantly', 'reduce', 'the', 'amount', 'of', 'cost', 'Half-Life', '2', 'ending', 'inventory', 'under', 'the', 'you', 'bye', 'excluding', 'bonus', 'depreciation', 'from', 'the', 'cost', 'of', 'a', 'capitalized']
-    if request.method == 'POST':
-        answer='Hola anto, apretaste el ' + request.form['id']+ ' guachita'
-        return jsonify({'answer': answer})
-    return render_template('pruebitas.html',rec_dict=rec_dict)
 
 @app.route('/pruebitas2', methods=['POST'])
 #@login_required
@@ -237,20 +245,5 @@ def pruebitas2():
         print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
     return render_template('pruebitas2.html')
-
-
-@app.before_request
-def new_device_notifier_after():
-    g.flag = get_new_device()
-
-@app.after_request
-def new_device_notifier(response):
-    g.flag = get_new_device()
-    print (g.flag)
-    return response 
-
-    if path == '/add_device' and method == 'POST':
-        print(get_new_device())
-        g.flag = get_new_device()
 
 
