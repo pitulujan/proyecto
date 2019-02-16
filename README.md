@@ -1,3 +1,3 @@
 # proyecto
-proyecto de los pi 2018
+Aplicación web para el proyecto de ingeniería
 Proyecto 2018 Boris-Martin
