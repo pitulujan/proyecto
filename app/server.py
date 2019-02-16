@@ -74,7 +74,7 @@ def get_initial_values():
     Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
 
-    #print(Current_state_dic_rooms)
+    ##print(Current_state_dic_rooms)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -131,7 +131,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
     if len(start_date.split(':'))==3:
         start_date=start_date[:-3]
     date_date=start_date.replace('T',' ')+':00'
-    print(pidd)
+    #print(pidd)
     check_date=check_days(date_date,day_of_week,str_id,location,pidd)
     reschedule=False
 
@@ -250,14 +250,14 @@ def check_days(date,day_of_week,str_id,location,pidd):
                     return days
                 array_dates = next_weekday(d,weekday)
 
-                print(array_dates)
+                #print(array_dates)
 
                 for datee in array_dates:
                     aux_date=datee
                     while aux_date <=dia_que_quiero:
                         if aux_date == dia_que_quiero:
                             if pidd != scheduled_event.pid:
-                                print('hijo de mill',aux_date)
+                                #print('hijo de mill',aux_date)
                                 flag = True
                                 break
                         else:
@@ -360,7 +360,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
         db.session.commit()
         New_devices.pop(mac_address)
         if len(New_devices.keys())==0:  
-            print('flag server entro bien ')
+            #print('flag server entro bien ')
             flag = False
         return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(New_devices.keys())}
 
@@ -385,7 +385,7 @@ def generate_dummy_device_test(dev_type):
         
         New_devices['08:00:27:60:03:9'+str(len(New_devices.keys()))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False,'mac_address':'08:00:27:60:03:9'+str(len(New_devices.keys()))} 
 
-    print(New_devices)
+    #print(New_devices)
     flag = True 
     return
 

@@ -85,7 +85,7 @@ def delete_user():
 
     if request.method == 'POST':
         post_id = request.form.get('delete')
-        print(post_id)
+        #print(post_id)
         ans=delete_user_full(post_id)
         flash(ans)
         return redirect(url_for('delete_user'))
@@ -122,7 +122,7 @@ def set_dev():
 def remove_device():
 
 	if request.method == 'POST':
-		print(request.form.get('delete'))
+		#print(request.form.get('delete'))
 		ans=remove_dev(request.form.get('delete'))
 		flash(ans)
 		return render_template('remove_device.html', title='Remove Device', devices=get_devices())
@@ -137,7 +137,7 @@ def remove_device():
 def edit_device():
 
     if request.method == 'POST':
-        #print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        ##print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
         answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
         flash(answer['message'])
         return jsonify(answer)
@@ -153,7 +153,7 @@ def schedule_events():
 
 
     if request.method == 'POST':
-        print(request.form['pid'])
+        #print(request.form['pid'])
         answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],request.form['pid'],request.form['state'],request.form['set_point'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
         return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
     return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
@@ -191,11 +191,11 @@ def new_device_notifier_after():
 @app.after_request
 def new_device_notifier(response):
     g.flag = get_new_device()
-    print (g.flag)
+    #print (g.flag)
     return response 
 
     if path == '/add_device' and method == 'POST':
-        print(get_new_device())
+        #print(get_new_device())
         g.flag = get_new_device()
 
 
@@ -230,7 +230,7 @@ def post_tests():
 
         answer=requests.post(url=url,data=data).json()
 
-        print(answer)
+        #print(answer)
         return 'ok'
 
     return render_template('post_tests.html',title = 'Post Tests')
@@ -242,7 +242,7 @@ def post_tests():
 def pruebitas2():
     
     if request.method == 'POST':
-        print (xmltodict.parse(request.data)['xml']['From'])
+        #print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
     return render_template('pruebitas2.html')
 
