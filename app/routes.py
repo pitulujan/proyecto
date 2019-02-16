@@ -9,6 +9,7 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server
 
+import xmltodict
 #pitu
 
 get_initial_values()
@@ -203,11 +204,13 @@ def pruebitas():
         return jsonify({'answer': answer})
     return render_template('pruebitas.html',rec_dict=rec_dict)
 
-@app.route('/pruebitas2', methods=['GET', 'POST'])
-@login_required
+@app.route('/pruebitas2', methods=['POST'])
+#@login_required
+#https://www.journaldev.com/19392/python-xml-to-json-dict
 def pruebitas2():
     
     if request.method == 'POST':
+        print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
     return render_template('pruebitas2.html')
 
@@ -217,3 +220,12 @@ def pruebitas2():
 def new_device_notifier():
     flag = get_new_device()
     return dict(flag=flag)
+
+@app.before_request
+def before_request():
+    if True:
+        print ("HEADERS", request.headers)
+        print ("REQ_path", request.path)
+        print ("ARGS",request.args)
+        print ("DATA",request.data)
+        print ("FORM",request.form)
