@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket
 
 import xmltodict, requests
 #pitu
@@ -218,19 +218,8 @@ def post_tests():
 
     if request.method == 'POST':
 
-        json=jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
-        xml='<xml><From>Jack</From><Body>Hello, it worked!</Body></xml>'
-        url='http://127.0.0.1:5001'
+        send_socket('hola gordo')
 
-        if request.form.get('post_type') == 'xml':
-            data=xml
-        else:
-            data=json
-
-
-        answer=requests.post(url=url,data=data).json()
-
-        #print(answer)
         return 'ok'
 
     return render_template('post_tests.html',title = 'Post Tests')

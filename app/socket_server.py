@@ -1,5 +1,5 @@
 from datetime import datetime
-from threading import Thread, Event
+from threading import Thread
 import socket
 import sys
 import traceback
@@ -30,6 +30,7 @@ def start_server():
 
         try:
             Thread(target=client_thread, args=(connection, ip, port)).start()
+            
         except:
             print("Thread did not start.")
             traceback.print_exc()
@@ -50,7 +51,7 @@ def client_thread(connection, ip, port, max_buffer_size = 5120):
             is_active = False
         else:
             print("Processed result: {}".format(client_input))
-            connection.sendall("pitu".encode("utf8"))
+            connection.sendall("pitu".encode("ascii","ignore"))
 
 
 def receive_input(connection, max_buffer_size):
@@ -60,7 +61,7 @@ def receive_input(connection, max_buffer_size):
     if client_input_size > max_buffer_size:
         print("The input size is greater than expected {}".format(client_input_size))
 
-    decoded_input = client_input.decode("utf8").rstrip()  # decode and strip end of line
+    decoded_input = client_input.decode("ascii","ignore")  # decode and strip end of line
     result = process_input(decoded_input)
 
     return result
@@ -68,4 +69,4 @@ def receive_input(connection, max_buffer_size):
 
 def process_input(input_str):
     print("Processing the input received from client")
-    return str(input_str).upper()
+    return str(input_str)

@@ -4,6 +4,8 @@ from app.models import User, Devices, Log, Temperature, Scheduled_events
 from app import db
 from flask import jsonify
 from app.socket_server import *
+from app.socket_client import *
+import threading
 
 
 Current_state_dic_temp= {}
@@ -11,7 +13,12 @@ Current_state_dic_rooms ={}
 New_devices={}
 flag= False
 
-start_server()          
+
+
+
+
+
+      
  
                     
 def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm es true si el usuario es admin (ergo pasarle el valor desde routes)
@@ -58,8 +65,13 @@ def remove_dev(location_str_id):
 def tick():
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
-#scheduler.add_job(tick, 'interval', seconds=20,id='basic',replace_existing=True)
+scheduler.add_job(tick, 'interval', seconds=10,id='basic',replace_existing=True)
+scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
+
 scheduler.start()
+
+
+
 
 def get_initial_values():
 
@@ -390,6 +402,24 @@ def generate_dummy_device_test(dev_type):
     #print(New_devices)
     flag = True 
     return
+
+def send_socket(text):
+    global soc 
+
+    try:
+        soc.sendall(text.encode("utf8"))
+        if soc.recv(5120).decode("utf8") == "pitu":
+            print('??')        # null operation
+
+    except Exception as e:
+        soc=start_client()
+        soc.sendall(text.encode("utf8"))
+        if soc.recv(5120).decode("utf8") == "pitu":
+            print('??')        # null operation
+    return   
+
+
+
 
 
 
