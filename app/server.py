@@ -3,13 +3,15 @@ from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log, Temperature, Scheduled_events
 from app import db
 from flask import jsonify
+from app.socket_server import *
 
 
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
 New_devices={}
 flag= False
-                        
+
+start_server()          
  
                     
 def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm es true si el usuario es admin (ergo pasarle el valor desde routes)
