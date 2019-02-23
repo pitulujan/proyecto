@@ -407,14 +407,14 @@ def send_socket(text):
     global soc 
 
     try:
-        soc.sendall(text.encode("utf8"))
-        if soc.recv(5120).decode("utf8") == "pitu":
+        soc.sendall(text.encode("ascii","ignore"))
+        if soc.recv(5120).decode("ascii","ignore") == "pitu":
             print('??')        # null operation
 
     except Exception as e:
         soc=start_client()
-        soc.sendall(text.encode("utf8"))
-        if soc.recv(5120).decode("utf8") == "pitu":
+        soc.sendall(text.encode("ascii","ignore"))
+        if soc.recv(5120).decode("ascii","ignore") == "pitu":
             print('??')        # null operation
     return   
 
