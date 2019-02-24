@@ -1,5 +1,7 @@
 alembic==1.0.5
 APScheduler==3.5.3
+certifi==2018.11.29
+chardet==3.0.4
 Click==7.0
 dominate==2.3.5
 Flask==1.0.2
@@ -10,7 +12,8 @@ Flask-Moment==0.6.0
 Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
 gunicorn==19.9.0
-ItsDangerous==1.1.0
+idna==2.8
+itsdangerous==1.1.0
 Jinja2==2.10
 Mako==1.0.7
 MarkupSafe==1.1.0
@@ -20,10 +23,13 @@ pyserial==3.4
 python-dateutil==2.7.5
 python-editor==1.0.3
 pytz==2018.7
+requests==2.21.0
 six==1.12.0
 SQLAlchemy==1.2.15
 tzlocal==1.5.1
+urllib3==1.24.1
 visitor==0.1.3
 Werkzeug==0.14.1
 WTForms==2.2.1
 XBee==2.3.2
+xmltodict==0.12.0
