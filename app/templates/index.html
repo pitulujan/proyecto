@@ -2,6 +2,8 @@
 {% block app_content %}
 	   <link rel="stylesheet" href="/static/style_slider.css">
      <link rel="stylesheet" href="/static/index_y_remove_device.css">
+     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
 
 
   
@@ -14,7 +16,10 @@
 	#prendeapaga {display:none;}
 	{% endif %}
 
-
+.dropdown-btn.index:hover {
+    color: #333;
+    background: rgba(255, 255, 255, 0.2);
+}
     </style>
 
     <br>
@@ -62,7 +67,7 @@
 
 {% for k,v in devices.items()|sort: %}
 {%if k != 'default' %}
-   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{'-'.join(k.split(' '))}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{'-'.join(k.split(' '))}} <span class="fa fa-street-view " style="color:grey;"></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
     	
     {% for kk,vv in v.items()|sort: %}
@@ -73,7 +78,15 @@
 	                          <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
 	                          
 	          </div>
-	                    <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+            <div class="col-xs-1" style="padding-top: 7px;">
+              
+                <i class="fa fa-battery-full fa-lg" ></i>
+              
+
+
+
+            </div>
+	                    <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 	                              <div class="onoffswitch">
 	                                  {%if vv['State']==True:%}
 	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
