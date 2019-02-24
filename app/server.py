@@ -13,6 +13,7 @@ import time
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
 New_devices={}
+Presence={}
 flag= False
 
 def start_client():
@@ -99,7 +100,7 @@ def process_input(input_str):
 
       
  
-                    
+'''                    
 def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm es true si el usuario es admin (ergo pasarle el valor desde routes)
 
     if location not in Current_state_dic_rooms.keys():
@@ -114,6 +115,7 @@ def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm e
     db.session.add(new_device)
     db.commit()
     return 'Device "'+str_id+'" added successfully' 
+'''
 
 def remove_dev(location_str_id):
 
@@ -167,7 +169,7 @@ def get_initial_values():
     Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
 
-    ##print(Current_state_dic_rooms)
+    print(Current_state_dic_rooms)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -396,7 +398,8 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
     trying_to_change = Devices.query.filter_by(location=new_location,str_id=new_str_id).first()
 
     if trying_to_change != None:
-        return {'status': 400, 'message' : "There's already a device with that name in that location"}
+        message = "There's already a device called "+new_str_id+" in "+new_location
+        return {'status': 400, 'message' : message}
     else:
 
         if state == 'On':
@@ -433,7 +436,8 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
     trying_to_add = Devices.query.filter_by(location=location,str_id=str_id).first()
 
     if trying_to_add != None:
-        return {'status': 400, 'message' : "There's already a device with that name in that location"}
+        message = "There's already a device called "+str_id+" in "+location
+        return {'status': 400, 'message' : message}
     else:
         if state == 'On':
             state = True
