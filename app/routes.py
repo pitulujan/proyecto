@@ -225,7 +225,7 @@ def post_tests():
     return render_template('post_tests.html',title = 'Post Tests')
 
 
-@app.route('/pruebitas2', methods=['POST'])
+@app.route('/pruebitas2', methods=['POST','GET'])
 #@login_required
 #https://www.journaldev.com/19392/python-xml-to-json-dict
 def pruebitas2():
