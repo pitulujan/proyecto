@@ -12,9 +12,12 @@ import time
 
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
+Current_rooms ={}
 New_devices={}
 Presence={}
 flag= False
+new_dev_mac=''
+new_dev_mac_enabled=False
 
 def start_client():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -164,7 +167,7 @@ def get_initial_values():
             Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'new_device': location.new_device, 'offline':location.offline,'mac_address':location.mac_address}
         else:
             Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm,'new_device': location.new_device, 'offline':location.offline,'mac_address':location.mac_address}}
-
+            Current_rooms[location.location]=True
     query_temp=Temperature.query.first()
     Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
@@ -390,9 +393,10 @@ def delete_scheduled_event(id_event):
     return
 
 def get_new_device():
-    return flag
+    return flag,new_dev_mac,new_dev_mac_enabled
 
 def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set_point,mac_address):
+    global Current_rooms
 
     device_to_edit = Devices.query.filter_by(mac_address=mac_address).first()
     trying_to_change = Devices.query.filter_by(location=new_location,str_id=new_str_id).first()
@@ -414,6 +418,7 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
 
         if new_location not in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[new_location] = {new_str_id:{'dev_type' : device_to_edit.dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : device_to_edit.user_perm,'mac_address': mac_address}}
+            Current_rooms[new_location]=True
         else:
             if new_str_id not in Current_state_dic_rooms[new_location]:
                 Current_state_dic_rooms[new_location][new_str_id] = {'dev_type' : device_to_edit.dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : device_to_edit.user_perm, 'mac_address': mac_address}
@@ -432,6 +437,9 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
 
 def add_new_device_server(location,str_id,state,set_point,mac_address):
     global flag
+    global new_dev_mac
+    global Current_rooms
+
     
     trying_to_add = Devices.query.filter_by(location=location,str_id=str_id).first()
 
@@ -449,6 +457,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
 
         if location not in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address}}
+            Current_rooms[location]=False
         else:
             if str_id not in Current_state_dic_rooms[location]:
                 Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address}
@@ -456,6 +465,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
         db.session.add(device_to_add)
         db.session.commit()
         New_devices.pop(mac_address)
+        new_dev_mac = New_devices.keys()
         if len(New_devices.keys())==0:  
             #print('flag server entro bien ')
             flag = False
@@ -468,6 +478,9 @@ def get_new_devices():
     else:
         return None
 
+def get_current_rooms():
+    return Current_rooms
+
 def generate_dummy_device_test(dev_type):
     if dev_type == 'True':
         dev_type = True
@@ -475,6 +488,8 @@ def generate_dummy_device_test(dev_type):
         dev_type = False 
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
     global flag
+    global new_dev_mac
+    global new_dev_mac_enabled
     
     if '08:00:27:60:03:90' not in New_devices.keys():
         New_devices['08:00:27:60:03:90'] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False, 'mac_address':'08:00:27:60:03:90'}
@@ -484,6 +499,13 @@ def generate_dummy_device_test(dev_type):
 
     #print(New_devices)
     flag = True 
+    new_dev_mac = New_devices.keys()
+    new_dev_mac_enabled = True
+    return
+
+def disable_new_dev_mac():
+    global new_dev_mac_enabled
+    new_dev_mac_enabled = False
     return
 
 def send_socket(text):

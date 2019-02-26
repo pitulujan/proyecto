@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_rooms
 
 #import xmltodict, requests
 #pitu
@@ -17,7 +17,7 @@ get_initial_values()
 @app.route('/index')
 @login_required
 def index():
-    return render_template('index.html', title='Home', devices=get_devices(),temp=get_temp_state())
+    return render_template('index.html', title='Home', devices=get_devices(),temp=get_temp_state(),current_rooms=get_current_rooms())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -186,17 +186,17 @@ def add_device():
 
 @app.before_request
 def new_device_notifier_after():
-    g.flag = get_new_device()
+    g.flag,g.new_dev_macs,g.new_dev_mac_enabled = get_new_device()
 
 @app.after_request
 def new_device_notifier(response):
-    g.flag = get_new_device()
+    g.flag,g.new_dev_macs,g.new_dev_mac_enabled = get_new_device()
     #print (g.flag)
     return response 
 
     if path == '/add_device' and method == 'POST':
         #print(get_new_device())
-        g.flag = get_new_device()
+        g.flag ,g.new_dev_macs,g.new_dev_mac_enabled= get_new_device()
 
 
 
@@ -211,6 +211,11 @@ def generate_dummy_device():
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
+@app.route('/disable_new_dev_mac_enabled', methods=['POST'])
+@login_required
+def disable_new_dev_mac_enabled():
+    disable_new_dev_mac()
+    return 'Ok'
 
 @app.route('/post_tests', methods=['GET', 'POST'])
 @login_required

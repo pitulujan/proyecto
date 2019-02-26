@@ -67,7 +67,12 @@
 
 {% for k,v in devices.items()|sort: %}
 {%if k != 'default' %}
-   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{'-'.join(k.split(' '))}} <span class="fa fa-street-view " style="color:grey;"></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+
+{%if current_rooms[k]==1%}
+   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " ></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+{%else%}
+   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " style="color:grey;"></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+{%endif%}
    <div class="dropdown-container-pitu collapse " >
     	
     {% for kk,vv in v.items()|sort: %}
