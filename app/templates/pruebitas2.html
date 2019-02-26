@@ -1,8 +1,7 @@
 <!--https://stackoverflow.com/questions/12463896/create-div-using-jquery-and-json-data-->
 {% extends "base2.html" %}
 {% block app_content %}
-<link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
-<link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+
 
 
 <div class="row">
@@ -20,7 +19,44 @@
 	</div>
 </div>
 
+                       <label for="deviceid">Device</label>
+                      <select id="deviceid" class="form-control" >
+                       
+                               <option value="hola">hola</option>
+                               <option type="text">hola</option>
+
+                        
+                      </select>
+<label for="cars">Device</label>
+<input type="text" list="cars" id="dog" name="location" value="Location" onfocus="if (this.value=='Location') this.value='';"  autocomplete="off"/>
+<datalist id="cars" autocomplete="off" >
+  <option data-tokens='Volvo'>Volvo</option>
+  <option data-tokens='Saab'>Saab</option>
+  <option data-tokens='Mercedes'>Mercedes</option>
+  <option data-tokens='Audi'>Audi</option>
+</datalist>
+
 <button>Insert content after each p element</button>
+
+
+<form>
+  <!-- these will remember input -->
+  With id: <input id="myInputId" list="myList" /><br />
+  With name: <input name="myInputName" list="myList" /><br />
+
+  <!-- these will NOT remember input -->
+  No id, name, class: <input list="myList" /><br />
+  With class: <input class="myInputClass" list="myList" />
+
+  <datalist id="myList">
+    <option value="pepa 1"></option>
+    <option value="Option 2"></option>
+  </datalist>
+
+  <br />
+
+  <input type="submit" />
+</form>
 
 <script>
 $(document).ready(function(){
