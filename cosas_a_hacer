@@ -88,12 +88,13 @@ modificar el add_device para que use la mac adress del end device --> LISTOOOOOO
 --------------------------------UPDATE 2/23/2019--------------------------------------
 
 simular new device por socket
-estados devices (blur a device si no tiene bateria o se desconecto)
+estados devices (blur a device si no tiene bateria o se desconecto) -> hacer dict del Current_rooms {'Cocina':{'presence':True, 'online': True}}
 aviso bateria baja,hay que ver si el dispositivo esta online u offline y avisar --> iconos en pruebitas2
 usuario defecto Admin Admin posibilidad de cambio de contraseña para el usercase
 indicador de presencia en cada habitacion (si disponible)
 falta auto eliminar los eventos una vez que ocurrieron (si son dates) --> posible solucion : en los metodos que se llaman si el event type es date que lo borre
 
 diferenciar sensores de actuadores en el sistema, lo que se ve en home son actuadores y sus estados, que hacer con sensores de luz, posicion y temperatura (donde se los muestra, se los muestra?)
+ver que se carga apenas arranca el sistema y que se guarda en la db (por ejemplo el estado offline online de los devices etc)
 
 
