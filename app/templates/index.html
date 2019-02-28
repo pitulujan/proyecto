@@ -68,13 +68,32 @@
 {% for k,v in devices.items()|sort: %}
 {%if k != 'default' %}
 
-{%if current_rooms[k]==1%}
-   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " ></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+{%if k in current_sensors.keys()%}
+      {%if list(current_sensors[k].keys()) == ['Presence','Temperature','Light']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+        {%elif list(current_sensors[k].keys()) == ['Presence','Temperature']%}
+        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+        {%elif list(current_sensors[k].keys()) == ['Presence','Light']%}
+        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+        {%elif list(current_sensors[k].keys()) == ['Temperature','Light']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+         {%elif list(current_sensors[k].keys()) == ['Temperature']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+         {%elif list(current_sensors[k].keys()) == ['Presence']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+         {%else%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+
+      {%endif%}
+
+
+
 {%else%}
-   <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " style="color:grey;"></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-{%endif%}
+<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} </span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+
+ {%endif%}
    <div class="dropdown-container-pitu collapse " >
-    	
+   	
     {% for kk,vv in v.items()|sort: %}
     	
 	    	  <div class="row">

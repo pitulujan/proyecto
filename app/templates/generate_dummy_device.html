@@ -18,6 +18,49 @@
                   </div>
 </form>
 
+<form role="form" action="{{url_for('generate_dummy_sensor')}}" method="POST" id="form_id_sensors">
+      <br>            
+  <div class="form-group">
+                    <label for="dev_type_sensor">Sensor_type</label>
+                      <select id="dev_type_sensor" class="form-control" name="dev_type_sensor">
+
+                          <option value="Presence">Presence</option>
+                          <option value="Light">Light</option>
+                          <option value="Temperature">Temperature</option>
+
+                      </select>
+                      
+                      <label for="dev_state_sensor">state</label>
+                      <select id="dev_state_sensor" class="form-control" name="dev_state_sensor">
+
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                          <option value="20">20°C</option>
+                          
+
+                      </select>
+
+                       <label for="dev_online_sensor">online</label>
+                      <select id="dev_online_sensor" class="form-control" name="dev_online_sensor">
+
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                          
+
+                      </select>
+
+                  <div class="form-group">
+                    <br>
+                    <button class="btn btn-primary">Add New Dummy Sensor</button>
+                  </div>
+</form>
+
+<script type="text/javascript">
+  
+$('#dev_type_sensor').change(function () { });
+
+
+</script>
 
 
 

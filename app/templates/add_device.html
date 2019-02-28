@@ -4,7 +4,10 @@
 <link rel="stylesheet" href="/static/style_slider.css">
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- arregla el tema del zoom en el modal, la romi toda -->
 
-{%if g.flag==1 and new_devices!=None%}
+{%if g.flag==1 %}
+
+{%if new_devices!=None%}
+<h3>Devices</h3>
  <table class="table">
     <tbody>
 
@@ -27,6 +30,76 @@
 </td></tr>
     {%endfor%}
 </tbody></table>
+{%endif%}
+
+{%if sensors!=None%}
+<h3>Sensors</h3>
+ <table class="table">
+    <tbody>
+
+{% for k,v in sensors.items()|sort: %}
+<tr><td>
+    
+      
+          <div class="row" >
+            <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                            
+                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;">Sensor {{k}}</h3>
+                            
+            </div>
+            <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
+
+              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-location="{{k}}"  data-dev_type="{{v.dev_type}}" data-mac_address={{v.mac_address}} ></span>
+    </div>
+      </div>
+
+</td></tr>
+    {%endfor%}
+</tbody></table>
+{%endif%}
+
+    <div class="modal fade" id="modaladdsensor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <center><h4 class="modal-title" id="myModalLabel">New Sensor</h4></center>
+            </div>
+
+            <!-- Modal Body -->
+       <div class="modal-body">
+                
+                <form role="form" action="" method="POST" id="form_id">
+                  <div class="form-group">
+                    <label for="device_location">Location</label>
+                      <input type="text" class="form-control" id="sensor_location" name="location_sensor" value="Location" onfocus="if (this.value=='Location') this.value='';"/>
+                  </div>
+
+                
+        
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" id="submit_changes_sensor" class="btn btn-primary" >Add Sensor</button>
+                </form>
+        
+</div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
 
 
 
@@ -190,6 +263,14 @@
         });
         $('#modaladdevent').modal('hide');
       });
+
+            $(document).on("click","span.editsensor",function(){
+ 
+                            $('#modaladdsensor').modal('show');
+                                                          
+        });
+
+
     </script>
 
 {% endblock %}

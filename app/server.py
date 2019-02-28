@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
-from app.models import User, Devices, Log, Temperature, Scheduled_events
+from app.models import User, Devices, Log, Temperature, Scheduled_events,Sensors
 from app import db
 from flask import jsonify
 from threading import Thread
@@ -12,8 +12,9 @@ import time
 
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
-Current_rooms ={}
+Current_sensors ={}
 New_devices={}
+New_sensors={}
 Presence={}
 flag= False
 new_dev_mac=''
@@ -117,8 +118,11 @@ def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm e
             return 'Device "'+str_id+'" already exists, please try a different name'
     db.session.add(new_device)
     db.commit()
-    return 'Device "'+str_id+'" added successfully' 
+    return 'Device "'+str_id+'" added successfully'
+
 '''
+def remove_sensor(mac_address):
+    pass
 
 def remove_dev(location_str_id):
 
@@ -148,11 +152,11 @@ def remove_dev(location_str_id):
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
-scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=10,id='basic',replace_existing=True)
-scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
+#scheduler = config_scheduler()
+#scheduler.add_job(tick, 'interval', seconds=10,id='basic',replace_existing=True)
+#scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 
@@ -164,15 +168,28 @@ def get_initial_values():
     query_devices=Devices.query.all()
     for location in query_devices:
         if location.location in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'new_device': location.new_device, 'offline':location.offline,'mac_address':location.mac_address}
+            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'new_device': location.new_device, 'mac_address':location.mac_address}
         else:
-            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm,'new_device': location.new_device, 'offline':location.offline,'mac_address':location.mac_address}}
-            Current_rooms[location.location]=True
+            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm,'new_device': location.new_device, 'mac_address':location.mac_address}}
     query_temp=Temperature.query.first()
     Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
+    query_sensors = Sensors.query.all()
 
-    print(Current_state_dic_rooms)
+    for sensor in query_sensors:
+        if sensor.dev_type != 'Temperature':
+            if sensor.location in Current_sensors.keys():
+                Current_sensors[sensor.location][sensor.dev_type]={'state':False,'online':True, 'mac_address':sensor.mac_address}
+            else:
+                Current_sensors[sensor.location]={sensor.dev_type:{'state':True,'online':True, 'mac_address':sensor.mac_address}}
+        else:
+            if sensor.location in Current_sensors.keys():
+                Current_sensors[sensor.location][sensor.dev_type]={'state':20,'online':False, 'mac_address':sensor.mac_address}
+            else:
+                Current_sensors[sensor.location]={sensor.dev_type:{'state':20,'online':True, 'mac_address':sensor.mac_address}}
+
+    #print(Current_state_dic_rooms)
+    print(Current_sensors)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -363,8 +380,6 @@ def check_days(date,day_of_week,str_id,location,pidd):
 
     return flag
 
-def reschedule_event():
-    pass
 
 def delete_scheduled_event(id_event):
 
@@ -418,7 +433,7 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
 
         if new_location not in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[new_location] = {new_str_id:{'dev_type' : device_to_edit.dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : device_to_edit.user_perm,'mac_address': mac_address}}
-            Current_rooms[new_location]=True
+            #Current_rooms[new_location]=True
         else:
             if new_str_id not in Current_state_dic_rooms[new_location]:
                 Current_state_dic_rooms[new_location][new_str_id] = {'dev_type' : device_to_edit.dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : device_to_edit.user_perm, 'mac_address': mac_address}
@@ -457,7 +472,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
 
         if location not in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address}}
-            Current_rooms[location]=False
+           # Current_rooms[location]=False
         else:
             if str_id not in Current_state_dic_rooms[location]:
                 Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address}
@@ -478,8 +493,8 @@ def get_new_devices():
     else:
         return None
 
-def get_current_rooms():
-    return Current_rooms
+def get_current_sensors():
+    return Current_sensors
 
 def generate_dummy_device_test(dev_type):
     if dev_type == 'True':
@@ -490,18 +505,52 @@ def generate_dummy_device_test(dev_type):
     global flag
     global new_dev_mac
     global new_dev_mac_enabled
+    global New_sensors
     
     if '08:00:27:60:03:90' not in New_devices.keys():
-        New_devices['08:00:27:60:03:90'] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False, 'mac_address':'08:00:27:60:03:90'}
+        New_devices['08:00:27:60:03:90'] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'mac_address':'08:00:27:60:03:90'}
     else:
         
-        New_devices['08:00:27:60:03:9'+str(len(New_devices.keys()))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'offline': False,'mac_address':'08:00:27:60:03:9'+str(len(New_devices.keys()))} 
+        New_devices['08:00:27:60:03:9'+str(len(New_devices.keys()))] = {'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False , 'new_device': True, 'mac_address':'08:00:27:60:03:9'+str(len(New_devices.keys()))} 
 
     #print(New_devices)
     flag = True 
-    new_dev_mac = New_devices.keys()
+    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
     return
+
+def generate_dummy_sensor_test(dev_type,state,online):
+    if state == 'True':
+        state = True
+    elif state =='False':
+        state = False
+    
+    if online == 'True':
+        online= True 
+    else:
+        online = False
+    ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
+    global flag
+    global new_dev_mac
+    global new_dev_mac_enabled
+    global New_devices
+    
+    if '08:00:27:60:04:00' not in New_sensors.keys():
+        New_sensors['08:00:27:60:04:00'] = {'dev_type' : dev_type , 'state': state , 'online' : online, 'mac_address':'08:00:27:60:04:00'}
+    else:
+        
+        New_sensors['08:00:27:60:04:0'+str(len(New_sensors.keys()))] = {'dev_type' : dev_type , 'state': state , 'online' : online, 'mac_address':'08:00:27:60:04:0'+str(len(New_sensors.keys()))} 
+
+    #print(New_devices)
+    flag = True 
+    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+    new_dev_mac_enabled = True
+    return
+def get_new_sensors():
+    if len(New_sensors.keys())!=0:
+        return New_sensors
+    else:
+        return None
 
 def disable_new_dev_mac():
     global new_dev_mac_enabled

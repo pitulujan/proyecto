@@ -88,7 +88,7 @@ modificar el add_device para que use la mac adress del end device --> LISTOOOOOO
 --------------------------------UPDATE 2/23/2019--------------------------------------
 
 simular new device por socket
-estados devices (blur a device si no tiene bateria o se desconecto) -> hacer dict del Current_rooms {'Cocina':{'presence':True, 'online': True}}
+estados devices (blur a device si no tiene bateria o se desconecto) -> hacer dict del Current_rooms {'Cocina':{'presence':{'available': True,'state':True}, 'online': True}} -> el available viene de la db de sensors, si esta es true 
 aviso bateria baja,hay que ver si el dispositivo esta online u offline y avisar --> iconos en pruebitas2
 usuario defecto Admin Admin posibilidad de cambio de contraseña para el usercase
 indicador de presencia en cada habitacion (si disponible)
@@ -97,4 +97,17 @@ falta auto eliminar los eventos una vez que ocurrieron (si son dates) --> posibl
 diferenciar sensores de actuadores en el sistema, lo que se ve en home son actuadores y sus estados, que hacer con sensores de luz, posicion y temperatura (donde se los muestra, se los muestra?)
 ver que se carga apenas arranca el sistema y que se guarda en la db (por ejemplo el estado offline online de los devices etc)
 
+modificar el agregar un device por si es un sensor --> puede que en una habitacion haya solo un sensor (tipo ubicacion solo o temperatura solo, sin actuador) -> se puede agregar un sensor o un actuador a la habitacion
+
+diferencia entre sensor de temp y temp en la db ? 
+
+
+ojo con el remove device ahora que agregué sensors a la db, porque si elimino un sensor no sirve el metodo remove_device del server porque recibe string_id y busca en la tabla Devices , y si hacemos remove device por mac address tmb? no estaría mal bb
+
+
+{'type': dev_type ,'state':True}, 'online': True}
+
+PwC_3xt3rn0!
+
+puede haber sensores de temp en alguna habitacion sin que so modifique la temp 
 

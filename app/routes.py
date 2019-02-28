@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_rooms
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test
 
 #import xmltodict, requests
 #pitu
@@ -17,7 +17,7 @@ get_initial_values()
 @app.route('/index')
 @login_required
 def index():
-    return render_template('index.html', title='Home', devices=get_devices(),temp=get_temp_state(),current_rooms=get_current_rooms())
+    return render_template('index.html', title='Home', devices=get_devices(),temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -180,7 +180,7 @@ def add_device():
         flash(answer['message'])
         return jsonify(answer)
 
-    return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices())
+    return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors())
 
 
 
@@ -210,6 +210,14 @@ def generate_dummy_device():
         return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
+
+@app.route('/generate_dummy_sensor', methods=['POST'])
+@login_required
+def generate_dummy_sensor():
+    if request.method == 'POST':
+
+        generate_dummy_sensor_test(request.form.get('dev_type_sensor'), request.form.get('dev_state_sensor'),request.form.get('dev_online_sensor'))
+    return redirect(url_for('generate_dummy_device'))
 
 @app.route('/disable_new_dev_mac_enabled', methods=['POST'])
 @login_required
