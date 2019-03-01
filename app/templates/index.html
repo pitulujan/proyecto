@@ -69,13 +69,13 @@
 {%if k != 'default' %}
 
 {%if k in current_sensors.keys()%}
-      {%if list(current_sensors[k].keys()) == ['Presence','Temperature','Light']%}
+      {%if list(current_sensors[k].keys()|sort) == ['Light','Presence','Temperature']%}
          <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-        {%elif list(current_sensors[k].keys()) == ['Presence','Temperature']%}
+        {%elif list(current_sensors[k].keys()|sort) == ['Presence','Temperature']%}
         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-        {%elif list(current_sensors[k].keys()) == ['Presence','Light']%}
+        {%elif list(current_sensors[k].keys()|sort) == ['Light','Presence']%}
         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-        {%elif list(current_sensors[k].keys()) == ['Temperature','Light']%}
+        {%elif list(current_sensors[k].keys()|sort) == ['Light','Temperature']%}
          <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
          {%elif list(current_sensors[k].keys()) == ['Temperature']%}
          <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
@@ -89,7 +89,8 @@
 
 
 {%else%}
-<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} </span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+
+<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
 
  {%endif%}
    <div class="dropdown-container-pitu collapse " >
@@ -152,6 +153,27 @@
     {%endfor%}
 </div>
  {%endif%} 
+{%endfor%}
+{%for key in current_sensors.keys():%}
+{%if key not in devices.keys()%}
+
+      {%if list(current_sensors[key].keys()|sort) == ['Light','Presence','Temperature']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
+        {%elif list(current_sensors[key].keys()|sort) == ['Presence','Temperature']%}
+        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> </button>
+        {%elif list(current_sensors[key].keys()|sort) == ['Light','Presence']%}
+        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span></button>
+        {%elif list(current_sensors[key].keys()|sort) == ['Light','Temperature']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
+         {%elif list(current_sensors[key].keys()) == ['Temperature']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> </button>
+         {%elif list(current_sensors[key].keys()) == ['Presence']%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> </button>
+         {%else%}
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
+
+      {%endif%}
+{%endif%}
 {%endfor%}
   <script>
  	$(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done();});

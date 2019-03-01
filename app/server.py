@@ -454,6 +454,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
     global flag
     global new_dev_mac
     global Current_rooms
+    global New_sensors
 
     
     trying_to_add = Devices.query.filter_by(location=location,str_id=str_id).first()
@@ -480,11 +481,51 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
         db.session.add(device_to_add)
         db.session.commit()
         New_devices.pop(mac_address)
-        new_dev_mac = New_devices.keys()
-        if len(New_devices.keys())==0:  
+        new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+        if len(new_dev_mac)==0:  
             #print('flag server entro bien ')
             flag = False
-        return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(New_devices.keys())}
+        return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
+
+def add_new_sensor_server(dev_type,location,mac_address,state,online):
+    global flag
+    global new_dev_mac
+    global New_sensors
+    global Current_sensors
+    if state == 'True':
+        state = True
+    elif state =='False':
+        state = False
+    
+    if online == 'True':
+        online= True 
+    else:
+        online = False
+
+    sensor_to_add = Sensors(location=location,dev_type=dev_type,mac_address=mac_address)
+    if location in Current_sensors.keys():
+        Current_sensors[location][dev_type]={'state':state,'online':online, 'mac_address':mac_address}
+    else:
+        Current_sensors[location]={dev_type:{'state':state,'online':online, 'mac_address':mac_address}}
+
+    for key in Current_sensors.keys():
+        print(key,Current_sensors[key])
+
+
+
+    db.session.add(sensor_to_add)
+    db.session.commit()
+    New_sensors.pop(mac_address)
+    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+    if len(new_dev_mac)==0:  
+        #print('flag server entro bien ')
+        flag = False
+    return {'status': 200, 'message' : dev_type +" sensor has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
+
+
+
+
+
 
 def get_new_devices():
 
@@ -494,6 +535,7 @@ def get_new_devices():
         return None
 
 def get_current_sensors():
+    global Current_sensors
     return Current_sensors
 
 def generate_dummy_device_test(dev_type):
