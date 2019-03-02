@@ -95,6 +95,23 @@
  {%endif%}
    <div class="dropdown-container-pitu collapse " >
 
+    {%if k in current_sensors.keys() and current_sensors[k]['Temperature']|length !=0 %}
+                 <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                                        
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        
+                        </div>
+                        <div class="col-xs-1" style="padding-top: 7px;">
+                          
+                            <i class="fa fa-battery-full fa-lg" ></i>
+                        </div>
+                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 20px;"> {{current_sensors[k]['Temperature']['state']}}°C</h3>
+                        </div>
+            </div>
+
+
+    {%endif%}
      
     {% for kk,vv in v.items()|sort: %}
       
