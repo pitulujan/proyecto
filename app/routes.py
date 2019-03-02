@@ -239,7 +239,7 @@ def generate_dummy_sensor():
     if request.method == 'POST':
 
         
-        #print(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
+        print(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
         generate_dummy_sensor_test(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
     return redirect(url_for('generate_dummy_device'))
 

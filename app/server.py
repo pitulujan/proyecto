@@ -493,7 +493,7 @@ def add_new_sensor_server(location,mac_address,battery,presence_state,online,bat
     if presence_state == 'True':
         presence_state = True
     else:
-        precense_state =False
+        presence_state =False
         
     
     if online == 'True':
@@ -574,12 +574,11 @@ def generate_dummy_device_test(dev_type):
 def generate_dummy_sensor_test(presence_state,online,battery,battery_state,temp_state):
 
     
-
-
+    
     if presence_state == 'True':
         presence_state = True
     else:
-        precense_state =False
+        presence_state =False
         
     
     if online == 'True':
