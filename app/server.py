@@ -160,11 +160,11 @@ def remove_dev(location_str_id):
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
-#scheduler = config_scheduler()
-#scheduler.add_job(tick, 'interval', seconds=10,id='basic',replace_existing=True)
-#scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
+scheduler = config_scheduler()
+scheduler.add_job(tick, 'interval', seconds=30,id='basic',replace_existing=True)
+scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
-#scheduler.start()
+scheduler.start()
 
 
 
@@ -190,7 +190,7 @@ def get_initial_values():
 
 
     #print(Current_state_dic_rooms)
-    print(Current_sensors)
+    #print(Current_sensors)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
