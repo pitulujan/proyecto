@@ -39,7 +39,7 @@
             </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-              <button class="btn btn-danger btn-block deleteButton" data-location="{{k}}" data-mac_address="{{current_sensors[k][sensor]['mac_address']}}"  ><span class="glyphicon glyphicon-trash"></span></button>
+              <button class="btn btn-danger btn-block deleteButtonsensor" data-location="{{k}}" data-mac_address="{{current_sensors[k][sensor]['mac_address']}}"  data-dev_type="{{sensor}}" ><span class="glyphicon glyphicon-trash"></span></button>
            </div>
       </div>
 
@@ -47,6 +47,31 @@
     {%endif%}
   </div>
     {%endfor%}
+
+    {%for key in current_sensors.keys():%}
+
+        {%if key not in devices.keys()%}
+                <button class="dropdown-btn index" data-toggle="collapse" "> {{key}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+              <div class="dropdown-container-pitu collapse " >
+
+
+              {%for sensor in current_sensors[key].keys():%}
+          <div class="row" id="perro">
+            <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                            
+                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{sensor}} Sensor</h3>
+                            
+            </div>
+            <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+
+              <button class="btn btn-danger btn-block deleteButtonsensor" data-location="{{key}}" data-mac_address="{{current_sensors[key][sensor]['mac_address']}}"  data-dev_type="{{sensor}}" ><span class="glyphicon glyphicon-trash"></span></button>
+           </div>
+      </div>
+
+            {%endfor%}
+            {%endif%}
+            {%endfor%}
+
 
 
 
@@ -67,9 +92,46 @@
             <!-- Modal Body -->
             <div class="modal-body">
 
-                <form role="form" action="{{ url_for('remove_device') }}" method="POST" style="display: flex;justify-content: flex-end;"">
+                <form role="form" action="{{ url_for('remove_device') }}" method="POST" style="display: flex;justify-content: flex-end;">
                 <div class="form-group">
                       <input id="device_to_rem" name="delete" val='' style="display: none;"/>
+                  </div>
+
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Cancel
+                </button>
+                <button type="submit" id="delete_btn" class="btn btn-danger" ><i class=""> </i>
+                    Delete
+                </button>
+        </form>
+                </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="myModalNormsensor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <center><h4 class="modal-title" id="myModalLabelsensor"></h4></center>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <form role="form" action="{{ url_for('remove_sensor') }}" method="POST" style="display: flex;justify-content: flex-end;">
+                <div class="form-group">
+                      <input id="device_to_rem_sensor" name="delete_sensor" val='' style="display: none;"/>
                   </div>
 
                 <button type="button" class="btn btn-default"
@@ -97,6 +159,18 @@
       $(".modal-body #device_to_rem").val(location+'/'+str_id);
       $("#myModalLabel").text('Are you sure you want to delete "'+(str_id.split('.')).join(' ')+ '" from "'+(location.split('-')).join(' ')+'" ?');
       $('#myModalNorm').modal('show');});
+
+      $(".deleteButtonsensor").click(function(){
+        var mac_address = $(this).data('mac_address');
+        var dev_type = $(this).data('dev_type'); 
+        var location = $(this).data('location');
+        
+        $("#device_to_rem_sensor").val(mac_address);
+        $("#myModalLabelsensor").text('Are you sure you want to delete the  "'+dev_type+ ' sensor" from "'+location+'" ?');
+
+        $('#myModalNormsensor').modal('show');
+
+      });
 
 
         });

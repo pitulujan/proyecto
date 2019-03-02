@@ -121,8 +121,18 @@ def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm e
     return 'Device "'+str_id+'" added successfully'
 
 '''
-def remove_sensor(mac_address):
-    pass
+def remove_sens(mac_address):
+    global Current_sensors
+    sensor_to_delete = Sensors.query.filter_by(mac_address=mac_address).first()
+    sensor_type = sensor_to_delete.dev_type
+    sensor_location = sensor_to_delete.location
+    db.session.delete(sensor_to_delete)
+    
+    del Current_sensors[sensor_location][sensor_type]
+    if len(Current_sensors[sensor_location]) ==0:
+        del Current_sensors[sensor_location]
+    db.session.commit()
+    return sensor_type+' sensor was successfully removed from '+sensor_location
 
 def remove_dev(location_str_id):
 
