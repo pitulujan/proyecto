@@ -1,6 +1,6 @@
 {% extends "base2.html" %}
 {% block app_content %}
-	   <link rel="stylesheet" href="/static/style_slider.css">
+     <link rel="stylesheet" href="/static/style_slider.css">
      <link rel="stylesheet" href="/static/index_y_remove_device.css">
      <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
      <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
@@ -11,10 +11,10 @@
     <style type="text/css">
 
     {%if temp['State'] == True:%}
-	#prendeapaga {display:show;}
-	{%else:%}
-	#prendeapaga {display:none;}
-	{% endif %}
+  #prendeapaga {display:show;}
+  {%else:%}
+  #prendeapaga {display:none;}
+  {% endif %}
 
 .dropdown-btn.index:hover {
     color: #333;
@@ -23,7 +23,7 @@
     </style>
 
     <br>
-    	 <div class="row">
+       <div class="row">
           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                           
                          <h2 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">Temperature</h2>
@@ -49,17 +49,17 @@
               <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="{{temp['State']}}">
     
     <div class="row">
-    	<div class="col-xs-9">
-		    <div class="slidecontainer" style="padding-top: 26px;">
+      <div class="col-xs-9">
+        <div class="slidecontainer" style="padding-top: 26px;">
                 <input type="range" min="15" max="30" value="{{temp['Set_Point']}}" class="slider" id="myRange"  name="set_temp">
                 
-		    </div>
-		</div>
-		<div class="col-xs-3" style="display: flex;justify-content: center;">
-			<b><h3><span id="demo"></span>°C</h3></b> 
-		</div>
-		</div>
-	</div>
+        </div>
+    </div>
+    <div class="col-xs-3" style="display: flex;justify-content: center;">
+      <b><h3><span id="demo"></span>°C</h3></b> 
+    </div>
+    </div>
+  </div>
 
               </form>
     
@@ -94,15 +94,16 @@
 
  {%endif%}
    <div class="dropdown-container-pitu collapse " >
-   	
+
+     
     {% for kk,vv in v.items()|sort: %}
-    	
-	    	  <div class="row">
-	          <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
-	                          
-	                          <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
-	                          
-	          </div>
+      
+          <div class="row">
+            <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                            
+                            <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
+                            
+            </div>
             <div class="col-xs-1" style="padding-top: 7px;">
               
                 <i class="fa fa-battery-full fa-lg" ></i>
@@ -111,45 +112,45 @@
 
 
             </div>
-	                    <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-	                              <div class="onoffswitch">
-	                                  {%if vv['State']==True:%}
-	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
-	                                  {%else:%}
-	                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="Off" >
-	                                  {%endif%}
-	                                  <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></label>
-	                              </div>
-	                    </div> 
-	                         
-	          </div>
-    	{%if vv['dev_type'] == False:%}
-          	{%if vv['State'] == True:%}
-          		<div class="row" id="prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" style="display:show;padding-left: 20px;">
-          	{%else:%}
-          		<div class="row" id="prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" style="display:none;padding-left: 20px;">
-        	{%endif%}
-            	<form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
-            		<div class="form-group">
-              			<input type="text" style="display:none;"  id="statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" name="statevalue" value="{{vv['State']}}">
-            			<div class="row">
-    						<div class="col-xs-9">
-		    					<div class="slidecontainer" style="padding-top: 26px;">
-                    				<input type="range" min="0" max="100" step="5" value="{{vv['set_point']}}" class="slider" id="myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" name="set_point">
-                   				</div>
-							</div>
-							<div class="col-xs-3" style="display: flex;justify-content: center;">
-								<b><h3><span id="demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></span>%</h3></b> 
-							</div>
-						</div>
+                      <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+                                <div class="onoffswitch">
+                                    {%if vv['State']==True:%}
+                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
+                                    {%else:%}
+                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="Off" >
+                                    {%endif%}
+                                    <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></label>
+                                </div>
+                      </div> 
+                           
+            </div>
+      {%if vv['dev_type'] == False:%}
+            {%if vv['State'] == True:%}
+              <div class="row" id="prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" style="display:show;padding-left: 20px;">
+            {%else:%}
+              <div class="row" id="prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" style="display:none;padding-left: 20px;">
+          {%endif%}
+              <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+                <div class="form-group">
+                    <input type="text" style="display:none;"  id="statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" name="statevalue" value="{{vv['State']}}">
+                  <div class="row">
+                <div class="col-xs-9">
+                  <div class="slidecontainer" style="padding-top: 26px;">
+                            <input type="range" min="0" max="100" step="5" value="{{vv['set_point']}}" class="slider" id="myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" name="set_point">
+                          </div>
+              </div>
+              <div class="col-xs-3" style="display: flex;justify-content: center;">
+                <b><h3><span id="demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></span>%</h3></b> 
+              </div>
+            </div>
 
-      				</div>
-            	</form>
+              </div>
+              </form>
     
-  		</div>
-            	
+      </div>
+              
         {%endif%}
-    	
+      
     {%endfor%}
 </div>
  {%endif%} 
@@ -159,14 +160,88 @@
 
       {%if list(current_sensors[key].keys()|sort) == ['Light','Presence','Temperature']%}
          <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
+
+         <div class="dropdown-container-pitu collapse " >
+
+             <div class="row">
+                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                                        
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        
+                        </div>
+                        <div class="col-xs-1" style="padding-top: 7px;">
+                          
+                            <i class="fa fa-battery-full fa-lg" ></i>
+                        </div>
+                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
+                        </div>
+            </div>
+        
+         </div>
+
+
+
+
         {%elif list(current_sensors[key].keys()|sort) == ['Presence','Temperature']%}
-        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> </button>
+        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i> </button>
+
+                 <div class="dropdown-container-pitu collapse " >
+
+             <div class="row">
+                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                                        
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        
+                        </div>
+                        <div class="col-xs-1" style="padding-top: 7px;">
+                          
+                            <i class="fa fa-battery-full fa-lg" ></i>
+                        </div>
+                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
+                        </div>
+            </div>
+        
+         </div>
         {%elif list(current_sensors[key].keys()|sort) == ['Light','Presence']%}
         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span></button>
         {%elif list(current_sensors[key].keys()|sort) == ['Light','Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i> </button>
+                  <div class="dropdown-container-pitu collapse " >
+
+             <div class="row">
+                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                                        
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        
+                        </div>
+                        <div class="col-xs-1" style="padding-top: 7px;">
+                          
+                            <i class="fa fa-battery-full fa-lg" ></i>
+                        </div>
+                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
+                        </div>
+            </div>
+        
+         </div>
          {%elif list(current_sensors[key].keys()) == ['Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> </button>
+         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i> </button>
+                  <div class="dropdown-container-pitu collapse " >
+
+             <div class="row">
+                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                                        
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        
+                        </div>
+                        <div class="col-xs-1" style="padding-top: 7px;">
+                          
+                            <i class="fa fa-battery-full fa-lg" ></i>
+                        </div>
+                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
+                        </div>
+            </div>
+        
+         </div>
          {%elif list(current_sensors[key].keys()) == ['Presence']%}
          <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> </button>
          {%else%}
@@ -176,53 +251,53 @@
 {%endif%}
 {%endfor%}
   <script>
- 	$(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done();});
+  $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done();});
 
-  	$(document).ready(function() {
-  		var slider = document.getElementById("myRange");
-		var output = document.getElementById("demo");
-		output.innerHTML = slider.value;
+    $(document).ready(function() {
+      var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
 
-		slider.oninput = function() { output.innerHTML = this.value;}
+    slider.oninput = function() { output.innerHTML = this.value;}
 
-	$("#myonoffswitch").click(function(){
-	        $("#prendeapaga").toggle(500);
-	      if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
-	      else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
+  $("#myonoffswitch").click(function(){
+          $("#prendeapaga").toggle(500);
+        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
+        else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
 
-	         });
+           });
 
 
-  	{% for k,v in devices.items()|sort: %}
+    {% for k,v in devices.items()|sort: %}
     {%if k != 'default' %}
-  	{% for kk,vv in v.items()|sort: %}
-  	{% if vv['dev_type'] == False: %}
+    {% for kk,vv in v.items()|sort: %}
+    {% if vv['dev_type'] == False: %}
 
-  		$(document).on('change', '#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function() {});});
+      $(document).on('change', '#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function() {});});
 
-  		var slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
-		var output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
-		output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.value;
+      var slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
+    var output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
+    output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.value;
 
-		slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.oninput = function() {
-  		output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = this.value;}
-  		$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
+    slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.oninput = function() {
+      output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = this.value;}
+      $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
         $("#prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").toggle(500);
-      	if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()})}
-      	else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()});}});
-  	{%else:%}
+        if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()})}
+        else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()});}});
+    {%else:%}
 
-  		$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
+      $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
         
-      	if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':"None"})}
-      	else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point': 'None'});}});
+        if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':"None"})}
+        else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point': 'None'});}});
 
-  	{%endif%}
-
-
-  	{%endfor%}
     {%endif%}
-  	{%endfor%}
+
+
+    {%endfor%}
+    {%endif%}
+    {%endfor%}
     
 });
   </script>
