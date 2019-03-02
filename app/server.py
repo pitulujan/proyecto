@@ -189,14 +189,14 @@ def get_initial_values():
     for sensor in query_sensors:
         if sensor.dev_type != 'Temperature':
             if sensor.location in Current_sensors.keys():
-                Current_sensors[sensor.location][sensor.dev_type]={'state':False,'online':True, 'mac_address':sensor.mac_address}
+                Current_sensors[sensor.location][sensor.dev_type]={'state':False,'online':True, 'mac_address':sensor.mac_address,'battery': True, 'battery_state':False}
             else:
-                Current_sensors[sensor.location]={sensor.dev_type:{'state':True,'online':True, 'mac_address':sensor.mac_address}}
+                Current_sensors[sensor.location]={sensor.dev_type:{'state':True,'online':True, 'mac_address':sensor.mac_address,'battery': False, 'battery_state':True}}
         else:
             if sensor.location in Current_sensors.keys():
-                Current_sensors[sensor.location][sensor.dev_type]={'state':20,'online':False, 'mac_address':sensor.mac_address}
+                Current_sensors[sensor.location][sensor.dev_type]={'state':20,'online':False, 'mac_address':sensor.mac_address,'battery': False, 'battery_state':True}
             else:
-                Current_sensors[sensor.location]={sensor.dev_type:{'state':20,'online':True, 'mac_address':sensor.mac_address}}
+                Current_sensors[sensor.location]={sensor.dev_type:{'state':20,'online':True, 'mac_address':sensor.mac_address,'battery': True, 'battery_state':True}}
 
     #print(Current_state_dic_rooms)
     print(Current_sensors)
