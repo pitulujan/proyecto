@@ -30,20 +30,20 @@
 
     {%endfor%}
         {% if k in current_sensors.keys()%}
-      {%for sensor in current_sensors[k].keys():%}
+    
           <div class="row" id="perro">
             <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
                             
-                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{sensor}} Sensor</h3>
+                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Sensors</h3>
                             
             </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-              <button class="btn btn-danger btn-block deleteButtonsensor" data-location="{{k}}" data-mac_address="{{current_sensors[k][sensor]['mac_address']}}"  data-dev_type="{{sensor}}" ><span class="glyphicon glyphicon-trash"></span></button>
+              <button class="btn btn-danger btn-block deleteButtonsensor" data-location="{{k}}" data-mac_address="{{current_sensors[k]['mac_address']}}"  ><span class="glyphicon glyphicon-trash"></span></button>
            </div>
       </div>
 
-      {%endfor%}
+ 
     {%endif%}
   </div>
     {%endfor%}
@@ -55,20 +55,20 @@
               <div class="dropdown-container-pitu collapse " >
 
 
-              {%for sensor in current_sensors[key].keys():%}
+              
           <div class="row" id="perro">
             <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
                             
-                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{sensor}} Sensor</h3>
+                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Sensors</h3>
                             
             </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-              <button class="btn btn-danger btn-block deleteButtonsensor" data-location="{{key}}" data-mac_address="{{current_sensors[key][sensor]['mac_address']}}"  data-dev_type="{{sensor}}" ><span class="glyphicon glyphicon-trash"></span></button>
+              <button class="btn btn-danger btn-block deleteButtonsensor" data-location="{{key}}" data-mac_address="{{current_sensors[key]['mac_address']}}"  ><span class="glyphicon glyphicon-trash"></span></button>
            </div>
       </div>
 
-            {%endfor%}
+            
             {%endif%}
             {%endfor%}
 
@@ -162,11 +162,10 @@
 
       $(".deleteButtonsensor").click(function(){
         var mac_address = $(this).data('mac_address');
-        var dev_type = $(this).data('dev_type'); 
         var location = $(this).data('location');
         
         $("#device_to_rem_sensor").val(mac_address);
-        $("#myModalLabelsensor").text('Are you sure you want to delete the  "'+dev_type+ ' sensor" from "'+location+'" ?');
+        $("#myModalLabelsensor").text('Are you sure you want to delete the sensor from "'+location+'" ?');
 
         $('#myModalNormsensor').modal('show');
 

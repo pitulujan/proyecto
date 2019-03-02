@@ -20,6 +20,10 @@
     color: #333;
     background: rgba(255, 255, 255, 0.2);
 }
+
+ .fa-battery-empty{
+  
+ }
     </style>
 
     <br>
@@ -69,23 +73,7 @@
 {%if k != 'default' %}
 
 {%if k in current_sensors.keys()%}
-      {%if list(current_sensors[k].keys()|sort) == ['Light','Presence','Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-        {%elif list(current_sensors[k].keys()|sort) == ['Presence','Temperature']%}
-        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-        {%elif list(current_sensors[k].keys()|sort) == ['Light','Presence']%}
-        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-        {%elif list(current_sensors[k].keys()|sort) == ['Light','Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-         {%elif list(current_sensors[k].keys()) == ['Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-thermometer-half"{%if current_sensors[k]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-         {%elif list(current_sensors[k].keys()) == ['Presence']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-street-view " {%if current_sensors[k]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-         {%else%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}} <span class="fa fa-lightbulb-o" {%if current_sensors[k]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
-
-      {%endif%}
-
+        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if not current_sensors[k]['online'] %} <span class="fa fa-street-view "  style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half""></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:20px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
 
 {%else%}
@@ -95,18 +83,15 @@
  {%endif%}
    <div class="dropdown-container-pitu collapse " >
 
-    {%if k in current_sensors.keys() and current_sensors[k]['Temperature']|length !=0 %}
+    {%if k in current_sensors.keys() %}
                  <div class="row" style="margin-bottom: 10px;">
                         <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                                         
                                         <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
                                         
                         </div>
-                        <div class="col-xs-1" style="padding-top: 7px;">
-                          
-                            <i class="fa fa-battery-empty fa-lg" style="color: red"></i>
-                        </div>
-                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 20px;"> {{current_sensors[k]['Temperature']['state']}}°C</h3>
+
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[k]['temp_state']}}°C</h3>
                         </div>
             </div>
 
@@ -121,15 +106,8 @@
                             <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
                             
             </div>
-            <div class="col-xs-1" style="padding-top: 7px;">
-              
-                <i class="fa fa-battery-empty fa-lg" style="color: red" ></i>
-              
 
-
-
-            </div>
-                      <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+                      <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
                                 <div class="onoffswitch">
                                     {%if vv['State']==True:%}
                                     <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
@@ -175,32 +153,7 @@
 {%for key in current_sensors.keys():%}
 {%if key not in devices.keys()%}
 
-      {%if list(current_sensors[key].keys()|sort) == ['Light','Presence','Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
-
-         <div class="dropdown-container-pitu collapse " >
-
-             <div class="row">
-                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
-                                        
-                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
-                                        
-                        </div>
-                        <div class="col-xs-1" style="padding-top: 7px;">
-                          
-                            <i class="fa fa-battery-empty fa-lg" style="color: red"></i>
-                        </div>
-                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
-                        </div>
-            </div>
-        
-         </div>
-
-
-
-
-        {%elif list(current_sensors[key].keys()|sort) == ['Presence','Temperature']%}
-        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i> </button>
+<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa fa-street-view "  style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[key]['presence_state']%} <span class="fa fa-street-view"  style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half""></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
                  <div class="dropdown-container-pitu collapse " >
 
@@ -210,61 +163,14 @@
                                         <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
                                         
                         </div>
-                        <div class="col-xs-1" style="padding-top: 7px;">
-                          
-                            <i class="fa fa-battery-empty fa-lg" style="color: red" ></i>
-                        </div>
-                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
+                        
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
                         </div>
             </div>
         
          </div>
-        {%elif list(current_sensors[key].keys()|sort) == ['Light','Presence']%}
-        <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span></button>
-        {%elif list(current_sensors[key].keys()|sort) == ['Light','Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i> </button>
-                  <div class="dropdown-container-pitu collapse " >
 
-             <div class="row">
-                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
-                                        
-                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
-                                        
-                        </div>
-                        <div class="col-xs-1" style="padding-top: 7px;">
-                          
-                            <i class="fa fa-battery-empty fa-lg" style="color: red"></i>
-                        </div>
-                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
-                        </div>
-            </div>
-        
-         </div>
-         {%elif list(current_sensors[key].keys()) == ['Temperature']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-thermometer-half"{%if current_sensors[key]['Temperature']['online']==0 %} style="color: grey"{%endif%}></span> <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i> </button>
-                  <div class="dropdown-container-pitu collapse " >
-
-             <div class="row">
-                        <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
-                                        
-                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
-                                        
-                        </div>
-                        <div class="col-xs-1" style="padding-top: 7px;">
-                          
-                            <i class="fa fa-battery-empty fa-lg" style="color: red"></i>
-                        </div>
-                        <div class="col-xs-3" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;"> {{current_sensors[key]['Temperature']['state']}}°C</h3>
-                        </div>
-            </div>
-        
-         </div>
-         {%elif list(current_sensors[key].keys()) == ['Presence']%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-street-view " {%if current_sensors[key]['Presence']['state']==0 %} style="color: grey"{%endif%}></span> </button>
-         {%else%}
-         <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{key}}"> {{key}} <span class="fa fa-lightbulb-o" {%if current_sensors[key]['Light']['state']==0 %} style="color: grey"{%endif%}></span> </button>
-
-      {%endif%}
+     
 {%endif%}
 {%endfor%}
   <script>

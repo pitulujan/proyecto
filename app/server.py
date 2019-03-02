@@ -124,15 +124,13 @@ def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm e
 def remove_sens(mac_address):
     global Current_sensors
     sensor_to_delete = Sensors.query.filter_by(mac_address=mac_address).first()
-    sensor_type = sensor_to_delete.dev_type
+    
     sensor_location = sensor_to_delete.location
     db.session.delete(sensor_to_delete)
     
-    del Current_sensors[sensor_location][sensor_type]
-    if len(Current_sensors[sensor_location]) ==0:
-        del Current_sensors[sensor_location]
+    del Current_sensors[sensor_location]
     db.session.commit()
-    return sensor_type+' sensor was successfully removed from '+sensor_location
+    return 'The sensor was successfully removed from '+sensor_location
 
 def remove_dev(location_str_id):
 
@@ -187,16 +185,9 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        if sensor.dev_type != 'Temperature':
-            if sensor.location in Current_sensors.keys():
-                Current_sensors[sensor.location][sensor.dev_type]={'state':False,'online':True, 'mac_address':sensor.mac_address,'battery': True, 'battery_state':False}
-            else:
-                Current_sensors[sensor.location]={sensor.dev_type:{'state':True,'online':True, 'mac_address':sensor.mac_address,'battery': False, 'battery_state':True}}
-        else:
-            if sensor.location in Current_sensors.keys():
-                Current_sensors[sensor.location][sensor.dev_type]={'state':20,'online':False, 'mac_address':sensor.mac_address,'battery': False, 'battery_state':True}
-            else:
-                Current_sensors[sensor.location]={sensor.dev_type:{'state':20,'online':True, 'mac_address':sensor.mac_address,'battery': True, 'battery_state':True}}
+        Current_sensors[sensor.location]={'presence_state':True,'online':True, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
+
+
 
     #print(Current_state_dic_rooms)
     print(Current_sensors)
@@ -497,31 +488,40 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
             flag = False
         return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
 
-def add_new_sensor_server(dev_type,location,mac_address,state,online):
-    global flag
-    global new_dev_mac
-    global New_sensors
-    global Current_sensors
-    if state == 'True':
-        state = True
-    elif state =='False':
-        state = False
+def add_new_sensor_server(location,mac_address,battery,presence_state,online,battery_state,temp_state):
+
+    if presence_state == 'True':
+        presence_state = True
+    else:
+        precense_state =False
+        
     
     if online == 'True':
         online= True 
     else:
         online = False
 
-    sensor_to_add = Sensors(location=location,dev_type=dev_type,mac_address=mac_address)
-    if location in Current_sensors.keys():
-        Current_sensors[location][dev_type]={'state':state,'online':online, 'mac_address':mac_address}
+    if battery =='True':
+        battery=True
     else:
-        Current_sensors[location]={dev_type:{'state':state,'online':online, 'mac_address':mac_address}}
+        battery=False
 
-    for key in Current_sensors.keys():
-        print(key,Current_sensors[key])
+    if battery_state == 'True':
+        battery_state = True
+    else:
+        battery_state=False
 
+    global flag
+    global new_dev_mac
+    global New_sensors
+    global Current_sensors
+    
+    if location in Current_sensors.keys():
+        return {'status': 400, 'message' : 'There is already a sensor with that name in that room'}
+    else:
+        Current_sensors[location]={'presence_state':presence_state,'online':online, 'mac_address':mac_address,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state}
 
+    sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address)
 
     db.session.add(sensor_to_add)
     db.session.commit()
@@ -530,7 +530,7 @@ def add_new_sensor_server(dev_type,location,mac_address,state,online):
     if len(new_dev_mac)==0:  
         #print('flag server entro bien ')
         flag = False
-    return {'status': 200, 'message' : dev_type +" sensor has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
+    return {'status': 200, 'message' : "Sensor has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
 
 
 
@@ -571,16 +571,31 @@ def generate_dummy_device_test(dev_type):
     new_dev_mac_enabled = True
     return
 
-def generate_dummy_sensor_test(dev_type,state,online):
-    if state == 'True':
-        state = True
-    elif state =='False':
-        state = False
+def generate_dummy_sensor_test(presence_state,online,battery,battery_state,temp_state):
+
+    
+
+
+    if presence_state == 'True':
+        presence_state = True
+    else:
+        precense_state =False
+        
     
     if online == 'True':
         online= True 
     else:
         online = False
+
+    if battery =='True':
+        battery=True
+    else:
+        battery=False
+
+    if battery_state == 'True':
+        battery_state = True
+    else:
+        battery_state=False 
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
     global flag
     global new_dev_mac
@@ -588,10 +603,10 @@ def generate_dummy_sensor_test(dev_type,state,online):
     global New_devices
     
     if '08:00:27:60:04:00' not in New_sensors.keys():
-        New_sensors['08:00:27:60:04:00'] = {'dev_type' : dev_type , 'state': state , 'online' : online, 'mac_address':'08:00:27:60:04:00'}
+        New_sensors['08:00:27:60:04:00'] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':'08:00:27:60:04:00'}
     else:
         
-        New_sensors['08:00:27:60:04:0'+str(len(New_sensors.keys()))] = {'dev_type' : dev_type , 'state': state , 'online' : online, 'mac_address':'08:00:27:60:04:0'+str(len(New_sensors.keys()))} 
+        New_sensors['08:00:27:60:04:0'+str(len(New_sensors.keys()))] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':'08:00:27:60:04:0'+str(len(New_sensors.keys()))} 
 
     #print(New_devices)
     flag = True 

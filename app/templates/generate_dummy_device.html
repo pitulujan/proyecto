@@ -18,36 +18,56 @@
                   </div>
 </form>
 
+
+
+
 <form role="form" action="{{url_for('generate_dummy_sensor')}}" method="POST" id="form_id_sensors">
       <br>            
   <div class="form-group">
-                    <label for="dev_type_sensor">Sensor_type</label>
-                      <select id="dev_type_sensor" class="form-control" name="dev_type_sensor">
+                    <label for="presence_state_sensor">Presence State</label>
+                      <select id="presence_state_sensor" class="form-control" name="presence_state_sensor">
 
-                          <option value="Presence">Presence</option>
-                          <option value="Light">Light</option>
-                          <option value="Temperature">Temperature</option>
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                          
 
                       </select>
                       
-                      <label for="dev_state_sensor">state</label>
-                      <select id="dev_state_sensor" class="form-control" name="dev_state_sensor">
+                      <label for="online_sensor">Online</label>
+                      <select id="online_sensor" class="form-control" name="online_sensor">
 
                           <option value="True">True</option>
                           <option value="False">False</option>
-                          <option value="20">20°C</option>
+
+                      </select>
+
+                          
+                       <label for="battery_sensor">Battery</label>
+                      <select id="battery_sensor" class="form-control" name="battery_sensor">
+
+                          <option value="True">True</option>
+                          <option value="False">False</option>
                           
 
                       </select>
 
-                       <label for="dev_online_sensor">online</label>
-                      <select id="dev_online_sensor" class="form-control" name="dev_online_sensor">
+                       <label for="battery_sensor_state">Battery State</label>
+                      <select id="battery_sensor_state" class="form-control" name="battery_sensor_state">
 
                           <option value="True">True</option>
                           <option value="False">False</option>
                           
+                        </select>
 
-                      </select>
+                         <div class="form-group">
+                          <label for="temperature_state">Temperature</label>
+                          <input type="text" class="form-control" id="temperature_state" name="temperature_state">
+                        </div>
+                          
+
+                     
+
+
 
                   <div class="form-group">
                     <br>

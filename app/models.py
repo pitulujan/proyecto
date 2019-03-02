@@ -40,7 +40,7 @@ class Devices(db.Model):
 class Sensors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location=db.Column(db.String(64)) #Nombre de la habitacion donde se encuentra el device
-    dev_type=db.Column(db.String(16)) #True para booleano y False no booleano(dimmer)
+    battery = db.Column(db.Boolean,default=True)
     mac_address=db.Column(db.String(128),unique=True)
     
 

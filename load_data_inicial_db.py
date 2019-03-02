@@ -19,25 +19,15 @@ device3 = Devices(user_perm=True,str_id='Riego',location='Patio',dev_type=True,s
 device5 = Devices(user_perm=False,str_id='Luz Ventana',location='Terraza',dev_type=True,state=True,set_point=None,new_device=False,mac_address='08:00:27:60:03:80')
 device6 = Devices(user_perm=False,str_id='Luz Reja',location='Terraza',dev_type=False,state=True,set_point=50,new_device=False,mac_address='08:00:27:60:03:81')
 
-sensor_presence=Sensors(location='Cocina',dev_type='Presence',mac_address='08:00:27:60:03:82')
-sensor_temp=Sensors(location='Cocina',dev_type='Temperature',mac_address='08:00:27:60:03:83')
-sensor_light=Sensors(location='Cocina',dev_type='Light',mac_address='08:00:27:60:03:84')
-
-sensor_temp_2=Sensors(location='Patio',dev_type='Temperature',mac_address='08:00:27:60:03:85')
-sensor_light_2=Sensors(location='Patio',dev_type='Light',mac_address='08:00:27:60:03:86')
-
-sensor_presence_3=Sensors(location='Terraza',dev_type='Presence',mac_address='08:00:27:60:03:87')
+sensor1=Sensors(location='Cocina',battery=True,mac_address='08:00:27:60:03:82')
+sensor2=Sensors(location='Patio',battery=False,mac_address='08:00:27:60:03:83')
+sensor3=Sensors(location='Terraza',battery=True,mac_address='08:00:27:60:03:84')
 
 
+db.session.add(sensor1)
+db.session.add(sensor2)
+db.session.add(sensor3)
 
-
-
-db.session.add(sensor_presence)
-db.session.add(sensor_temp)
-db.session.add(sensor_light)
-db.session.add(sensor_temp_2)
-db.session.add(sensor_light_2)
-db.session.add(sensor_presence_3)
 
 db.session.add(device1)
 db.session.add(device6)
