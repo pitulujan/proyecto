@@ -8,6 +8,8 @@ import socket
 import sys
 import traceback
 import time
+import ast
+import random 
 
 
 Current_state_dic_temp= {}
@@ -84,6 +86,7 @@ def client_thread(connection, ip, port, max_buffer_size = 5120):
 
 
 def receive_input(connection, max_buffer_size):
+
     client_input = connection.recv(max_buffer_size)
     client_input_size = sys.getsizeof(client_input)
 
@@ -97,7 +100,51 @@ def receive_input(connection, max_buffer_size):
 
 
 def process_input(input_str):
-    print("Processing the input received from client")
+	global Current_sensors
+	global flag
+	global new_dev_mac
+	global new_dev_mac_enabled
+	global New_devices
+	print("Processing the input received from client")
+	message = ast.literal_eval(input_str)
+	if 'sensor_update' in message.keys():
+
+		mac_address=message['sensor_update']['mac_address']
+
+		if message['sensor_update']['presence_state']==1:
+			presence_state = True
+		else:
+			presence_state = False
+
+		if message['sensor_update']['battery']==1:
+			battery = True
+		else:
+			battery = False
+
+		if message['sensor_update']['battery_state'] == 1:
+			battery_state = True
+		else:
+			battery_state = False
+
+		new = True
+		for location in Current_sensors:
+			if Current_sensors[location]['mac_address']== mac_address:
+				new = False 
+				Current_sensors[location]['presence_state'] = presence_state
+				Current_sensors[location]['battery'] = battery 
+				Current_sensors[location]['battery_state'] = battery_state
+				Current_sensors[location]['temp_state'] = int(temp_state)
+
+		if new :
+			New_sensors[mac_address] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state), 'mac_address':mac_address}
+
+		    flag = True 
+			new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+			new_dev_mac_enabled = True		
+
+
+    	
+
     print(input_str)
     return str(input_str)
 
@@ -170,7 +217,7 @@ def get_initial_values():
 
 
     #print(Current_state_dic_rooms)
-    #print(Current_sensors)
+    print(Current_sensors)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -200,8 +247,6 @@ def set_device(location, str_id,state,set_point):
     
     db.session.add(query_devices)
     db.session.commit()
-
-        
 
 def get_temp_state():
     return Current_state_dic_temp #Esto devuelve todo, el state, el set point y la current temp
@@ -289,9 +334,6 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
         
         return jsonify(ans)
 
-
-
-
 def check_days(date,day_of_week,str_id,location,pidd):
 
     #aca hay primero que ver si alguna tupla str_id y location coinciden, si no es asi, return false, sino ahi ver len(day_of_week)
@@ -360,7 +402,6 @@ def check_days(date,day_of_week,str_id,location,pidd):
                             aux_date+=timedelta(days=7)
 
     return flag
-
 
 def delete_scheduled_event(id_event):
 
@@ -511,8 +552,6 @@ def add_new_sensor_server(location,mac_address,battery,presence_state,online,bat
         #print('flag server entro bien ')
         flag = False
     return {'status': 200, 'message' : "Sensor has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
-
-
 
 def get_new_devices():
 

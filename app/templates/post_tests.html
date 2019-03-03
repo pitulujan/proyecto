@@ -4,9 +4,17 @@
 <form role="form" action="{{url_for('post_tests')}}" method="POST" id="form_id">
       <br>            
 	<div class="form-group">
-                    <label for="post_test">Post Type</label>
+		<label for="post_test">Post Type</label>
+		<select id="post_test" class="form-control" name="post_test">
+
+                          <option value="simulate_new_device">New Device</option>
                           
-                          <input type="text" class="form-control"  id="post_test" name="post_test">
+                          
+
+                      </select>
+                    
+                          
+                        
 
                   <div class="form-group">
                   	<br>

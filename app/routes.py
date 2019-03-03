@@ -256,7 +256,13 @@ def post_tests():
 
     if request.method == 'POST':
 
-        send_socket(request.form.get('post_test'))
+        if request.form.get('post_test') == "simulate_new_device":
+            message=" {'sensor_update':{'presence_state':1, 'mac_address':mac_address,'battery': 1, 'battery_state':0, 'temp_state': 20}}"
+        else:
+            message = "gordo trolo"
+        
+
+        send_socket(message)
 
         return render_template('post_tests.html',title = 'Post Tests')
 
