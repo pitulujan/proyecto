@@ -256,9 +256,9 @@ def post_tests():
 
     if request.method == 'POST':
 
-        send_socket('hola gordo')
+        send_socket(request.form.get('post_test'))
 
-        return 'ok'
+        return render_template('post_tests.html',title = 'Post Tests')
 
     return render_template('post_tests.html',title = 'Post Tests')
 

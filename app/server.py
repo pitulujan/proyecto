@@ -98,29 +98,10 @@ def receive_input(connection, max_buffer_size):
 
 def process_input(input_str):
     print("Processing the input received from client")
-    prueba_ida_y_vuelta(input_str)
+    print(input_str)
     return str(input_str)
 
 
-      
- 
-'''                    
-def add_device(user_perm,str_id,location,dev_type,state,set_point): #user_perm es true si el usuario es admin (ergo pasarle el valor desde routes)
-
-    if location not in Current_state_dic_rooms.keys():
-        Current_state_dic_rooms[location] = {str_id:{'dev_type' : dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : user_perm}}
-        new_device=Devices(user_perm=user_perm,str_id=str_id, location=location,dev_type=dev_type,state=state,set_point=set_point)
-    else:
-        if str_id not in Current_state_dic_rooms[location]:
-            Current_state_dic_rooms[location][str_id] = {'dev_type' : dev_type, 'State': state , 'set_point' : set_point, 'user_perm' : user_perm}
-            new_device=Devices(user_perm=user_perm,str_id=str_id, location=location,dev_type=dev_type,state=state,set_point=set_point)
-        else:
-            return 'Device "'+str_id+'" already exists, please try a different name'
-    db.session.add(new_device)
-    db.commit()
-    return 'Device "'+str_id+'" added successfully'
-
-'''
 def remove_sens(mac_address):
     global Current_sensors
     sensor_to_delete = Sensors.query.filter_by(mac_address=mac_address).first()
@@ -161,11 +142,10 @@ def remove_dev(location_str_id):
 def tick():
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=30,id='basic',replace_existing=True)
+scheduler.add_job(tick, 'interval', seconds=300,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
 scheduler.start()
-
 
 
 
@@ -534,9 +514,6 @@ def add_new_sensor_server(location,mac_address,battery,presence_state,online,bat
 
 
 
-
-
-
 def get_new_devices():
 
     if len(New_devices.keys())!=0:
@@ -573,8 +550,7 @@ def generate_dummy_device_test(dev_type):
 
 def generate_dummy_sensor_test(presence_state,online,battery,battery_state,temp_state):
 
-    
-    
+   
     if presence_state == 'True':
         presence_state = True
     else:
@@ -629,19 +605,16 @@ def send_socket(text):
     try:
         soc.sendall(text.encode("ascii","ignore"))
         if soc.recv(5120).decode("ascii","ignore") == "pitu":
-            print('??')        # null operation
+            print('recieved akn from server')        # null operation
 
     except Exception as e:
         soc=start_client()
         soc.sendall(text.encode("ascii","ignore"))
         if soc.recv(5120).decode("ascii","ignore") == "pitu":
-            print('??')        # null operation
+            print('recieved akn from server')        # null operation
     return   
 
 
-
-def prueba_ida_y_vuelta(hola):
-    print(hola)
 
 
             
