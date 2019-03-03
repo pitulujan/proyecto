@@ -2,7 +2,13 @@
 {% block app_content %}
 
  <link rel="stylesheet" href="/static/index_y_remove_device.css">
-
+<style type="text/css">
+  
+  .dropdown-btn.index:hover {
+    color: #333;
+    background: rgba(255, 255, 255, 0.2);
+}
+</style>
 
 {% for k,v in devices.items()|sort: %}
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
