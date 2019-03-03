@@ -115,3 +115,6 @@ puede haber sensores de temp en alguna habitacion sin que so modifique la temp
 -----------------------------UPDATE 3/3/2019 ----------------------------------------
 cambiar el edit device para que tome sensores y demas vainas
 
+{'sensor_update':{'presence_state':1, 'mac_address':mac_address,'battery': 1, 'battery_state':0, 'temp_state': 20}}
+{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
+

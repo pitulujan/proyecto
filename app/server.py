@@ -126,6 +126,8 @@ def process_input(input_str):
 		else:
 			battery_state = False
 
+		temp_state = int( message['sensor_update']['temp_state'])
+
 		new = True
 		for location in Current_sensors:
 			if Current_sensors[location]['mac_address']== mac_address:
@@ -133,20 +135,18 @@ def process_input(input_str):
 				Current_sensors[location]['presence_state'] = presence_state
 				Current_sensors[location]['battery'] = battery 
 				Current_sensors[location]['battery_state'] = battery_state
-				Current_sensors[location]['temp_state'] = int(temp_state)
+				Current_sensors[location]['temp_state'] = temp_state
 
 		if new :
-			New_sensors[mac_address] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state), 'mac_address':mac_address}
+			New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
 
-		    flag = True 
+			flag = True 
 			new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
 			new_dev_mac_enabled = True		
 
 
-    	
-
-    print(input_str)
-    return str(input_str)
+	print(input_str)
+	return str(input_str)
 
 
 def remove_sens(mac_address):
@@ -471,6 +471,32 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
         #db.session.commit()
 
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
+
+def edit_sensor_server(old_location,new_location,mac_address):
+	global Current_sensors
+
+	if new_location in Current_sensors.keys():
+		message = "There's already a sensor in "+new_location
+		return {'status': 400, 'message' : message}
+		
+	sensor_to_edit = Sensors.query.filter_by(mac_address=mac_address).first()
+
+	sensor_to_edit.location=new_location
+
+	db.session.add(sensor_to_edit)
+	
+	Current_sensors[new_location] = Current_sensors[old_location]
+	del Current_sensors[old_location]
+
+	db.session.commit()
+
+	return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
+
+
+
+
+
+
 
 def add_new_device_server(location,str_id,state,set_point,mac_address):
     global flag

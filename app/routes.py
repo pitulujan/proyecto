@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server
 
 #import xmltodict, requests
 #pitu
@@ -155,7 +155,20 @@ def edit_device():
         return jsonify(answer)
 
 
-    return render_template('edit_device.html',title='Edit Device', devices=get_devices())
+    return render_template('edit_device.html',title='Edit Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
+
+@app.route('/edit_sensor', methods=['POST'])
+@login_required
+def edit_sensor():
+
+    if request.method == 'POST':
+        print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
+        answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
+        flash(answer['message'])
+        return jsonify(answer)
+
+
+    
 
 
 
@@ -257,7 +270,7 @@ def post_tests():
     if request.method == 'POST':
 
         if request.form.get('post_test') == "simulate_new_device":
-            message=" {'sensor_update':{'presence_state':1, 'mac_address':mac_address,'battery': 1, 'battery_state':0, 'temp_state': 20}}"
+            message="{'sensor_update':{'presence_state':1, 'mac_address':'08:00:27:60:04:05','battery': 1, 'battery_state':0, 'temp_state': 20}}"
         else:
             message = "gordo trolo"
         

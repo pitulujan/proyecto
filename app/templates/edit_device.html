@@ -8,7 +8,7 @@
 
 
 {% for k,v in devices.items()|sort: %}
-  {%if k != 'default' %}
+
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
     	
@@ -26,9 +26,90 @@
 	  </div>
     	</div>
     {%endfor%}
-  </div>
-  {%endif%}
+  
+ {% if k in current_sensors.keys()%}
+    
+          <div class="row" id="perro">
+            <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                            
+                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Sensors</h3>
+                            
+            </div>
+            <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+
+              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{k}}" data-mac_address="{{current_sensors[k]['mac_address']}}"  ></span>
+           </div>
+      </div>
+
+ 
+    {%endif%}
+    </div>
     {%endfor%}
+
+
+    {%for key in current_sensors.keys():%}
+    {%if key not in devices.keys()%}
+       <button class="dropdown-btn index" data-toggle="collapse" > {{key}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+        <div class="dropdown-container-pitu collapse " >
+
+         <div class="row" >
+                    <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                                    
+                                    <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Sensors</h3>
+                                    
+                    </div>
+                    <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+
+                      <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{key}}" data-mac_address="{{current_sensors[key]['mac_address']}}"  ></span>
+                   </div>
+              </div>
+</div>
+    {%endif%}
+    {%endfor%}
+
+
+
+
+
+
+      <div class="modal fade" id="modaleditsensor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <center><h4 class="modal-title" id="myModalLabel">Edit Sensor</h4></center>
+            </div>
+
+            <!-- Modal Body -->
+       <div class="modal-body">
+                
+                <form role="form" action="" method="POST" id="form_id">
+                  <div class="form-group">
+                    <label for="new_sensor_location"> New Location</label>
+                      <input type="text" class="form-control" id="new_sensor_location" name="new_location_sensor" value="Location" onfocus="if (this.value=='Location') this.value='';"/>
+                  </div>
+
+                  <div class="form-group" style="display: none;" > <input type="text" id="dataplacereditsensor" name="dataplacereditsensor" data-old_location="" data-mac_address=""  / ></div>
+
+                
+        
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" id="submit_changes_edit_sensor" class="btn btn-primary" >Save Changes</button>
+                </form>
+        
+</div>
+
+
+
+
+        </div>
+    </div>
+</div>
 
 
 
@@ -182,6 +263,33 @@
         });
         $('#modaleditdevice').modal('hide');
       });
+
+      $(document).on("click","span.editsensor",function(){
+
+                                                        var old_location = $(this).data('old_location');
+                                                        var mac_address = $(this).data('mac_address');
+
+
+                                                        $("#dataplacereditsensor").attr('data-old_location',old_location);
+                                                        $("#dataplacereditsensor").attr('data-mac_address',mac_address);
+                                                        $('#modaleditsensor').modal('show');
+
+          });
+
+       $("#submit_changes_edit_sensor").click(function(){
+
+        console.log($("#new_sensor_location").val());
+        console.log($("#new_sensor_location").val());
+
+        $.post("{{url_for('edit_sensor')}}",{'new_location':$("#new_sensor_location").val(),'old_location':$("#dataplacereditsensor").data('old_location'),'mac_address':$("#dataplacereditsensor").data('mac_address')}).done(function(result) {
+
+          if(result['status']==200){
+            console.log('200')};
+
+            
+            location.reload(true);
+        $('#modaleditsensor').modal('hide');});});
+    
     </script>
 
     {% endblock %}
