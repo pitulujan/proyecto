@@ -23,7 +23,7 @@ new_dev_mac_enabled=False
 def start_client():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = "127.0.0.1"
-    port = 9999
+    port = 8888
 
     try:
         soc.connect((host, port))
