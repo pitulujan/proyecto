@@ -198,6 +198,7 @@ def add_device():
 @login_required
 def add_sensor():
     if request.method == 'POST':
+        print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
         answer=add_new_sensor_server(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
         flash(answer['message'])
         return jsonify(answer)
