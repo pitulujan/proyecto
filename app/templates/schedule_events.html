@@ -185,7 +185,7 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                <center><h4 class="modal-title" id="myModalLabel">Schedule New Event</h4></center>
+                <center><h4 class="modal-title" id="myModalLabel"><b>Schedule New Event</b></h4></center>
             </div>
             
             <!-- Modal Body -->
@@ -193,11 +193,11 @@
                 
                 <form role="form" action="" method="POST" id="form_id">
                   <div class="form-group">
-                    <label for="dateid">Select Day & Time</label>
+                  <h4> <span class="glyphicon glyphicon-calendar"></span> <label for="dateid">Select Day & Time</label></h4>
                       <input type="datetime-local" class="form-control" id="dateid" name="mail"/>
                   </div>
 
-                  <label for="divdays">Repeat</label>
+                 <h4> <i class="fa fa-repeat"></i> <label for="divdays">Repeat</label></h4>
                   <div class="weekDays-selector" id=divdays>
                     <input type="checkbox" id="weekday-Mon" name="day" value="0" class="weekday" />
                     <label for="weekday-Mon">M</label>
@@ -218,7 +218,7 @@
                   <div class="form-group" style="display: none;" > <input type="text" id="pidplacer" name="pidplace" value="None"></div>
 
                   <div class="form-group">
-                    <label for="locationid">Location</label>
+                  <h4>  <i class="fa fa-map-marker"></i> <label for="locationid">Location</label></h4>
                       <select id="locationid" class="form-control">
                         {%for location in rooms_devices.keys()|sort:%}
                         {%if location != 'default'%}
@@ -227,7 +227,7 @@
                         {% endif %}
                         {% endfor %}
                       </select>
-                       <label for="deviceid">Device</label>
+                     <h4>  <i class="fa fa-sitemap"></i> <label for="deviceid">Device</label></h4>
                       <select id="deviceid" class="form-control" >
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
                           {%if number == 0:%}
@@ -243,7 +243,7 @@
                     <div class="row">
                           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
                                   
-                                 <h5 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">  <b>On/Off</b></h5>
+                                <h4 id="textoreloco" style="vertical-align: text-top;margin-top: 15px;"><i class="fa fa-power-off"></i>  <b>On/Off</b></h4>
                                   
                           </div>
 
