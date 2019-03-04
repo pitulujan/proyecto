@@ -309,7 +309,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
         if len(day_of_week)!=0:
 
             scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'cron',id_job],id=id_job)
-            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point,'cron'.id_job],id=id_job+'_cron') #para que lo haga ese dia y despues repita
+            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point,'cron',id_job],id=id_job+'_cron') #para que lo haga ese dia y despues repita
             
             days={'0':'Mon','1':'Tue','2':'Wed','3':'Thu','4':'Fri','5':'Sat','6':'Sun'}
             cron_days=[]   
