@@ -10,6 +10,7 @@ import traceback
 import time
 import ast
 import random 
+import time
 
 
 Current_state_dic_temp= {}
@@ -21,6 +22,8 @@ Presence={}
 flag= False
 new_dev_mac=''
 new_dev_mac_enabled=False
+
+seq_num=0 #Este es para verificar que la respuesta recibida fue la del mensaje enviado random.randint(0,256)
 
 def start_client():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -82,7 +85,7 @@ def client_thread(connection, ip, port, max_buffer_size = 5120):
             is_active = False
         else:
             print("Processed result: {}".format(client_input))
-            connection.sendall("pitu".encode("ascii","ignore"))
+            connection.sendall("ok".encode("ascii","ignore"))
 
 
 def receive_input(connection, max_buffer_size):
@@ -143,7 +146,9 @@ def process_input(input_str):
 			flag = True 
 			new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
 			new_dev_mac_enabled = True		
-
+	
+	elif 'tx_ok' in message.keys():
+		{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
 
 	print(input_str)
 	return str(input_str)
@@ -217,7 +222,7 @@ def get_initial_values():
 
 
     #print(Current_state_dic_rooms)
-    print(Current_sensors)
+    #print(Current_sensors)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -267,6 +272,8 @@ def alarm(state,set_point,event_type,id_job):
 
 	if event_type == 'date':
 		delete_scheduled_event(id_job)
+
+		#aca falta llamar al cliente para que mande el mensaje al programa en C
 	print(state,set_point,event_type,id_job)
 
 def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_point,args=[], day_of_week=[]):
@@ -498,12 +505,6 @@ def edit_sensor_server(old_location,new_location,mac_address):
 
 	return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
 
-
-
-
-
-
-
 def add_new_device_server(location,str_id,state,set_point,mac_address):
     global flag
     global new_dev_mac
@@ -675,13 +676,15 @@ def send_socket(text):
 
     try:
         soc.sendall(text.encode("ascii","ignore"))
-        if soc.recv(5120).decode("ascii","ignore") == "pitu":
+        if soc.recv(5120).decode("ascii","ignore") == "ok":
             print('recieved akn from server')        # null operation
 
     except Exception as e:
         soc=start_client()
+        start = time.perf_counter()
         soc.sendall(text.encode("ascii","ignore"))
-        if soc.recv(5120).decode("ascii","ignore") == "pitu":
+        print ('time taken ', time.perf_counter()-start ,' seconds')
+        if soc.recv(5120).decode("ascii","ignore") == "ok":
             print('recieved akn from server')        # null operation
     return   
 
