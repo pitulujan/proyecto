@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
-from app.models import User, Devices, Log, Temperature, Scheduled_events,Sensors
+from app.models import User, Devices, Log, Temperature, Scheduled_events,Sensors,Log
 from app import db
 from flask import jsonify
 from threading import Thread
@@ -154,18 +154,22 @@ def process_input(input_str):
 	return str(input_str)
 
 
-def remove_sens(mac_address):
+def remove_sens(user,mac_address):
     global Current_sensors
     sensor_to_delete = Sensors.query.filter_by(mac_address=mac_address).first()
     
     sensor_location = sensor_to_delete.location
     db.session.delete(sensor_to_delete)
+
+    description= "Sensor has been removed from "+sensor_location
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    db.session.add(log_entry)
     
     del Current_sensors[sensor_location]
     db.session.commit()
     return 'The sensor was successfully removed from '+sensor_location
 
-def remove_dev(location_str_id):
+def remove_dev(user,location_str_id):
 
     location = ' '.join(location_str_id.split('/')[0].split('-'))
     str_id=' '.join(location_str_id.split('/')[1].split('.'))
@@ -182,6 +186,10 @@ def remove_dev(location_str_id):
     if len(pids)!=0:
         delete_scheduled_event(pids)
         db.session.delete(scheduled_events_to_del)
+
+    description= "Device "+str_id+" has been removed from "+location
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    db.session.add(log_entry)
     
     db.session.delete(device_to_remove)
     del Current_state_dic_rooms[location][str_id]
@@ -197,8 +205,10 @@ scheduler = config_scheduler()
 scheduler.add_job(tick, 'interval', seconds=300,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
+def get_activity_log():
+	return Log.query.all()
 
 
 def get_initial_values():
@@ -336,8 +346,9 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None,event_param_state=param_state,event_param_setpoint=param_set_point, pid=id_job)
             ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
 
-
-
+        description= "An event for "+str_id+" in "+location+" has been set"
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        db.session.add(log_entry)
         db.session.add(event_to_schedule)
         db.session.commit()
 
@@ -413,7 +424,7 @@ def check_days(date,day_of_week,str_id,location,pidd):
 
     return flag
 
-def delete_scheduled_event(id_event):
+def delete_scheduled_event(user,id_event):
 
     if type(id_event)==list: #Esto es por si elimino un usuario para eliminar todos los eventos que tenia schedulizados
         for pid in id_event:
@@ -437,6 +448,10 @@ def delete_scheduled_event(id_event):
             except Exception as e:
                 pass
         event = Scheduled_events.query.filter_by(pid=id_event).first()
+
+        description= "An event for "+event.str_id+" in "+event.location+" has been deleted"
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        db.session.add(log_entry)
         db.session.delete(event)
         db.session.commit()
 
@@ -505,7 +520,7 @@ def edit_sensor_server(old_location,new_location,mac_address):
 
 	return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
 
-def add_new_device_server(location,str_id,state,set_point,mac_address):
+def add_new_device_server(user,location,str_id,state,set_point,mac_address):
     global flag
     global new_dev_mac
     global Current_rooms
@@ -532,7 +547,11 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
         else:
             if str_id not in Current_state_dic_rooms[location]:
                 Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address}
-
+        
+        description= "New device "+str_id+" has been added to "+location
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        db.session.add(log_entry)
+        
         db.session.add(device_to_add)
         db.session.commit()
         New_devices.pop(mac_address)
@@ -542,7 +561,7 @@ def add_new_device_server(location,str_id,state,set_point,mac_address):
             flag = False
         return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
 
-def add_new_sensor_server(location,mac_address,battery,presence_state,online,battery_state,temp_state):
+def add_new_sensor_server(user,location,mac_address,battery,presence_state,online,battery_state,temp_state):
 
     if presence_state == 'True':
         presence_state = True
@@ -576,7 +595,9 @@ def add_new_sensor_server(location,mac_address,battery,presence_state,online,bat
         Current_sensors[location]={'presence_state':presence_state,'online':online, 'mac_address':mac_address,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state}
 
     sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address)
-
+    description= "New sensor has been added to "+location
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    db.session.add(log_entry)
     db.session.add(sensor_to_add)
     db.session.commit()
     New_sensors.pop(mac_address)

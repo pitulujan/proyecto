@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log
 
 #import xmltodict, requests
 #pitu
@@ -123,7 +123,7 @@ def remove_device():
 
 	if request.method == 'POST':
 		#print(request.form.get('delete'))
-		ans=remove_dev(request.form.get('delete'))
+		ans=remove_dev(current_user.username,request.form.get('delete'))
 		flash(ans)
 		return render_template('remove_device.html', title='Remove Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
 
@@ -136,7 +136,7 @@ def remove_sensor():
 
     if request.method == 'POST':
         #print(request.form.get('delete'))
-        ans=remove_sens(request.form.get('delete_sensor'))
+        ans=remove_sens(current_user.username,request.form.get('delete_sensor'))
         flash(ans)
         return render_template('remove_device.html', title='Remove Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
 
@@ -192,7 +192,7 @@ def reschedule_event():
 @app.route('/delete_event', methods=['POST'])
 @login_required
 def delete_event():
-    delete_scheduled_event(request.form['event_id_to_delete'])
+    delete_scheduled_event(current_user.username,request.form['event_id_to_delete'])
     return 'Ok'
 
 
@@ -201,7 +201,7 @@ def delete_event():
 @login_required
 def add_device():
     if request.method == 'POST':
-        answer=add_new_device_server(request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
         flash(answer['message'])
         return jsonify(answer)
 
@@ -212,11 +212,17 @@ def add_device():
 def add_sensor():
     if request.method == 'POST':
         print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
-        answer=add_new_sensor_server(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
+        answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
         flash(answer['message'])
         return jsonify(answer)
         #print(request.form['dev_type'],request.form['location'],request.form['mac_address'],request.form['state'],request.form['online'])
         #return 'Ok'
+
+@app.route('/log', methods=['GET'])
+@login_required
+def log():
+
+    return render_template('log.html', title='Activity Log',logdb=get_activity_log())
 
 
 

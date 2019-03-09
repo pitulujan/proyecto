@@ -1,0 +1,35 @@
+{% extends "base2.html" %}
+{% block app_content %}
+
+
+
+
+        
+              <table class='table' >
+
+                   <thead>
+                  
+                   <th><center><h4><b>User</b></h4></center></th>
+                  
+                   <th><center><h4><b>Timestamp</b></h4></center></th>
+              
+                   <th><center><h4><b>Activity</b></h4></center></th>
+                   </thead>
+    <tbody>
+
+    {% for row in logdb %}
+    <tr>
+        <td><center>{{ row.user }}</center></td>
+            <td><center>{{ row.timestamp }}</center></td>
+            <td><center>{{ row.description }}</center></td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+        
+
+{% endblock %}

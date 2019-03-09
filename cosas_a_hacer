@@ -116,7 +116,7 @@ puede haber sensores de temp en alguna habitacion sin que so modifique la temp
 cambiar el edit device para que tome sensores y demas vainas
 
 {'sensor_update':{'presence_state':1, 'mac_address':mac_address,'battery': 1, 'battery_state':0, 'temp_state': 20}}
-{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}} --> el numero de secuencia lo podemos usar par ano meternos en el medio del msg akn, y para no confundir si llego o no el mensaje y es problema de comunicacion de si el actuador no esta haciendo lo que tiene que hacer
+{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}} --> el numero de secuencia lo podemos usar para no meternos en el medio del msg akn, y para no confundir si llego o no el mensaje y es problema de comunicacion de si el actuador no esta haciendo lo que tiene que hacer
 
 ESTO TARDA EN ABRIR EL SOCKET : time taken  1.6553000023122877e-05  seconds
 
