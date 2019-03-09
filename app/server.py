@@ -105,6 +105,7 @@ def process_input(input_str):
 	global new_dev_mac
 	global new_dev_mac_enabled
 	global New_devices
+	global Sensors_state
 	print("Processing the input received from client")
 	message = ast.literal_eval(input_str)
 	if 'sensor_update' in message.keys():
@@ -136,6 +137,7 @@ def process_input(input_str):
 				Current_sensors[location]['battery'] = battery 
 				Current_sensors[location]['battery_state'] = battery_state
 				Current_sensors[location]['temp_state'] = temp_state
+				Sensors_state[mac_address]=datetime.now()
 
 		if new :
 			New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
@@ -223,7 +225,7 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        Current_sensors[sensor.location]={'presence_state':False,'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
+        Current_sensors[sensor.location]={'presence_state':False,'online':True, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
         Sensors_state[sensor.mac_address]=sensor.last_update
 
 
@@ -619,8 +621,6 @@ def check_sensor_state(mac_address):
 				Current_sensors[sensor]['online']=False
 
 	return
-
-
 
 def get_new_devices():
 
