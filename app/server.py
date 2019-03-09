@@ -16,6 +16,7 @@ import time
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
 Current_sensors ={}
+Sensors_state={}
 New_devices={}
 New_sensors={}
 Presence={}
@@ -37,7 +38,6 @@ def start_client():
         sys.exit()
 
     return soc 
-
 
 def start_server():
     host = "127.0.0.1"
@@ -71,7 +71,6 @@ def start_server():
 
     soc.close()
 
-
 def client_thread(connection, ip, port, max_buffer_size = 5120):
     is_active = True
 
@@ -87,7 +86,6 @@ def client_thread(connection, ip, port, max_buffer_size = 5120):
             print("Processed result: {}".format(client_input))
             connection.sendall("ok".encode("ascii","ignore"))
 
-
 def receive_input(connection, max_buffer_size):
 
     client_input = connection.recv(max_buffer_size)
@@ -100,7 +98,6 @@ def receive_input(connection, max_buffer_size):
     result = process_input(decoded_input)
 
     return result
-
 
 def process_input(input_str):
 	global Current_sensors
@@ -153,7 +150,6 @@ def process_input(input_str):
 	print(input_str)
 	return str(input_str)
 
-
 def remove_sens(user,mac_address):
     global Current_sensors
     sensor_to_delete = Sensors.query.filter_by(mac_address=mac_address).first()
@@ -167,6 +163,7 @@ def remove_sens(user,mac_address):
     
     del Current_sensors[sensor_location]
     db.session.commit()
+    scheduler.remove_job(mac_address)
     return 'The sensor was successfully removed from '+sensor_location
 
 def remove_dev(user,location_str_id):
@@ -197,7 +194,7 @@ def remove_dev(user,location_str_id):
         del Current_state_dic_rooms[location]
     db.session.commit()
     return 'Device '+str_id+' was successfully removed from '+location
-                    
+              
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
@@ -205,11 +202,10 @@ scheduler = config_scheduler()
 scheduler.add_job(tick, 'interval', seconds=300,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
-#scheduler.start()
+scheduler.start()
 
 def get_activity_log():
 	return Log.query.all()
-
 
 def get_initial_values():
 
@@ -227,12 +223,13 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        Current_sensors[sensor.location]={'presence_state':True,'online':True, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
+        Current_sensors[sensor.location]={'presence_state':False,'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
+        Sensors_state[sensor.mac_address]=sensor.last_update
 
 
 
     #print(Current_state_dic_rooms)
-    #print(Current_sensors)
+    print(Current_sensors)
     return
 
 def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -600,12 +597,30 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
     db.session.add(log_entry)
     db.session.add(sensor_to_add)
     db.session.commit()
+    Sensors_state[mac_address]=datetime.now()
+    scheduler.add_job(check_sensor_state, 'interval', seconds=2,args=[mac_address],id=mac_address)
     New_sensors.pop(mac_address)
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     if len(new_dev_mac)==0:  
         #print('flag server entro bien ')
         flag = False
     return {'status': 200, 'message' : "Sensor has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
+
+def check_sensor_state(mac_address):
+	global Current_sensors
+	global Sensors_state
+
+	print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
+	for sensor in Current_sensors:
+		if mac_address == Current_sensors[sensor]['mac_address']:
+			if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<10:
+				Current_sensors[sensor]['online']= True
+			else:
+				Current_sensors[sensor]['online']=False
+
+	return
+
+
 
 def get_new_devices():
 
@@ -681,6 +696,7 @@ def generate_dummy_sensor_test(presence_state,online,battery,battery_state,temp_
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
     return
+
 def get_new_sensors():
     if len(New_sensors.keys())!=0:
         return New_sensors

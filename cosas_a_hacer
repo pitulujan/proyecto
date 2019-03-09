@@ -121,3 +121,6 @@ cambiar el edit device para que tome sensores y demas vainas
 ESTO TARDA EN ABRIR EL SOCKET : time taken  1.6553000023122877e-05  seconds
 
 el client manda un msj, espera 
+
+
+creo un evento en scheduler cuando creo un sensor, y eso hace que por sensor, cada 10 minutos se checkee si antes de ese tiempo recibi un mensaje, si no, lo pongo en offline 

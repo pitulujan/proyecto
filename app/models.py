@@ -42,6 +42,7 @@ class Sensors(db.Model):
     location=db.Column(db.String(64)) #Nombre de la habitacion donde se encuentra el device
     battery = db.Column(db.Boolean,default=True)
     mac_address=db.Column(db.String(128),unique=True)
+    last_update=db.Column(db.DateTime,default=datetime.now)
     
 
 class Log(db.Model):
