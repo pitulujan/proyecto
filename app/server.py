@@ -107,6 +107,7 @@ def process_input(input_str):
 	global New_devices
 	global Sensors_state
 	print("Processing the input received from client")
+	'''
 	message = ast.literal_eval(input_str)
 	if 'sensor_update' in message.keys():
 
@@ -150,7 +151,7 @@ def process_input(input_str):
 		{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
 	else:
 		print(message)
-
+	'''
 	print(input_str)
 	return str(input_str)
 
