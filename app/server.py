@@ -148,6 +148,8 @@ def process_input(input_str):
 	
 	elif 'tx_ok' in message.keys():
 		{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
+	else:
+		print(message)
 
 	print(input_str)
 	return str(input_str)
