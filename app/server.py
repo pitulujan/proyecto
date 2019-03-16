@@ -29,7 +29,7 @@ seq_num=0 #Este es para verificar que la respuesta recibida fue la del mensaje e
 def start_client():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = "127.0.0.1"
-    port = 8888
+    port = 9999
 
     try:
         soc.connect((host, port))
@@ -100,63 +100,80 @@ def receive_input(connection, max_buffer_size):
     return result
 
 def process_input(input_str):
-	global Current_sensors
-	global flag
-	global new_dev_mac
-	global new_dev_mac_enabled
-	global New_devices
-	global Sensors_state
-	print("Processing the input received from client")
-	try:
-		message = ast.literal_eval(input_str)
-		if 'sensor_update' in message.keys():
+    global Current_sensors
+    global flag
+    global new_dev_mac
+    global new_dev_mac_enabled
+    global New_devices
+    global Sensors_state
+    print("Processing the input received from client")
+    try:
+        message = ast.literal_eval(input_str)
+        try:
+            if 'sensor_update' in message.keys():
 
-			mac_address=message['sensor_update']['mac_address']
+                mac_address=message['sensor_update']['mac_address']
 
-			if message['sensor_update']['presence_state']==1:
-				presence_state = True
-			else:
-				presence_state = False
+                if message['sensor_update']['presence_state']==1:
+                    presence_state = True
+                else:
+                    presence_state = False
 
-			if message['sensor_update']['battery']==1:
-				battery = True
-			else:
-				battery = False
+                if message['sensor_update']['battery']==1:
+                    battery = True
+                else:
+                    battery = False
 
-			if message['sensor_update']['battery_state'] == 1:
-				battery_state = True
-			else:
-				battery_state = False
+                if message['sensor_update']['battery_state'] == 1:
+                    battery_state = True
+                else:
+                    battery_state = False
 
-			temp_state = int( message['sensor_update']['temp_state'])
+                temp_state = int( message['sensor_update']['temp_state'])
 
-			new = True
-			for location in Current_sensors:
-				if Current_sensors[location]['mac_address']== mac_address:
-					new = False 
-					Current_sensors[location]['presence_state'] = presence_state
-					Current_sensors[location]['battery'] = battery 
-					Current_sensors[location]['battery_state'] = battery_state
-					Current_sensors[location]['temp_state'] = temp_state
-					Sensors_state[mac_address]=datetime.now()
+                new = True
+                for location in Current_sensors:
+                    if Current_sensors[location]['mac_address']== mac_address:
+                        new = False 
+                        Current_sensors[location]['presence_state'] = presence_state
+                        Current_sensors[location]['battery'] = battery 
+                        Current_sensors[location]['battery_state'] = battery_state
+                        Current_sensors[location]['temp_state'] = temp_state
+                        Sensors_state[mac_address]=datetime.now()
 
-			if new :
-				New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
+                if new :
+                    New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
 
-				flag = True 
-				new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
-				new_dev_mac_enabled = True		
-		
-		elif 'tx_ok' in message.keys():
-			{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
-		else:
-			print(message)
-			return str(input_str)
+                    flag = True 
+                    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+                    new_dev_mac_enabled = True
 
-	except:
+                message = ' 5 '+str(1)
+                message=str(len(message)+1)+message
+                send_socket(message)        
+            elif 'tx_ok' in message.keys():
+                mac_address = message['tx_ok']['mac_address']
+                {'tx_ok':{'mac_address': mac_address, 'seq_number': message['tx_ok']['seq_number']}}
+                message = ' 5 '+str(1)
+                message=str(len(message)+1)+message
+                send_socket(message)
+            else:
+                print(message)
+                message = ' 5 '+str(0)
+                message=str(len(message)+1)+message
+                send_socket(message)
+                return str(input_str)
+        except:
+                message = ' 5 '+str(0)
+                message=str(len(message)+1)+message
+                send_socket(message)
 
-		print(input_str)
-		return str(0)
+    except:
+        message = ' 6'
+        message=str(len(message)+1)+message
+        send_socket(message)  
+        print(input_str)
+        return str(0)
 
 def remove_sens(user,mac_address):
     global Current_sensors
@@ -213,7 +230,7 @@ scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_serv
 scheduler.start()
 
 def get_activity_log():
-	return Log.query.all()
+    return Log.query.all()
 
 def get_initial_values():
 
@@ -285,18 +302,18 @@ def get_scheduled_events(*args):
 
 def alarm(state,set_point,event_type,id_job,mac_address):
 
-	if event_type == 'date':
-		delete_scheduled_event(id_job)
+    if event_type == 'date':
+        delete_scheduled_event(id_job)
 
-		#aca falta llamar al cliente para que mande el mensaje al programa en C
-	if state == True:
-		state=1
-	else:
-		state=0
+        #aca falta llamar al cliente para que mande el mensaje al programa en C
+    if state == True:
+        state=1
+    else:
+        state=0
 
-	message = ' 1 '+mac_address+' '+state+' '+set_point
-	message=str(len(message)+1)+message
-	print(state,set_point,event_type,id_job)
+    message = ' 1 '+mac_address+' '+state+' '+set_point
+    message=str(len(message)+1)+message
+    print(state,set_point,event_type,id_job)
 
 def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_point,args=[], day_of_week=[]):
     str_id=str_id.replace('_',' ')
@@ -514,24 +531,24 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
 def edit_sensor_server(old_location,new_location,mac_address):
-	global Current_sensors
+    global Current_sensors
 
-	if new_location in Current_sensors.keys():
-		message = "There's already a sensor in "+new_location
-		return {'status': 400, 'message' : message}
-		
-	sensor_to_edit = Sensors.query.filter_by(mac_address=mac_address).first()
+    if new_location in Current_sensors.keys():
+        message = "There's already a sensor in "+new_location
+        return {'status': 400, 'message' : message}
+        
+    sensor_to_edit = Sensors.query.filter_by(mac_address=mac_address).first()
 
-	sensor_to_edit.location=new_location
+    sensor_to_edit.location=new_location
 
-	db.session.add(sensor_to_edit)
-	
-	Current_sensors[new_location] = Current_sensors[old_location]
-	del Current_sensors[old_location]
+    db.session.add(sensor_to_edit)
+    
+    Current_sensors[new_location] = Current_sensors[old_location]
+    del Current_sensors[old_location]
 
-	db.session.commit()
+    db.session.commit()
 
-	return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
+    return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
 
 def add_new_device_server(user,location,str_id,state,set_point,mac_address):
     global flag
@@ -623,18 +640,18 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
     return {'status': 200, 'message' : "Sensor has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
 
 def check_sensor_state(mac_address):
-	global Current_sensors
-	global Sensors_state
+    global Current_sensors
+    global Sensors_state
 
-	print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
-	for sensor in Current_sensors:
-		if mac_address == Current_sensors[sensor]['mac_address']:
-			if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<10:
-				Current_sensors[sensor]['online']= True
-			else:
-				Current_sensors[sensor]['online']=False
+    print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
+    for sensor in Current_sensors:
+        if mac_address == Current_sensors[sensor]['mac_address']:
+            if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<10:
+                Current_sensors[sensor]['online']= True
+            else:
+                Current_sensors[sensor]['online']=False
 
-	return
+    return
 
 def get_new_devices():
 
