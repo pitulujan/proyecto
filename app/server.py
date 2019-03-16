@@ -107,53 +107,56 @@ def process_input(input_str):
 	global New_devices
 	global Sensors_state
 	print("Processing the input received from client")
-	'''
-	message = ast.literal_eval(input_str)
-	if 'sensor_update' in message.keys():
+	try:
+		message = ast.literal_eval(input_str)
+		if 'sensor_update' in message.keys():
 
-		mac_address=message['sensor_update']['mac_address']
+			mac_address=message['sensor_update']['mac_address']
 
-		if message['sensor_update']['presence_state']==1:
-			presence_state = True
+			if message['sensor_update']['presence_state']==1:
+				presence_state = True
+			else:
+				presence_state = False
+
+			if message['sensor_update']['battery']==1:
+				battery = True
+			else:
+				battery = False
+
+			if message['sensor_update']['battery_state'] == 1:
+				battery_state = True
+			else:
+				battery_state = False
+
+			temp_state = int( message['sensor_update']['temp_state'])
+
+			new = True
+			for location in Current_sensors:
+				if Current_sensors[location]['mac_address']== mac_address:
+					new = False 
+					Current_sensors[location]['presence_state'] = presence_state
+					Current_sensors[location]['battery'] = battery 
+					Current_sensors[location]['battery_state'] = battery_state
+					Current_sensors[location]['temp_state'] = temp_state
+					Sensors_state[mac_address]=datetime.now()
+
+			if new :
+				New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
+
+				flag = True 
+				new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+				new_dev_mac_enabled = True		
+		
+		elif 'tx_ok' in message.keys():
+			{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
 		else:
-			presence_state = False
+			print(message)
+			return str(input_str)
 
-		if message['sensor_update']['battery']==1:
-			battery = True
-		else:
-			battery = False
+	except:
 
-		if message['sensor_update']['battery_state'] == 1:
-			battery_state = True
-		else:
-			battery_state = False
-
-		temp_state = int( message['sensor_update']['temp_state'])
-
-		new = True
-		for location in Current_sensors:
-			if Current_sensors[location]['mac_address']== mac_address:
-				new = False 
-				Current_sensors[location]['presence_state'] = presence_state
-				Current_sensors[location]['battery'] = battery 
-				Current_sensors[location]['battery_state'] = battery_state
-				Current_sensors[location]['temp_state'] = temp_state
-				Sensors_state[mac_address]=datetime.now()
-
-		if new :
-			New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
-
-			flag = True 
-			new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
-			new_dev_mac_enabled = True		
-	
-	elif 'tx_ok' in message.keys():
-		{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}}
-	else:
-		print(message)
-	'''
-	print(input_str)
-	return str(input_str)
+		print(input_str)
+		return str(0)
 
 def remove_sens(user,mac_address):
     global Current_sensors
@@ -280,12 +283,19 @@ def get_scheduled_events(*args):
     
     return query_scheduled
 
-def alarm(state,set_point,event_type,id_job):
+def alarm(state,set_point,event_type,id_job,mac_address):
 
 	if event_type == 'date':
 		delete_scheduled_event(id_job)
 
 		#aca falta llamar al cliente para que mande el mensaje al programa en C
+	if state == True:
+		state=1
+	else:
+		state=0
+
+	message = ' 1 '+mac_address+' '+state+' '+set_point
+	message=str(len(message)+1)+message
 	print(state,set_point,event_type,id_job)
 
 def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_point,args=[], day_of_week=[]):
@@ -324,11 +334,12 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
 
         hour= start_date.split('T')[1].split(':')[0]
         minute= start_date.split('T')[1].split(':')[1]
+        getting_mac = Devices.query.filter_by(location=location,str_id=str_id).first()
 
         if len(day_of_week)!=0:
 
-            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'cron',id_job],id=id_job)
-            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point,'cron',id_job],id=id_job+'_cron') #para que lo haga ese dia y despues repita
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'cron',id_job,getting_mac.mac_address],id=id_job)
+            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point,'cron',id_job,getting_mac.mac_address],id=id_job+'_cron') #para que lo haga ese dia y despues repita
             
             days={'0':'Mon','1':'Tue','2':'Wed','3':'Thu','4':'Fri','5':'Sat','6':'Sun'}
             cron_days=[]   
@@ -344,7 +355,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
 
         else:
 
-            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'date',id_job],id=id_job)
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'date',id_job,getting_mac.mac_address],id=id_job)
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None,event_param_state=param_state,event_param_setpoint=param_set_point, pid=id_job)
             ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
 
