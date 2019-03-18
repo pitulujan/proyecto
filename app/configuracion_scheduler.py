@@ -14,7 +14,7 @@ def config_scheduler():
     }
     job_defaults = {
         'coalesce': False,
-        'max_instances': 3
+        'max_instances': 10
     }
     scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults)
     return scheduler    

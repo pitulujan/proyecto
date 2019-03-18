@@ -20,6 +20,7 @@ Sensors_state={}
 New_devices={}
 New_sensors={}
 Presence={}
+Sent_messages={}
 flag= False
 new_dev_mac=''
 new_dev_mac_enabled=False
@@ -106,6 +107,7 @@ def process_input(input_str):
     global new_dev_mac_enabled
     global New_devices
     global Sensors_state
+    global Sent_messages
     print("Processing the input received from client")
     try:
         message = ast.literal_eval(input_str)
@@ -153,7 +155,9 @@ def process_input(input_str):
                 send_socket(message)        
             elif 'tx_ok' in message.keys():
                 mac_address = message['tx_ok']['mac_address']
-                {'tx_ok':{'mac_address': mac_address, 'seq_number': message['tx_ok']['seq_number']}}
+                seq_number = message['tx_ok']['seq_number']
+                del Sent_messages[seq_number]
+
                 message = ' 5 '+str(1)
                 message=str(len(message)+1)+message
                 send_socket(message)
@@ -281,7 +285,8 @@ def set_device(location, str_id,state,set_point):
     if not Current_state_dic_rooms[location][str_id]['dev_type']:
         Current_state_dic_rooms[location][str_id]['set_point'] = set_point
         query_devices.set_point =set_point
-    
+    mac_address= query_devices.mac_address
+    take_action(mac_address,state,set_point)
     db.session.add(query_devices)
     db.session.commit()
 
@@ -313,6 +318,7 @@ def alarm(state,set_point,event_type,id_job,mac_address):
 
     message = ' 1 '+mac_address+' '+state+' '+set_point
     message=str(len(message)+1)+message
+    send_socket(message)
     print(state,set_point,event_type,id_job)
 
 def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_point,args=[], day_of_week=[]):
@@ -756,6 +762,20 @@ def send_socket(text):
             print('recieved akn from server')        # null operation
     return   
 
+def take_action(mac_address,state,set_point):
+    global Sent_messages
+    if state == True:
+        state=1
+    else:
+        state=0
+
+    seq_number = random.randint(0,256)
+
+    message = ' 1 '+mac_address+' '+str(state)+' '+str(set_point)
+    message=str(len(message)+1)+message
+    Sent_messages[str(seq_number)]={'mac_address': mac_address, 'state': state,'set_point':set_point}
+    print(Sent_messages)
+    send_socket(message)
 
 
 
