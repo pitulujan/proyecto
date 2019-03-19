@@ -276,19 +276,41 @@ def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un secto
 
 def set_device(location, str_id,state,set_point):
     global Current_state_dic_rooms
+    global Sent_messages
     
     query_devices=Devices.query.filter_by(location=location,str_id=str_id).first()
 
-    Current_state_dic_rooms[location][str_id]['State'] = state
-    query_devices.state=state
 
-    if not Current_state_dic_rooms[location][str_id]['dev_type']:
-        Current_state_dic_rooms[location][str_id]['set_point'] = set_point
-        query_devices.set_point =set_point
     mac_address= query_devices.mac_address
-    take_action(mac_address,state,set_point)
-    db.session.add(query_devices)
-    db.session.commit()
+    seq_num=take_action(mac_address,state,set_point)
+    count = 0
+    online = True
+    print(seq_num)
+    while True:
+        if str(seq_num) in Sent_messages.keys():
+            count+=1
+            time.sleep(0.2)
+        else:
+            break
+        if count == 5:
+            online = False
+            break
+
+    if online:
+        Current_state_dic_rooms[location][str_id]['State'] = state
+        query_devices.state=state
+
+        if not Current_state_dic_rooms[location][str_id]['dev_type']:
+            Current_state_dic_rooms[location][str_id]['set_point'] = set_point
+            query_devices.set_point =set_point
+        db.session.add(query_devices)
+        db.session.commit()
+        return jsonify({'status':200})
+    else:
+        print('la rompi devolviendo')
+        return jsonify({'status':400})
+
+
 
 def get_temp_state():
     return Current_state_dic_temp #Esto devuelve todo, el state, el set point y la current temp
@@ -776,6 +798,7 @@ def take_action(mac_address,state,set_point):
     Sent_messages[str(seq_number)]={'mac_address': mac_address, 'state': state,'set_point':set_point}
     print(Sent_messages)
     send_socket(message)
+    return seq_number
 
 
 

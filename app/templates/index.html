@@ -10,7 +10,7 @@
 
     <style type="text/css">
 
-    {%if temp['State'] == True:%}
+  {%if temp['State'] == True:%}
   #prendeapaga {display:show;}
   {%else:%}
   #prendeapaga {display:none;}
@@ -70,7 +70,7 @@
 {%if k != 'default' %}
 
 {%if k in current_sensors.keys()%}
-        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if not current_sensors[k]['online'] %} <span class="fa fa-street-view "  style="color: grey;"></span> <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%}{%if current_sensors[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half""></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if not current_sensors[k]['online'] %} <span class="fa fa-street-view "  style="color: grey;"></span> <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%}{%if current_sensors[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
 
 {%else%}
@@ -150,7 +150,7 @@
 {%for key in current_sensors.keys():%}
 {%if key not in devices.keys()%}
 
-<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa fa-street-view "  style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[key]['presence_state']%} <span class="fa fa-street-view"  style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half""></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa fa-street-view "  style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[key]['presence_state']%} <span class="fa fa-street-view"  style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
                  <div class="dropdown-container-pitu collapse " >
 
@@ -170,6 +170,42 @@
      
 {%endif%}
 {%endfor%}
+
+
+<div class="modal fade" id="connectionlostnotification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <center><h4 class="modal-title" >Connection Error</h4></center>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+              
+
+              <h4>It seems like device at is not responding</h4>
+
+           
+
+              <row style="display: flex;justify-content: flex-end;" >
+                
+                <button type="submit" class="btn btn-primary" id="dismiss_connection_lost_notification" >
+                            Accept
+                </button>
+              </row>
+                        </div>
+
+
+
+        </div>
+    </div>
+</div>
   <script>
   $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done();});
 
@@ -201,10 +237,40 @@
 
     slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.oninput = function() {
       output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = this.value;}
+      
+
       $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
         $("#prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").toggle(500);
-        if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()})}
-        else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()});}});
+        if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function(result) {
+
+
+          if (result['status']==400) { 
+
+            console.log(result['status'])
+            $('#connectionlostnotification').modal('show');}
+
+
+
+        })}
+
+
+
+        else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function(result) {
+
+
+          if (result['status']==400) { 
+
+            console.log(result['status'])
+            $("#connectionlostnotification").show();}
+
+
+
+        })};
+
+
+
+
+      });
     {%else:%}
 
       $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){

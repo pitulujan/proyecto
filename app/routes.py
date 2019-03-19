@@ -111,11 +111,11 @@ def set_temperature():
 @login_required
 def set_dev():
     if request.form['state']=='True':
-        set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],True,request.form['set_point'])
+        return set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],True,request.form['set_point'])
     else:
-        set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
+        return set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
 
-    return "Ok"
+    
 
 @app.route('/remove_device', methods=['GET','POST'])
 @login_required
