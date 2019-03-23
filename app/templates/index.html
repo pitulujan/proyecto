@@ -189,13 +189,13 @@
             <div class="modal-body">
               
 
-              <h4>It seems like device at is not responding</h4>
+              <h4 id='text_error_body'></h4>
 
            
 
               <row style="display: flex;justify-content: flex-end;" >
                 
-                <button type="submit" class="btn btn-primary" id="dismiss_connection_lost_notification" >
+                <button type="button" class="btn btn-primary" id="dismiss_connection_lost_notification" >
                             Accept
                 </button>
               </row>
@@ -247,7 +247,11 @@
           if (result['status']==400) { 
 
             console.log(result['status'])
-            $('#connectionlostnotification').modal('show');}
+            
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $('#connectionlostnotification').modal('show');
+          }
 
 
 
@@ -261,7 +265,11 @@
           if (result['status']==400) { 
 
             console.log(result['status'])
-            $("#connectionlostnotification").show();}
+            
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $("#connectionlostnotification").show();
+          }
 
 
 
@@ -286,6 +294,11 @@
     {%endfor%}
     
 });
+
+    $("#dismiss_connection_lost_notification").click(function(){
+      //$("#connectionlostnotification").hide();
+      location.reload(true);
+    });
   </script>
     
 {% endblock %}

@@ -109,8 +109,10 @@ def process_input(input_str):
     global Sensors_state
     global Sent_messages
     print("Processing the input received from client")
+    '''
     try:
         message = ast.literal_eval(input_str)
+    
         try:
             if 'sensor_update' in message.keys():
 
@@ -175,7 +177,8 @@ def process_input(input_str):
     except:
         message = ' 6'
         message=str(len(message)+1)+message
-        send_socket(message)  
+        send_socket(message) 
+    ''' 
         print(input_str)
         return str(0)
 
@@ -308,7 +311,7 @@ def set_device(location, str_id,state,set_point):
         return jsonify({'status':200})
     else:
         print('la rompi devolviendo')
-        return jsonify({'status':400})
+        return jsonify({'status':400, 'str_id':str_id,'location':location})
 
 
 
