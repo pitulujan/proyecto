@@ -179,8 +179,8 @@ def process_input(input_str):
         message=str(len(message)+1)+message
         send_socket(message) 
     ''' 
-        print(input_str)
-        return str(0)
+    print(input_str)
+    return str(0)
 
 def remove_sens(user,mac_address):
     global Current_sensors
