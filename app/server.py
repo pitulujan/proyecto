@@ -109,7 +109,7 @@ def process_input(input_str):
     global Sensors_state
     global Sent_messages
     print("Processing the input received from client")
-    '''
+    
     try:
         message = ast.literal_eval(input_str)
     
@@ -178,9 +178,9 @@ def process_input(input_str):
         message = ' 6'
         message=str(len(message)+1)+message
         send_socket(message) 
-    ''' 
-    print(input_str)
-    return str(0)
+     
+        print(input_str)
+        return str(0)
 
 def remove_sens(user,mac_address):
     global Current_sensors
@@ -316,6 +316,16 @@ def set_device(location, str_id,state,set_point):
 
 
 def get_temp_state():
+    global Current_sensors
+
+    aux_temp=0
+
+    for key in Current_sensors.keys():
+        aux_temp+= Current_sensors[key]['temp_state']
+
+    tem_prom=aux_temp/len(Current_sensors.keys())
+
+
     return Current_state_dic_temp #Esto devuelve todo, el state, el set point y la current temp
 
 def get_devices():

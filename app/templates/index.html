@@ -207,7 +207,19 @@
     </div>
 </div>
   <script>
-  $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done();});
+  $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
+
+        if (result['status']==400) { 
+
+            console.log(result['status'])
+            console.log(result['str_id'])
+            console.log(result['location'])
+            console.log('la concha de tu mama')
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $('#connectionlostnotification').modal('show');
+          }
+      });});
 
     $(document).ready(function() {
       var slider = document.getElementById("myRange");
@@ -218,8 +230,39 @@
 
   $("#myonoffswitch").click(function(){
           $("#prendeapaga").toggle(500);
-        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
-        else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
+        if ($("#myonoffswitch").val()=='On'){
+          $("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()}).done(function(result) {
+
+        if (result['status']==400) { 
+
+            console.log(result['status'])
+            console.log(result['str_id'])
+            console.log(result['location'])
+            console.log('la concha de tu mama')
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $('#connectionlostnotification').modal('show');
+          }
+      });
+
+        }
+
+
+        else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
+
+        if (result['status']==400) { 
+
+            console.log(result['status'])
+            console.log(result['str_id'])
+            console.log(result['location'])
+            console.log('la concha de tu mama')
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $('#connectionlostnotification').modal('show');
+          }
+      });
+
+      }
 
            });
 
@@ -229,7 +272,19 @@
     {% for kk,vv in v.items()|sort: %}
     {% if vv['dev_type'] == False: %}
 
-      $(document).on('change', '#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function() {});});
+      $(document).on('change', '#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}', function(){$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function(result) {
+
+        if (result['status']==400) { 
+
+            console.log(result['status'])
+            console.log(result['str_id'])
+            console.log(result['location'])
+            console.log('la concha de tu mama')
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $('#connectionlostnotification').modal('show');
+          }
+      });});
 
       var slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
     var output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
@@ -255,7 +310,7 @@
 
 
 
-        })}
+        });}
 
 
 
@@ -268,12 +323,12 @@
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
-            $("#connectionlostnotification").show();
+            $('#connectionlostnotification').modal('show');
           }
 
 
 
-        })};
+        });};
 
 
 
@@ -283,8 +338,44 @@
 
       $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
         
-        if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':"None"})}
-        else{$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point': 'None'});}});
+        if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':"None"}).done(function(result) {
+
+
+          if (result['status']==400) { 
+
+            console.log(result['status'])
+            console.log(result['str_id'])
+            console.log(result['location'])
+            console.log('la concha de tu mama 1')
+            
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+          
+            $('#connectionlostnotification').modal('show');
+          }
+
+
+
+        });}
+        
+        else
+
+          {$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('On');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('True');$.post("{{ url_for('set_dev') }}",{'location':"{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'True','set_point': 'None'}).done(function(result) {
+
+
+          if (result['status']==400) { 
+
+            console.log(result['status'])
+            console.log(result['str_id'])
+            console.log(result['location'])
+            console.log('la concha de tu mama')
+            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            
+            $('#connectionlostnotification').modal('show');
+          }
+
+
+
+        });};});
 
     {%endif%}
 
