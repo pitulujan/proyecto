@@ -131,3 +131,11 @@ creo un evento en scheduler cuando creo un sensor, y eso hace que por sensor, ca
 
 
 para checkear estado de actuador ?? con el akn suponemos no? lo tenemos que ver podemos antes de devolver con el ajax el nuevo estado del actuador esperar a que l actuador conteste con un akn y si no esta, mandar una modal que diga "lost connection with xxx" 
+
+
+
+
+--------------------------UPDATE 3/23/2019----------------------------------------
+checkbox para ver si el device que se agrega es el termostato, una vez que tengo uno que no aparezca mas el checkbox, poner campo nuevo en la base de datos, sacar new device en la tabla devices
+
+cuando llegue info de un sensor, calcular el promedio nuevo de la temp y guardarlo 

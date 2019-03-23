@@ -321,7 +321,8 @@ def get_temp_state():
     aux_temp=0
 
     for key in Current_sensors.keys():
-        aux_temp+= Current_sensors[key]['temp_state']
+        if Current_sensors[key]['online'] == True # --> hacemos un promedio de los sensores que esten activos
+            aux_temp+= Current_sensors[key]['temp_state']
 
     tem_prom=aux_temp/len(Current_sensors.keys())
 
