@@ -255,7 +255,7 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        Current_sensors[sensor.location]={'presence_state':False,'online':True, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
+        Current_sensors[sensor.location]={'presence_state':False,'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
         Sensors_state[sensor.mac_address]=sensor.last_update
 
 
@@ -312,8 +312,6 @@ def set_device(location, str_id,state,set_point):
     else:
         print('la rompi devolviendo')
         return jsonify({'status':400, 'str_id':str_id,'location':location})
-
-
 
 def get_temp_state():
     global Current_sensors
