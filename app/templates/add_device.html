@@ -118,7 +118,14 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                 <center><h4 ><span class="glyphicon glyphicon-plus-sign"></span><b> New Device</b></h4></center>
+                <div class="row">
+                  <div class="col-xs-3" >
+                    <span onclick='' id="back_arrow" style="display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display: none;" class="fa fa-arrow-left back_arrow_class"></span>
+                  </div>
+                <div class="col-xs-5" style="display: flex;justify-content: center;">
+                  <h4  ><span class="glyphicon glyphicon-plus-sign"> </span> <b> New Device</b></h4>
+                </div>
+                 </div>
             </div>
 
             <!-- Modal Body -->
@@ -240,12 +247,23 @@
             console.log(this.value);
             $("#body_device_com_buttons").attr("style","display:block;");
             $("#body_device_com").attr("style","display:block;");
+            $("#back_arrow").attr("style","display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display:block;");
             $("#temp_row").attr("style","display:none;");
 
           }
          console.log(this.value);
         };
     };
+
+    $(document).on("click","span.back_arrow_class",function(){
+      $('input[name="optradio"]:checked').prop('checked', false);
+      $("#body_device_com_buttons").attr("style","display:none;");
+            $("#body_device_com").attr("style","display:none;");
+            $("#back_arrow").attr("style","display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display:none;");
+            $("#temp_row").attr("style","display:block;");
+
+
+    });
 
 
     var slider = document.getElementById("myRange");
