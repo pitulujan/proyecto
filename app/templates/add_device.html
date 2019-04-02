@@ -171,12 +171,12 @@
 
                       </form>
                   </div>
-                  <div class="row" style="{%if not temp_device%}display: none;{%else%}display: block;{%endif%}">
+                  <div class="row" style="{%if temp_device!=None%}display: none;{%else%}display: block;{%endif%}margin-bottom: 10px;">
 
                           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
-                            <h4 id="textoreloco" style="vertical-align: text-top;margin-top: 10px;"><i class="fa fa-tachometer"></i>  <b>Temp Device</b></h4>
+                            <h4 id="textoreloco" style="vertical-align: text-top;margin-top: 10px;"><i class="fa fa-thermometer-half"></i>  <b>Temp Device</b></h4>
                           </div>
-                          <div class="col-xs-6">
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-top: 10px;">
                                 <label class="radio-inline">
                                     <input type="radio" name="optradio" value="False" checked>No
                                 </label>

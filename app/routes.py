@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,check_temp_device
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device
 
 #import xmltodict, requests
 #pitu
@@ -205,9 +205,9 @@ def delete_event():
 def add_device():
     if request.method == 'POST':
         print(request.form['temp_dev'])
-        #answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'])
-        #flash(answer['message'])
-        return 'OK'#jsonify(answer)
+        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'])
+        flash(answer['message'])
+        return jsonify(answer)
 
     return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=get_temp_device())
 

@@ -614,7 +614,7 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_
         else:
             temp_dev=False
 
-        device_to_add = Devices(user_perm=New_devices[mac_address]['user_perm'],str_id=str_id,location=location,dev_type=New_devices[mac_address]['dev_type'],state=state,set_point=set_point,new_device=False,temp_device=temp_dev,mac_address=mac_address)
+        device_to_add = Devices(user_perm=New_devices[mac_address]['user_perm'],str_id=str_id,location=location,dev_type=New_devices[mac_address]['dev_type'],state=state,set_point=set_point,temp_device=temp_dev,mac_address=mac_address)
         
 
         if location not in Current_state_dic_rooms.keys():
