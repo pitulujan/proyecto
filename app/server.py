@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
-from app.models import User, Devices, Log, Temperature, Scheduled_events,Sensors,Log
+from app.models import User, Devices, Log,Scheduled_events,Sensors,Log
 from app import db
 from flask import jsonify
 from threading import Thread
@@ -234,7 +234,7 @@ scheduler = config_scheduler()
 scheduler.add_job(tick, 'interval', seconds=300,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 def get_activity_log():
     return Log.query.all()
@@ -246,11 +246,11 @@ def get_initial_values():
     query_devices=Devices.query.all()
     for location in query_devices:
         if location.location in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'new_device': location.new_device, 'mac_address':location.mac_address}
+            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device}
         else:
-            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm,'new_device': location.new_device, 'mac_address':location.mac_address}}
-    query_temp=Temperature.query.first()
-    Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
+            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device}}
+    #query_temp=Temperature.query.first()
+    #Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
     query_sensors = Sensors.query.all()
 
@@ -315,18 +315,20 @@ def set_device(location, str_id,state,set_point):
 
 def get_temp_state():
     global Current_sensors
+    temp_dev=Devices.query.filter_by(temp_device=True).first()
+    if temp_dev !=None:
+        aux_temp=0
 
-    aux_temp=0
+        for key in Current_sensors.keys():
+            if Current_sensors[key]['online'] == True: # --> hacemos un promedio de los sensores que esten activos
+                aux_temp+= Current_sensors[key]['temp_state']
 
-    for key in Current_sensors.keys():
-        if Current_sensors[key]['online'] == True # --> hacemos un promedio de los sensores que esten activos
-            aux_temp+= Current_sensors[key]['temp_state']
-
-    tem_prom=aux_temp/len(Current_sensors.keys())
+        tem_prom=aux_temp/len(Current_sensors.keys())
 
 
-    return Current_state_dic_temp #Esto devuelve todo, el state, el set point y la current temp
-
+        return { 'State' : temp_dev.state,'Set_Point' : temp_dev.set_point, 'Current_value': tem_prom} 
+    else:
+        return None 
 def get_devices():
     return Current_state_dic_rooms #--> que se la arrgle routes
 
@@ -590,7 +592,7 @@ def edit_sensor_server(old_location,new_location,mac_address):
 
     return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
 
-def add_new_device_server(user,location,str_id,state,set_point,mac_address):
+def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_dev):
     global flag
     global new_dev_mac
     global Current_rooms
@@ -607,16 +609,20 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address):
             state = True
         else:
             state = False
+        if temp_dev =='True':
+            temp_dev=True
+        else:
+            temp_dev=False
 
-        device_to_add = Devices(user_perm=New_devices[mac_address]['user_perm'],str_id=str_id,location=location,dev_type=New_devices[mac_address]['dev_type'],state=state,set_point=set_point,new_device=False,mac_address=mac_address)
+        device_to_add = Devices(user_perm=New_devices[mac_address]['user_perm'],str_id=str_id,location=location,dev_type=New_devices[mac_address]['dev_type'],state=state,set_point=set_point,new_device=False,temp_device=temp_dev,mac_address=mac_address)
         
 
         if location not in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address}}
+            Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address,'temp_dev':temp_dev}}
            # Current_rooms[location]=False
         else:
             if str_id not in Current_state_dic_rooms[location]:
-                Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address}
+                Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address,'temp_dev':temp_dev}
         
         description= "New device "+str_id+" has been added to "+location
         log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
@@ -699,6 +705,10 @@ def get_new_devices():
         return New_devices
     else:
         return None
+
+def get_temp_device():
+    temp_device= Devices.query.filter_by(temp_device=True).first()
+    return temp_device
 
 def get_current_sensors():
     global Current_sensors
@@ -811,6 +821,7 @@ def take_action(mac_address,state,set_point):
     print(Sent_messages)
     send_socket(message)
     return seq_number
+
 
 
 

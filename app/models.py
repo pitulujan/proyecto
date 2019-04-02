@@ -32,7 +32,7 @@ class Devices(db.Model):
     dev_type=db.Column(db.Boolean,default=False) #True para booleano y False no booleano(dimmer)
     state=db.Column(db.Boolean,default=False) #On/Off 
     set_point=db.Column(db.Integer,default=None) #En caso de dev_type=False y está expresado en porcentaje
-    new_device = db.Column(db.Boolean,default=True) # Este campo se setea en True cuando el device es nuevo y no esta configurado, post configuracion, False
+    temp_device = db.Column(db.Boolean,default=False)
     mac_address=db.Column(db.String(128),unique=True)
     def __repr__(self):
         return '<str_id {},location {},dev_type {}>'.format(self.str_id,self.location,self.dev_type)
@@ -52,13 +52,6 @@ class Log(db.Model):
     description = db.Column(db.String(64),default='default')
     def __repr__(self):
         return '<user {},description {}>'.format(self.user,self.description)
-
-class Temperature(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    state= db.Column(db.Boolean,default=False)
-    set_point=db.Column(db.Integer, default=22)
-    def __repr__(self):
-        return '<Temp {}>'.format(self.temp_state)
 
 class Scheduled_events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
