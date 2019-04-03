@@ -95,7 +95,6 @@ def delete_user():
     return render_template('delete_user.html', title=' Delete User', users=users)
 
 
-
 @app.route('/set_temperature', methods=['POST'])
 @login_required
 def set_temperature():
@@ -118,7 +117,6 @@ def set_dev():
     else:
         return set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
 
-    
 
 @app.route('/remove_device', methods=['GET','POST'])
 @login_required
@@ -143,10 +141,7 @@ def remove_sensor():
         flash(ans)
         return render_template('remove_device.html', title='Remove Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
 
-    
-
-
-
+ 
 @app.route('/edit_device', methods=['GET','POST'])
 @login_required
 def edit_device():
@@ -169,10 +164,6 @@ def edit_sensor():
         answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
         flash(answer['message'])
         return jsonify(answer)
-
-
-    
-
 
 
 @app.route('/schedule_events', methods=['GET', 'POST'])
@@ -199,17 +190,22 @@ def delete_event():
     return 'Ok'
 
 
-
 @app.route('/add_device', methods=['GET', 'POST'])
 @login_required
 def add_device():
+
+    temp_device=get_temp_device()
     if request.method == 'POST':
         print(request.form['temp_dev'])
         answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'])
         flash(answer['message'])
         return jsonify(answer)
 
-    return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=get_temp_device())
+    if temp_device == None:
+        return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device)
+    else:
+        return render_template('add_device_w_temp.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors())
+
 
 @app.route('/add_sensor', methods=['POST'])
 @login_required

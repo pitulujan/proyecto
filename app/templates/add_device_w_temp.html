@@ -118,19 +118,12 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                <div class="row">
-                  <div class="col-xs-3" >
-                    <span onclick='' id="back_arrow" style="display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display: none;" class="fa fa-arrow-left back_arrow_class"></span>
-                  </div>
-                <div class="col-xs-5" style="display: flex;justify-content: center;">
-                  <h4  ><span class="glyphicon glyphicon-plus-sign"> </span> <b> New Device</b></h4>
-                </div>
-                 </div>
+                 <center><h4 ><span class="glyphicon glyphicon-plus-sign"></span><b> New Device</b></h4></center>
             </div>
 
             <!-- Modal Body -->
        <div class="modal-body">
-               <div id="body_device_com" style="display: none;"> 
+                
                 <form role="form" action="" method="POST" id="form_id">
                   <div class="form-group">
                     <h4>  <i class="fa fa-map-marker"></i> <label for="device_location">Location</label></h4>
@@ -158,66 +151,36 @@
                               </div>
                             </div>
                   </div>
-                  </form>
-                      <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
-                            <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
-                                  <div class="form-group">
-                                              <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
-                                              <div class="row">
-                                                    <div class="col-xs-9">
-                                                      <div class="slidecontainer" style="padding-top: 26px;">
-                                                          <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
-                                                      </div>
-                                                    </div>
-                                                    <div class="col-xs-3" style="display: flex;justify-content: center;">
-                                                        <b><h3><span id="demo"></span>%</h3></b> 
-                                                    </div>
-                                            </div>
 
-                                </div>
+                  <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
+                        <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+                              <div class="form-group">
+                                          <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
+                                          <div class="row">
+                                                <div class="col-xs-9">
+                                                  <div class="slidecontainer" style="padding-top: 26px;">
+                                                      <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
+                                                  </div>
+                                                </div>
+                                                <div class="col-xs-3" style="display: flex;justify-content: center;">
+                                                    <b><h3><span id="demo"></span>%</h3></b> 
+                                                </div>
+                                        </div>
 
-                          </form>
-                      </div>
-
-                </div>
-                <div id="temp_row" style="{%if temp_device!=None%}display: none;{%else%}display: block;{%endif%}margin-bottom: 10px;">
-                  
-                  <div class="row">
-                          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
-                            <h4 id="textoreloco" style="vertical-align: text-top;margin-top: 10px;"><i class="fa fa-thermometer-half"></i>  <b>Temp Device</b></h4>
-                          </div>
-                          <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-top: 10px;padding-right: 20px;">
-                                <form name="myForm">
-                                <label class="radio-inline">
-                                      <input type="radio" name="optradio" value="False">No
-                                  </label>
-                                  <label class="radio-inline">
-                                     <input type="radio" value="True" name="optradio">Yes
-                                  </label>
-                                </form>
-                          </div>
+                            </div>
+                    </form>
                   </div>
-                  
-                  <row id="buttons_temp_rb" style="display: flex;justify-content: flex-end;margin-top: 10px; display: none;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="submit_changes_temp_device" class="btn btn-primary" >Add Device</button>
-                  </row>
-                  </div>
-                   
-                           
-    
-                  
-                  <row id="body_device_com_buttons" style="display: flex;justify-content: flex-end;display: none;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="submit_changes" class="btn btn-primary" >Add Device</button>
+                  <row style="display: flex;justify-content: flex-end;">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" id="submit_changes" class="btn btn-primary" >Add Device</button>
                 </row>
-                
+                </form>
               </div>
 
 
 
 
-</div>
+
         </div>
     </div>
 </div>
@@ -239,37 +202,6 @@
 
 
  <script>
-
-  var rad = document.myForm.optradio;
-  for(var i = 0; i < rad.length; i++) {
-        rad[i].onclick = function () {
-          if (this.value=='False'){
-            console.log(this.value);
-            $("#body_device_com_buttons").attr("style","display: flex;justify-content: flex-end;display: block;");
-            $("#body_device_com").attr("style","display:block;");
-            $("#back_arrow").attr("style","display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display:block;");
-            $("#temp_row").attr("style","display:none;");
-
-          }
-          else {
-
-            $("#buttons_temp_rb").attr("style","display: flex;justify-content: flex-end;display: block;")
-          }
-         console.log(this.value);
-        };
-    };
-
-    $(document).on("click","span.back_arrow_class",function(){
-      $('input[name="optradio"]:checked').prop('checked', false);
-      $("#body_device_com_buttons").attr("style","display:none;");
-            $("#body_device_com").attr("style","display:none;");
-            $("#back_arrow").attr("style","display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display:none;");
-            $("#temp_row").attr("style","display:block;");
-            $("#buttons_temp_rb").attr("style","display: flex;justify-content: flex-end;display: none;")
-
-
-    });
-
 
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
@@ -309,14 +241,6 @@
                                                         $("#dataplaceradd").val(dev_type);
                                                         $("#dataplaceradd").attr('data-old_location',location);
                                                         $("#dataplaceradd").attr('data-mac_address',mac_address);
-                                                        $("#body_device_com_buttons").attr("style","display:none;");
-                                                        $('input[name="optradio"]:checked').prop('checked', false);
-                                                        $("#body_device_com").attr("style","display:none;");
-                                                        $("#back_arrow").attr("style","display: flex;justify-content: flex-start;padding-left: 0px;padding-top: 12px;display:none;");
-                                                        $("#temp_row").attr("style","display:block;");
-                                                        $("#buttons_temp_rb").attr("style","display: flex;justify-content: flex-end;display: none;")
-
-
 														$('#modaladdevent').modal('show');
                                                           
         });
@@ -325,8 +249,7 @@
       $("#submit_changes").click(function(){
 
 
-
-        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address')}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
@@ -373,7 +296,7 @@
             $("#submit_changes_sensor").click(function(){
 
 
-        $.post("{{ url_for('add_sensor') }}",{'location':$("#sensor_location").val(),'battery':$("#dataplaceraddsensor").data('battery'),'presence_state':$("#dataplaceraddsensor").data('presence_state'),'mac_address':$("#dataplaceraddsensor").data('mac_address'),'online':$("#dataplaceraddsensor").data('online'),'battery_state':$("#dataplaceraddsensor").data('battery_state'),'temp_state':$("#dataplaceraddsensor").data('temp_state')}).done(function(result) {
+        $.post("{{ url_for('add_sensor') }}",{'location':$("#sensor_location").val(),'battery':$("#dataplaceraddsensor").data('battery'),'presence_state':$("#dataplaceraddsensor").data('presence_state'),'mac_address':$("#dataplaceraddsensor").data('mac_address'),'online':$("#dataplaceraddsensor").data('online'),'battery_state':$("#dataplaceraddsensor").data('battery_state'),'temp_state':$("#dataplaceraddsensor").data('temp_state'),'temp_dev':'False'}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
@@ -393,33 +316,6 @@
           else {window.location.replace("{{url_for('index')}}");}
         });
         $('#modaladdsensor').modal('hide');
-      });
-
-
-            $("#submit_changes_temp_device").click(function(){
-
-
-
-        $.post("{{ url_for('add_device') }}",{'location':'temp_device_location','str_id': 'temp_device_str_id' ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
-
-          if(result['status']==200){
-            console.log('200')
-
-            if ($("#answer_message").hasClass('alert alert-danger')){console.log('que onda')
-                                                                      $("#answer_message").removeClass("alert alert-danger");
-                                                                      $("#answer_message").addClass("alert alert-success");}}
-          else
-          {if ($("#answer_message").hasClass('alert alert-success')){console.log('ki')
-                                                                      $("#answer_message").removeClass("alert alert-success");
-                                                                      $("#answer_message").addClass("alert alert-danger");}}
-
-          $("#answer_message").text(result['message']);
-          //$("#answer_message").fadeIn('slow').delay(2000).fadeOut('slow');
-          if (result['ndkl']!=0){
-          location.reload(true);}
-          else {window.location.replace("{{url_for('index')}}");}
-        });
-        $('#modaladdevent').modal('hide');
       });
 
 

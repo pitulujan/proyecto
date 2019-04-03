@@ -70,7 +70,7 @@
 {%endif%}
 
 {% for k,v in devices.items()|sort: %}
-{%if k != 'default' %}
+{%if k != 'temp_device_location' %}
 
 {%if k in current_sensors.keys()%}
         <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if not current_sensors[k]['online'] %} <span class="fa fa-street-view "  style="color: grey;"></span> <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%}{%if current_sensors[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
