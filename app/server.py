@@ -234,7 +234,7 @@ scheduler = config_scheduler()
 scheduler.add_job(tick, 'interval', seconds=300,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
-#scheduler.start()
+scheduler.start()
 
 def get_activity_log():
     return Log.query.all()
@@ -318,17 +318,25 @@ def get_temp_state():
     temp_dev=Devices.query.filter_by(temp_device=True).first()
     if temp_dev !=None:
         aux_temp=0
+        active=False
+        count=0
 
         for key in Current_sensors.keys():
             if Current_sensors[key]['online'] == True: # --> hacemos un promedio de los sensores que esten activos
+                active=True
                 aux_temp+= Current_sensors[key]['temp_state']
+                count+=1
 
-        tem_prom=aux_temp/len(Current_sensors.keys())
+        if active:
+            tem_prom=int(aux_temp/count )
+        else:
+            tem_prom='-'
 
 
         return { 'State' : temp_dev.state,'Set_Point' : temp_dev.set_point, 'Current_value': tem_prom} 
     else:
         return None 
+
 def get_devices():
     return Current_state_dic_rooms #--> que se la arrgle routes
 
@@ -668,7 +676,7 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
     if location in Current_sensors.keys():
         return {'status': 400, 'message' : 'There is already a sensor with that name in that room'}
     else:
-        Current_sensors[location]={'presence_state':presence_state,'online':online, 'mac_address':mac_address,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state}
+        Current_sensors[location]={'presence_state':presence_state,'online':online, 'mac_address':mac_address,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state)}
 
     sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address)
     description= "New sensor has been added to "+location
@@ -767,7 +775,7 @@ def generate_dummy_sensor_test(presence_state,online,battery,battery_state,temp_
     global New_devices
     
     if '08:00:27:60:04:00' not in New_sensors.keys():
-        New_sensors['08:00:27:60:04:00'] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':'08:00:27:60:04:00'}
+        New_sensors['08:00:27:60:04:00'] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state), 'mac_address':'08:00:27:60:04:00'}
     else:
         
         New_sensors['08:00:27:60:04:0'+str(len(New_sensors.keys()))] = {'presence_state':presence_state,'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':'08:00:27:60:04:0'+str(len(New_sensors.keys()))} 
