@@ -2,9 +2,14 @@
 {% extends "base2.html" %}
 {% block app_content %}
 
+<style type="text/css">
+  
+  .prevent-click {
+     pointer-events: none;
+}
+</style>
 
-
-<div class="row">
+<div class="row" id="tu_vieja">
 	<div id="pitu">
 	<p>This is a paragraph.</p>
 	<p>This is another paragraph.</p>
@@ -15,7 +20,7 @@
   <i class="fa fa-battery-full fa-lg"></i>
   <i class="fa fa-street-view fa-lg"></i>
   <i class="glyphicon glyphicon-off fa-lg"></i>
-
+  <button>Insert content after each p element</button>
 
   <span class="fa-stack fa-lg">
   <i class="fa fa fa-ban fa-stack-2x"></i>
@@ -68,7 +73,8 @@
 $(document).ready(function(){
     $("button").click(function(){$.post("{{ url_for('pruebitas2') }}",{'state': 'True','set_point':'rolando'}).done(function(result) {
 
-
+      $('#tu_vieja').addClass('prevent-click');
+      $('#tu_vieja').css('background-color', 'silver');
     
     var div = $("<div></div>")
            .attr("id", "probando");
