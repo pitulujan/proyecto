@@ -8,12 +8,12 @@
 
   
 
-    <style type="text/css">
+  <style type="text/css">
 
   {%if temp['State'] == True:%}
-  #prendeapaga {display:show;}
+    #prendeapaga {display:show;}
   {%else:%}
-  #prendeapaga {display:none;}
+    #prendeapaga {display:none;}
   {% endif %}
 
 .dropdown-btn.index:hover {
@@ -21,7 +21,7 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
-    </style>
+  </style>
 
     <br>
 
@@ -243,7 +243,7 @@
             console.log(result['status'])
             console.log(result['str_id'])
             console.log(result['location'])
-            console.log('la concha de tu mama')
+            
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
             $('#connectionlostnotification').modal('show');
@@ -284,22 +284,22 @@
             console.log(result['status'])
             console.log(result['str_id'])
             console.log(result['location'])
-            console.log('la concha de tu mama')
+            
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
             $('#connectionlostnotification').modal('show');
           }
       });});
 
-      var slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
-    var output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
-    output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.value;
+        var slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
+        var output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}} = document.getElementById("demo{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}");
+        output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.value;
 
-    slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.oninput = function() {
-      output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = this.value;}
+        slider{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.oninput = function() {
+        output{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}.innerHTML = this.value;}
       
 
-      $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
+        $("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").click(function(){
         $("#prendeapaga{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").toggle(500);
         if ($("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()=='On'){$("#myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('Off');$("#statevalue{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val('False');$.post("{{ url_for('set_dev') }}",{'location' : "{{'-'.join(k.split(' '))}}.{{kk}}",'state': 'False','set_point':$("#myRange{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}").val()}).done(function(result) {
 
