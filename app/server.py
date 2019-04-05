@@ -36,7 +36,8 @@ def start_client():
         soc.connect((host, port))
     except:
         print("Connection error")
-        sys.exit()
+        #sys.exit()
+        return "Connection error"
 
     return soc 
 
@@ -246,9 +247,9 @@ def get_initial_values():
     query_devices=Devices.query.all()
     for location in query_devices:
         if location.location in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device}
+            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device,'online': False}
         else:
-            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device}}
+            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device,'online': False}}
     #query_temp=Temperature.query.first()
     #Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
@@ -272,32 +273,39 @@ def set_temp(state,set_point,user):#Aca no tengo en cuenta si hay mas de un sect
 
     mac_address=query_temp.mac_address
 
-    seq_num=take_action(mac_address,state,set_point)
-    count = 0
-    online = True
-    print(seq_num)
-    while True:
-        if str(seq_num) in Sent_messages.keys():
-            count+=1
-            time.sleep(0.2)
+    
+    #seq_num=take_action(mac_address,state,set_point)
+    ans=take_action(mac_address,state,set_point)
+    
+    if type(ans)==int:
+        count = 0
+        online = True
+        print(ans)
+        while True:
+            if str(ans) in Sent_messages.keys():
+                count+=1
+                time.sleep(0.2)
+            else:
+                break
+            if count == 5:
+                online = False
+                break
+
+        if online:
+            Current_state_dic_rooms['Temperature']['Temperature']['State'] = state
+            query_temp.state=state
+
+            if not Current_state_dic_rooms['Temperature']['Temperature']['dev_type']:
+                Current_state_dic_rooms['Temperature']['Temperature']['set_point'] = set_point
+                query_devices.set_point =set_point
+            db.session.add(query_temp)
+            db.session.commit()
+            return jsonify({'status':200})
         else:
-            break
-        if count == 5:
-            online = False
-            break
-
-    if online:
-        Current_state_dic_rooms['Temperature']['Temperature']['State'] = state
-        query_temp.state=state
-
-        if not Current_state_dic_rooms['Temperature']['Temperature']['dev_type']:
-            Current_state_dic_rooms['Temperature']['Temperature']['set_point'] = set_point
-            query_devices.set_point =set_point
-        db.session.add(query_temp)
-        db.session.commit()
-        return jsonify({'status':200})
+            print('la rompi devolviendo')
+            return jsonify({'status':400, 'str_id':'Temperature','location':'Temperature'})
     else:
-        print('la rompi devolviendo')
+        print('que onda?')
         return jsonify({'status':400, 'str_id':'Temperature','location':'Temperature'})
 
 
@@ -310,36 +318,44 @@ def set_device(location, str_id,state,set_point):
 
 
     mac_address= query_devices.mac_address
-    seq_num=take_action(mac_address,state,set_point)
-    count = 0
-    online = True
-    print(seq_num)
-    while True:
-        if str(seq_num) in Sent_messages.keys():
-            count+=1
-            time.sleep(0.2)
+
+
+    ans=take_action(mac_address,state,set_point)
+    
+    if type(ans)==int:
+        count = 0
+        online = True
+        print(ans)
+        while True:
+            if str(ans) in Sent_messages.keys():
+                count+=1
+                time.sleep(0.2)
+            else:
+                break
+            if count == 5:
+                online = False
+                break
+
+        if online:
+            Current_state_dic_rooms[location][str_id]['State'] = state
+            query_devices.state=state
+
+            if not Current_state_dic_rooms[location][str_id]['dev_type']:
+                Current_state_dic_rooms[location][str_id]['set_point'] = set_point
+                query_devices.set_point =set_point
+            db.session.add(query_devices)
+            db.session.commit()
+            return jsonify({'status':200})
         else:
-            break
-        if count == 5:
-            online = False
-            break
-
-    if online:
-        Current_state_dic_rooms[location][str_id]['State'] = state
-        query_devices.state=state
-
-        if not Current_state_dic_rooms[location][str_id]['dev_type']:
-            Current_state_dic_rooms[location][str_id]['set_point'] = set_point
-            query_devices.set_point =set_point
-        db.session.add(query_devices)
-        db.session.commit()
-        return jsonify({'status':200})
+            print('la rompi devolviendo')
+            return jsonify({'status':400, 'str_id':str_id,'location':location})
     else:
-        print('la rompi devolviendo')
         return jsonify({'status':400, 'str_id':str_id,'location':location})
+
 
 def get_temp_state():
     global Current_sensors
+    global Current_state_dic_rooms
     temp_dev=Devices.query.filter_by(temp_device=True).first()
     if temp_dev !=None:
         aux_temp=0
@@ -358,7 +374,7 @@ def get_temp_state():
             tem_prom='-'
 
 
-        return { 'State' : temp_dev.state,'Set_Point' : temp_dev.set_point, 'Current_value': tem_prom} 
+        return { 'State' : temp_dev.state,'Set_Point' : temp_dev.set_point, 'Current_value': tem_prom, 'online': Current_state_dic_rooms['Temperature']['Temperature']['online']} 
     else:
         return None 
 
@@ -832,12 +848,15 @@ def send_socket(text):
 
     except Exception as e:
         soc=start_client()
-        start = time.perf_counter()
-        soc.sendall(text.encode("ascii","ignore"))
-        print ('time taken ', time.perf_counter()-start ,' seconds')
-        if soc.recv(5120).decode("ascii","ignore") == "ok":
-            print('recieved akn from server')        # null operation
-    return   
+        if type(soc)!= str:
+            start = time.perf_counter()
+            soc.sendall(text.encode("ascii","ignore"))
+            print ('time taken ', time.perf_counter()-start ,' seconds')
+            if soc.recv(5120).decode("ascii","ignore") == "ok":
+                print('recieved akn from server')        # null operation
+        else:
+            return soc 
+    return None 
 
 def take_action(mac_address,state,set_point):
     global Sent_messages
@@ -850,10 +869,15 @@ def take_action(mac_address,state,set_point):
 
     message = ' 1 '+mac_address+' '+str(state)+' '+str(set_point)
     message=str(len(message)+1)+message
-    Sent_messages[str(seq_number)]={'mac_address': mac_address, 'state': state,'set_point':set_point}
-    print(Sent_messages)
-    send_socket(message)
-    return seq_number
+
+    ans=send_socket(message)
+    print('y aca?',ans)
+    if ans == None:
+        #Sent_messages[str(seq_number)]={'mac_address': mac_address, 'state': state,'set_point':set_point}
+        print(Sent_messages)
+        return seq_number
+    else:
+        return ans 
 
 
 

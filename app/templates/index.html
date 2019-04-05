@@ -27,6 +27,8 @@
 
 {%if temp%}
 
+
+
 <div id="temp_for_back" >
        <div class="row">
           <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
@@ -217,7 +219,7 @@
   $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-
+console.log(result);
             console.log(result['status'])
             console.log(result['str_id'])
             console.log(result['location'])
@@ -244,6 +246,8 @@
 
         if (result['status']==400) { 
 
+          console.log(result);
+
             console.log(result['status'])
             console.log(result['str_id'])
             console.log(result['location'])
@@ -260,7 +264,7 @@
         else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-
+console.log(result);
             console.log(result['status'])
             console.log(result['str_id'])
             console.log(result['location'])

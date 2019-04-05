@@ -101,12 +101,12 @@ def set_temperature():
     
     if request.form['state']=='True':
         
-        set_temp(True,request.form['set_point'],current_user.username)
+        ans=set_temp(True,request.form['set_point'],current_user.username)
                     
     else:
-        set_temp(False,request.form['set_point'],current_user.username)
+        ans=set_temp(False,request.form['set_point'],current_user.username)
 
-    return 'Ok'
+    return ans
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
 
 @app.route('/set_dev', methods=['POST'])
