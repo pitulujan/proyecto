@@ -264,18 +264,43 @@ def get_initial_values():
     print(Current_sensors)
     return
 
-def set_temp(state,setpoint,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
-    global Current_state_dic_temp
-    query_temp=Temperature.query.first()
+def set_temp(state,set_point,user):#Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
+    global Current_state_dic_rooms
+    global Sent_messages
 
-    query_temp.state = state
-    Current_state_dic_temp['State']=state
-    if state==True:
-        query_temp.set_point = setpoint
-        Current_state_dic_temp['Set_Point']=setpoint
+    query_temp=Devices.query.filter_by(temp_device=True).first()
 
-    db.session.add(query_temp)
-    db.session.commit()
+    mac_address=query_temp.mac_address
+
+    seq_num=take_action(mac_address,state,set_point)
+    count = 0
+    online = True
+    print(seq_num)
+    while True:
+        if str(seq_num) in Sent_messages.keys():
+            count+=1
+            time.sleep(0.2)
+        else:
+            break
+        if count == 5:
+            online = False
+            break
+
+    if online:
+        Current_state_dic_rooms['Temperature']['Temperature']['State'] = state
+        query_temp.state=state
+
+        if not Current_state_dic_rooms['Temperature']['Temperature']['dev_type']:
+            Current_state_dic_rooms['Temperature']['Temperature']['set_point'] = set_point
+            query_devices.set_point =set_point
+        db.session.add(query_temp)
+        db.session.commit()
+        return jsonify({'status':200})
+    else:
+        print('la rompi devolviendo')
+        return jsonify({'status':400, 'str_id':'Temperature','location':'Temperature'})
+
+
 
 def set_device(location, str_id,state,set_point):
     global Current_state_dic_rooms
@@ -697,7 +722,7 @@ def check_sensor_state(mac_address):
     global Current_sensors
     global Sensors_state
 
-    print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
+    #print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
     for sensor in Current_sensors:
         if mac_address == Current_sensors[sensor]['mac_address']:
             if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<10:

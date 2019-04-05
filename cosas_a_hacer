@@ -139,3 +139,7 @@ para checkear estado de actuador ?? con el akn suponemos no? lo tenemos que ver 
 checkbox para ver si el device que se agrega es el termostato, una vez que tengo uno que no aparezca mas el checkbox, poner campo nuevo en la base de datos, sacar new device en la tabla devices
 
 cuando llegue info de un sensor, calcular el promedio nuevo de la temp y guardarlo 
+
+
+-------------------------UPDATE 4/5/2019-----------------------------------------
+cambiar el set_temp para que pase primero por el take_action y mande por el socket, cmo en set_dev 
