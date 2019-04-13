@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-md-2 col-xs-2" style="padding-left:0px;">
             
-            <a class="navbar-brand edit" style="font-size: 20px; display: flex;justify-content: flex-start;" id="edit"> Edit</span></a>
+            <a class="navbar-brand edit" style="font-size: 20px; display: flex;justify-content: flex-start;" id="edit"> Edit</a>
             
               </div>
 
@@ -59,7 +59,7 @@
                 
          </div>
     </div>
-<div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
+
 
            {%if not scheduled_events :%}
             <row id="no_scheduled_events">
@@ -96,14 +96,11 @@
 
    </div>
 
-
-   
    <div class="col-xs-6 datesandhours" id="cont{{event.pid}}" style="display: flex;justify-content: flex-end;padding-right: 0px;">
     <row >
       <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}} </h2>
       
       <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
-      
       
        </row>
    </div>
@@ -121,11 +118,6 @@
     </div>
 
     </div>
-
-   
-
-
-
    
 </tr></td>
       {%endfor%}
@@ -180,7 +172,7 @@
     <div class="modal-dialog">
         <div class="modal-content" style="margin-top: 60px;">
             <!-- Modal Header -->
-
+         
             
             <!-- Modal Body -->
             <div class="modal-body">
@@ -192,6 +184,7 @@
                 <form role="form" action="" method="POST" id="form_id">
                   <div class="form-group">
                   <h4> <i class="fa fa-calendar-plus-o"></i> <label for="dateid">Select Date & Time</label></h4>
+                   <div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
                       <input type="datetime-local" class="form-control" id="dateid" name="mail"/>
                   </div>
 
@@ -289,7 +282,7 @@
 
  
 <script >
-  $(document).ready(function(){
+  
 
     var today = new Date();
     var dd = today.getDate();
@@ -482,11 +475,14 @@
                                             var selectedDay = new Array();
                                             $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
                                             $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
+                                            
+
                                             $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'pid':$("#pidplacer").val()}).done(function(result) {
                                               console.log(result)
+                                            
                                             if (result['status']==200) {
 
-                                                                          if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();}
+                                                                          if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();};
 
                                                                           var father = $("<tr></tr>")
                                                                                         .attr("id","tr"+result['pid']);
@@ -613,21 +609,27 @@
 
                                                                          else {
 
-                                                                            $('#eventlistid tr:last').after(father);}
+                                                                            $('#eventlistid tr:last').after(father);};
+                                                                            $('#modalschedule').modal('hide');
   
     
-                                        } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');}
+                                        } else {
+                                          $('#errormessage').text(result['error_message']);
+                                          $("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');};
 
 
 });
 
 
-        $('#modalschedule').modal('hide');
+        
 
         });
+       
 
 
-});
+
+
+
  
      
 </script>

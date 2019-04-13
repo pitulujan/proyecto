@@ -408,10 +408,15 @@ def alarm(state,set_point,event_type,id_job,mac_address):
 
 def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_point,args=[], day_of_week=[]):
     str_id=str_id.replace('_',' ')
+    try:
+        if len(start_date.split(':'))==3:
+            start_date=start_date[:-3]
+        date_date=start_date.replace('T',' ')+':00'
+    except:
+        ans={'status':400,'pid':'','error_message': 'Date/hour needed'}
 
-    if len(start_date.split(':'))==3:
-        start_date=start_date[:-3]
-    date_date=start_date.replace('T',' ')+':00'
+        return jsonify(ans)
+
     #print(pidd)
     check_date=check_days(date_date,day_of_week,str_id,location,pidd)
     reschedule=False
@@ -425,7 +430,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
 
     if check_date == True:
 
-        ans={'status':400,'pid':''}
+        ans={'status':400,'pid':'','error_message': 'Try picking another day/hour for this device'}
 
         return jsonify(ans)
 
@@ -439,9 +444,14 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
         id_job=user+'_'+dat
 
         date=start_date.split('T')[0]
+        try:
+            hour= start_date.split('T')[1].split(':')[0]
+            minute= start_date.split('T')[1].split(':')[1]
+        except:
+            ans={'status':400,'pid':'','error_message': 'Date/hour needed'}
 
-        hour= start_date.split('T')[1].split(':')[0]
-        minute= start_date.split('T')[1].split(':')[1]
+            return jsonify(ans)
+
         getting_mac = Devices.query.filter_by(location=location,str_id=str_id).first()
 
         if len(day_of_week)!=0:
