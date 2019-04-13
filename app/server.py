@@ -111,7 +111,7 @@ def process_input(input_str):
     global Sent_messages
     print("Processing the input received from client")
     print('pitu-->', type(input_str))
-    input_str=str(input_str)
+    input_str=str(input_str).replace(chr(0), '')
     
     try:
         print('pitu-->', type(input_str))
