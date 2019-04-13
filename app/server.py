@@ -179,7 +179,8 @@ def process_input(input_str):
                 message=str(len(message)+1)+message
                 send_socket(message)
 
-    except:
+    except  Exception as e:
+        print(e)
         message = ' 6'
         message=str(len(message)+1)+message
         send_socket(message) 
