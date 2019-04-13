@@ -112,6 +112,7 @@ def process_input(input_str):
     print("Processing the input received from client")
     
     try:
+        print('pitu-->', input_str)
         message = ast.literal_eval(input_str)
     
         try:
