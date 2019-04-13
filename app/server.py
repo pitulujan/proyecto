@@ -115,6 +115,7 @@ def process_input(input_str):
         message = ast.literal_eval(input_str)
     
         try:
+            print('pitu-->',message.keys(), message)
             if 'sensor_update' in message.keys():
 
                 mac_address=message['sensor_update']['mac_address']
