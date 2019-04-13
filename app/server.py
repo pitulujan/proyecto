@@ -110,10 +110,11 @@ def process_input(input_str):
     global Sensors_state
     global Sent_messages
     print("Processing the input received from client")
-    print('pitu-->', input_str)
+    print('pitu-->', type(input_str))
+    input_str=str(input_str)
     
     try:
-        print('pitu-->', input_str)
+        print('pitu-->', type(input_str))
         message = ast.literal_eval(input_str)
     
         try:
