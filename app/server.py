@@ -79,14 +79,8 @@ def client_thread(connection, ip, port, max_buffer_size = 5120):
     while is_active:
         client_input = receive_input(connection, max_buffer_size)
 
-        if "--QUIT--" in client_input:
-            print("Client is requesting to quit")
-            connection.close()
-            print("Connection " + ip + ":" + port + " closed")
-            is_active = False
-        else:
-            print("Processed result: {}".format(client_input))
-            connection.sendall("ok".encode("ascii","ignore"))
+        print("Processed result: {}".format(client_input))
+        connection.sendall("ok".encode("ascii","ignore"))
 
 def receive_input(connection, max_buffer_size):
 
@@ -110,7 +104,6 @@ def process_input(input_str):
     global Sensors_state
     global Sent_messages
     print("Processing the input received from client")
-    print('pitu-->', type(input_str))
     input_str=str(input_str).replace(chr(0), '')
     
     try:
@@ -150,7 +143,7 @@ def process_input(input_str):
                         Current_sensors[location]['temp_state'] = temp_state
                         Sensors_state[mac_address]=datetime.now()
 
-                if new :
+                if new and mac_address not in New_sensors.keys() :
                     New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
 
                     flag = True 
