@@ -486,169 +486,148 @@
                                               console.log(result)
                                             if (result['status']==200) {
 
-    if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();}
-                                              
-   
-   
+                                                                          if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();}
+
+                                                                          var father = $("<tr></tr>")
+                                                                                        .attr("id","tr"+result['pid']);
+                                                                          var child = $("<td></td>");
+                                                                          
+                                                                          var div1 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-1 spandeleteevent")
+                                                                                 .attr("style","display: none;margin-top: 25px;padding-right: 20px;");
+
+                                                                          $("<span></span>")
+                                                                                  .attr("class","glyphicon glyphicon-minus-sign del")
+                                                                                  .attr("style","color: #f70707;padding-right: 10px;font-size: 25px;")
+                                                                                  .attr("data-pid",result['pid'])
+                                                                                  .attr("onclick","")
+                                                                                  .appendTo(div1);
+                                                                          div1.appendTo(child);
+
+                                                                          var div2=$("<div></div>")
+                                                                                                  .attr("class","col-xs-6 locationstrid")
+                                                                                                  .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
+
+                                                                          var row = $("<row></row>");
+                                                                          var a = $("<h2></h2>")
+                                                                                    .text(result['location'])
+                                                                                    .attr('style',"margin-top: 5px;margin-bottom: 5px;");
+                                                                                  
+                                                                          var b = $("<h3></h3>")
+                                                                                    .text(result['str_id'])
+                                                                                    .attr('style',"margin-top: 10px;margin-bottom: 5px;");
+                                                                          a.appendTo(row);
+                                                                          b.appendTo(row);
+                                                                          row.appendTo(div2);
+                                                                          div2.appendTo(child);
 
 
+                                                                          var div3 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-6 datesandhours")
+                                                                                 .attr("id", "cont"+result['pid'])
+                                                                                 .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
 
 
+                                                                          var row = $("<row></row>");
+                                                                          var a = $("<h2></h2>")
+                                                                                  .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                                                                  .text(result['date'].split(' ')[1].split(':').slice(0,2).join(':'));
+                                                                                  
+                                                                           if (result['type']== 'cron'){
+                                                                           
+                                                                                    var b = $("<h3></h3>")
+                                                                                                        .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                                                                                        .text(result['cron_days'].join('-'));
+                                                                                    var cron_days = result['cron_days'].join('.');
 
-    var father = $("<tr></tr>")
-                  .attr("id","tr"+result['pid']);
-    var child = $("<td></td>");
-    
-    var div1 = $("<div></div>")
-           .attr("class", "col-xs-1 spandeleteevent")
-           .attr("style","display: none;margin-top: 25px;padding-right: 20px;");
+                                                                                  } else {
 
-    $("<span></span>")
-            .attr("class","glyphicon glyphicon-minus-sign del")
-            .attr("style","color: #f70707;padding-right: 10px;font-size: 25px;")
-            .attr("data-pid",result['pid'])
-            .attr("onclick","")
-            .appendTo(div1);
-    div1.appendTo(child);
+                                                                                    var b = $("<h3></h3>")
+                                                                                                        .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                                                                                        .text(result['date'].split(' ')[0]);
 
-    
-    var div2=$("<div></div>")
-                            .attr("class","col-xs-6 locationstrid")
-                            .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
+                                                                                    var cron_days = 'None';
+                                                                                  };
 
+                                                                          a.appendTo(row);
+                                                                          b.appendTo(row);
+                                                                          row.appendTo(div3);
+                                                                          div3.appendTo(child);
 
+                                                                          var div4 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-1 spaneditevent")
+                                                                                 .attr("id", "spanedit"+result['pid'])
+                                                                                 .attr("style","display: none;margin-top: 25px;padding-left: 20px;");
 
-    var row = $("<row></row>");
-    var a = $("<h2></h2>")
-              .text(result['location'])
-              .attr('style',"margin-top: 5px;margin-bottom: 5px;");
-            
-    var b = $("<h3></h3>")
-              .text(result['str_id'])
-              .attr('style',"margin-top: 10px;margin-bottom: 5px;");
-    a.appendTo(row);
-    b.appendTo(row);
-    row.appendTo(div2);
-    div2.appendTo(child);
+                                                                           $("<span></span>")
+                                                                                  .attr("class","glyphicon glyphicon-menu-right editevent")
+                                                                                  .attr("style","color: #333;font-size: 15px;")
+                                                                                  .attr("onclick","")
+                                                                                  .attr("data-date",result['date'])
+                                                                                  .attr("data-location",result['location'])
+                                                                                  .attr("data-str_id",result['str_id'])
+                                                                                  .attr("data-days",cron_days)
+                                                                                  .attr("data-param_state",result['param_state'])
+                                                                                  .attr("data-param_set_point",result['param_set_point'])
+                                                                                  .attr("data-pid",result['pid'])
+                                                                                 .appendTo(div4);
+                                                                           div4.appendTo(child);
+                                                                          
+                                                                          var div5 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-6 tryingtodel")
+                                                                                 .attr("id", "cont2"+result['pid'])
+                                                                                 .attr("style","display: flex;justify-content: flex-center;display: none;");
 
+                                                                          var div6 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-4")
+                                                                                 .appendTo(div5);
+                                                                          
+                                                                          var div7 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-8");
+                                                                                 
 
-    var div3 = $("<div></div>")
-           .attr("class", "col-xs-6 datesandhours")
-           .attr("id", "cont"+result['pid'])
-           .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
+                                                                          var button =  $("<button></button")
+                                                                                       .attr("class","btn btn-danger btn-block delevent")
+                                                                                       .attr("style","margin-top: 20px;")
+                                                                                       .attr("type","submit")
+                                                                                       .attr("name","delete")
+                                                                                       .attr("data-pid",result['pid']);
+                                                                                       //.text("Delete");
 
+                                                                          $("<span></span>")
+                                                                                              .attr("class","glyphicon glyphicon-trash")
+                                                                                              .attr("onclick","")
+                                                                                              .appendTo(button);
+                                                                           button.appendTo(div7);
 
-    var row = $("<row></row>");
-    var a = $("<h2></h2>")
-            .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
-            .text(result['date'].split(' ')[1].split(':').slice(0,2).join(':'));
-            
-     if (result['type']== 'cron'){
-     
-              var b = $("<h3></h3>")
-                                  .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
-                                  .text(result['cron_days'].join('-'));
-              var cron_days = result['cron_days'].join('.');
+                                                                           div7.appendTo(div5);
+                                                                           div5.appendTo(child);
 
-            } else {
+                                                                          child.appendTo(father);
 
-              var b = $("<h3></h3>")
-                                  .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
-                                  .text(result['date'].split(' ')[0]);
+                                                                          if ($('#eventlistid tr').length == 0 ) {
+                                                                            $('#eventlistid').append(father);
+                                                                            $("#no_scheduled_events").hide();
 
-              var cron_days = 'None';
-            };
+                                                                          } 
 
+                                                                         else {
 
-
-    a.appendTo(row);
-    b.appendTo(row);
-    row.appendTo(div3);
-    div3.appendTo(child);
-
-    var div4 = $("<div></div>")
-           .attr("class", "col-xs-1 spaneditevent")
-           .attr("id", "spanedit"+result['pid'])
-           .attr("style","display: none;margin-top: 25px;padding-left: 20px;");
-
-     $("<span></span>")
-            .attr("class","glyphicon glyphicon-menu-right editevent")
-            .attr("style","color: #333;font-size: 15px;")
-            .attr("onclick","")
-            .attr("data-date",result['date'])
-            .attr("data-location",result['location'])
-            .attr("data-str_id",result['str_id'])
-            .attr("data-days",cron_days)
-            .attr("data-param_state",result['param_state'])
-            .attr("data-param_set_point",result['param_set_point'])
-            .attr("data-pid",result['pid'])
-           .appendTo(div4);
-     div4.appendTo(child);
-    
-
-    var div5 = $("<div></div>")
-           .attr("class", "col-xs-6 tryingtodel")
-           .attr("id", "cont2"+result['pid'])
-           .attr("style","display: flex;justify-content: flex-center;display: none;");
-
-    var div6 = $("<div></div>")
-           .attr("class", "col-xs-4")
-           .appendTo(div5);
-    
-    var div7 = $("<div></div>")
-           .attr("class", "col-xs-8");
-           
-
-    var button =  $("<button></button")
-                 .attr("class","btn btn-danger btn-block delevent")
-                 .attr("style","margin-top: 20px;")
-                 .attr("type","submit")
-                 .attr("name","delete")
-                 .attr("data-pid",result['pid']);
-                 //.text("Delete");
-
-    $("<span></span>")
-                        .attr("class","glyphicon glyphicon-trash")
-                        .attr("onclick","")
-                        .appendTo(button);
-     button.appendTo(div7);
-
-     div7.appendTo(div5);
-     div5.appendTo(child);
-
-    child.appendTo(father);
-
-    if ($('#eventlistid tr').length == 0 ) {
-      $('#eventlistid').append(father);
-      $("#no_scheduled_events").hide();
-
-    } else {$('#eventlistid tr:last').after(father);}
+                                                                            $('#eventlistid tr:last').after(father);}
   
     
-  } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');}
+                                        } else {$("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');}
 
 
 });
+
+
         $('#modalschedule').modal('hide');
-        //$("#pidplacer").attr('value','None');
-        //$("#prendeapaga").attr('display','none');
-        //$("#myRange").val('0')
-        //output.innerHTML = 0;  
-        //if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$("#myonoffswitch").click()}
 
         });
 
-        $("#cancel").click(function(){
-        //$("#pidplacer").attr('value','None');
-        //$('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
-        //$("#prendeapaga").attr('display','none');
-        //$("#myRange").val('0')
-        //output.innerHTML = 0;   
-        //if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$("#myonoffswitch").click()}
-        });
+
 });
-
-
  
      
 </script>
