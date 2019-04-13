@@ -110,6 +110,7 @@ def process_input(input_str):
     global Sensors_state
     global Sent_messages
     print("Processing the input received from client")
+    print('pitu-->', input_str)
     
     try:
         print('pitu-->', input_str)
