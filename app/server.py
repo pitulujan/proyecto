@@ -677,11 +677,11 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_
         
 
         if location not in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address,'temp_dev':temp_dev}}
+            Current_state_dic_rooms[location] = {str_id:{'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'],'mac_address': mac_address,'temp_dev':temp_dev,'online':True}}
            # Current_rooms[location]=False
         else:
             if str_id not in Current_state_dic_rooms[location]:
-                Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address,'temp_dev':temp_dev}
+                Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address,'temp_dev':temp_dev,'online':True}
         
         description= "New device "+str_id+" has been added to "+location
         log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
