@@ -141,6 +141,7 @@ def process_input(input_str):
                         Current_sensors[location]['battery'] = battery 
                         Current_sensors[location]['battery_state'] = battery_state
                         Current_sensors[location]['temp_state'] = temp_state
+                        Current_sensors[location]['online'] = True
                         Sensors_state[mac_address]=datetime.now()
 
                 if new and mac_address not in New_sensors.keys() :
@@ -734,7 +735,7 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
     db.session.add(sensor_to_add)
     db.session.commit()
     Sensors_state[mac_address]=datetime.now()
-    scheduler.add_job(check_sensor_state, 'interval', seconds=2,args=[mac_address],id=mac_address)
+    scheduler.add_job(check_sensor_state, 'interval', seconds=540,args=[mac_address],id=mac_address)
     New_sensors.pop(mac_address)
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     if len(new_dev_mac)==0:  
