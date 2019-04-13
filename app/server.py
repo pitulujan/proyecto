@@ -735,7 +735,7 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
     db.session.add(sensor_to_add)
     db.session.commit()
     Sensors_state[mac_address]=datetime.now()
-    scheduler.add_job(check_sensor_state, 'interval', seconds=540,args=[mac_address],id=mac_address)
+    scheduler.add_job(check_sensor_state, 'interval', seconds=2,args=[mac_address],id=mac_address)
     New_sensors.pop(mac_address)
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     if len(new_dev_mac)==0:  
@@ -750,7 +750,7 @@ def check_sensor_state(mac_address):
     #print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
     for sensor in Current_sensors:
         if mac_address == Current_sensors[sensor]['mac_address']:
-            if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<10:
+            if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<1:
                 Current_sensors[sensor]['online']= True
             else:
                 Current_sensors[sensor]['online']=False
