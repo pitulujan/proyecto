@@ -1,0 +1,145 @@
+Eventos:
+
+--> date: use when you want to run the job just once at a certain point of time   --> https://apscheduler.readthedocs.io/en/v3.5.3/modules/triggers/date.html#module-apscheduler.triggers.date
+--> interval: use when you want to run the job at fixed intervals of time         --> https://apscheduler.readthedocs.io/en/v3.5.3/modules/triggers/interval.html
+--> cron: use when you want to run the job periodically at certain time(s) of day --> https://apscheduler.readthedocs.io/en/v3.5.3/modules/triggers/cron.html#module-apscheduler.triggers.cron
+
+
+--Tengo que poder eliminar eventos 
+--Tengo que poder reprogramar eventos 
+
+
+
+tablas nuevas ?
+
+id | user | timestamp | pid | atributo --> esto para relacionar usuarios a jobs schedualizados y qué se schedualizo 
+
+
+reveer tablas -->deberia haber una por atributo(luz,temp,etc) -->los usuarios las cambian y queda registrado eso en cada tabla
+tabla mapeo de atributos? 
+
+id | atributo  --> con esta tabla despues podria mapear los eventos (jobs) en la table (id | user | timestamp | pid | atributo) 
+
+
+
+
+guardar set point de la luz solamente, en el dic de server si guardar el current
+
+
+
+
+guardar estados de temperatura y luces en memoria para no tener que checkear cada vezq que se ntra a una pagina, mas vale seteamos que se actualicen cada un par de minutos
+y guardamos esos valores (cada cuanto hay que checkear luz y temp? un par de minutos?)
+
+definimos temp y luz como integer? para mi lo mejor por como aseguramos la medicion
+
+
+template temperatura igual al de luz (con on y off) y luces con un for items que genere un boton de esos por cada luz, no?
+
+
+
+
+
+-------------------------------UPDATE 1/12/2019------------------------------------------
+
+Crear habitaciones ---> ubicar disposivos por habitacion (en el sidenav)
+
++Agregar dispositvo (dropdown fijo con los dispositivos que hay ) --> asignar habitacion (o crear una nueva) -->
+
+
+checkear remove device por el tema de eliminar eventos , depende pid y si paso o no la fecha
+
+
+cambiar todo el server para que matchee con la nueva base de datos
+
+crear metodo para agregar un dispositivo en memoria (agregarlo al diccionario)
+
+crear modelo en base de datos para los dispositivos nuevos
+
+armar diccionario server por habitacion --> cuando se crea un device se lo mete en una habitacion y lo meto al dicc de una
+
+en set lights cazar por class los divs asi no se repite el javascript al pedo (los cazo por el id y los meti adentro del for, no hace falta)
+
+
+
+---------------------------------UPDATE 1/24/2019------------------------------------
+
+falta auto eliminar los eventos una vez que ocurrieron (si son dates) --> posible solucion : en los metodos que se llaman si el event type es date que lo borre
+
+Hay que ver si el dispositivo esta online u offline (falta de bateria o whatever) y avisar
+
+Hay que poder reconfigurar un device (lo muevo de la coicina al living por ejemplo (yendo de la cama al lilving?)) LISTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+ARREGLAR DICCIONARIO DE SCHEDULE EVENTS PARA QUE SEA TAMBIEN POR LOCATION Y NO SOLO POR STR_ID ---> LISTOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+Ver el tema de si se agregan mas de un dispositivo al mismo tiempo que no se pisen los nmbres por default (y ahi?) --> LISTOOOO (str(len(cuuren..['default'])))
+
+
+
+---------------------------------UPDATE 10/2/2019 ------------------------------------
+
+Pensar en algun tipo de mac address en la tabla de devices en la db para identificarlos de manera unica cuando los agrego (tal mac es tal disposivivo, sino como se cuando agrego 3 al mismo tiempo cual es cual?) --> LISTOOOOOOOOOOOO
+
+modificar el add_device para que use la mac adress del end device --> LISTOOOOOOOOO
+
+
+
+--------------------------------UPDATE 2/23/2019--------------------------------------
+
+simular new device por socket
+estados devices (blur a device si no tiene bateria o se desconecto) -> hacer dict del Current_rooms {'Cocina':{'presence':{'available': True,'state':True}, 'online': True}} -> el available viene de la db de sensors, si esta es true 
+aviso bateria baja,hay que ver si el dispositivo esta online u offline y avisar --> iconos en pruebitas2
+usuario defecto Admin Admin posibilidad de cambio de contraseña para el usercase
+indicador de presencia en cada habitacion (si disponible)
+falta auto eliminar los eventos una vez que ocurrieron (si son dates) --> posible solucion : en los metodos que se llaman si el event type es date que lo borre
+
+diferenciar sensores de actuadores en el sistema, lo que se ve en home son actuadores y sus estados, que hacer con sensores de luz, posicion y temperatura (donde se los muestra, se los muestra?)
+ver que se carga apenas arranca el sistema y que se guarda en la db (por ejemplo el estado offline online de los devices etc)
+
+modificar el agregar un device por si es un sensor --> puede que en una habitacion haya solo un sensor (tipo ubicacion solo o temperatura solo, sin actuador) -> se puede agregar un sensor o un actuador a la habitacion
+
+diferencia entre sensor de temp y temp en la db ? 
+
+
+ojo con el remove device ahora que agregué sensors a la db, porque si elimino un sensor no sirve el metodo remove_device del server porque recibe string_id y busca en la tabla Devices , y si hacemos remove device por mac address tmb? no estaría mal bb
+
+
+{'type': dev_type ,'state':True}, 'online': True}
+
+PwC_3xt3rn0!
+
+puede haber sensores de temp en alguna habitacion sin que so modifique la temp 
+
+
+-----------------------------UPDATE 3/3/2019 ----------------------------------------
+cambiar el edit device para que tome sensores y demas vainas
+
+{'sensor_update':{'presence_state':1, 'mac_address':mac_address,'battery': 1, 'battery_state':0, 'temp_state': 20}}
+{'tx_ok':{'mac_address': mac_address, 'seq_number': 47}} --> el numero de secuencia lo podemos usar para no meternos en el medio del msg akn, y para no confundir si llego o no el mensaje y es problema de comunicacion de si el actuador no esta haciendo lo que tiene que hacer
+
+ESTO TARDA EN ABRIR EL SOCKET : time taken  1.6553000023122877e-05  seconds
+
+el client manda un msj, espera 
+
+
+creo un evento en scheduler cuando creo un sensor, y eso hace que por sensor, cada 10 minutos se checkee si antes de ese tiempo recibi un mensaje, si no, lo pongo en offline 
+
+
+
+---------------------
+
+
+para checkear estado de actuador ?? con el akn suponemos no? lo tenemos que ver podemos antes de devolver con el ajax el nuevo estado del actuador esperar a que l actuador conteste con un akn y si no esta, mandar una modal que diga "lost connection with xxx" 
+
+
+
+
+--------------------------UPDATE 3/23/2019----------------------------------------
+checkbox para ver si el device que se agrega es el termostato, una vez que tengo uno que no aparezca mas el checkbox, poner campo nuevo en la base de datos, sacar new device en la tabla devices
+
+cuando llegue info de un sensor, calcular el promedio nuevo de la temp y guardarlo 
+
+
+-------------------------UPDATE 4/5/2019-----------------------------------------
+cambiar el set_temp para que pase primero por el take_action y mande por el socket, cmo en set_dev 

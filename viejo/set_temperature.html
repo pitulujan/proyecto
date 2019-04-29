@@ -1,0 +1,103 @@
+{% extends "base2.html" %}
+{% block app_content %}
+<!---https://stackoverflow.com/questions/24175998/meaning-of-numbers-in-col-md-4-col-xs-1-col-lg-2-in-bootstrap -->
+<link rel="stylesheet" href="/static/style_slider.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<h1><span class="glyphicon glyphicon-flash"></span>{{ title}}</h1>
+    
+<style >
+
+{%if dic['State'] == True:%}
+#prendeapaga {display:show;}
+{%else:%}
+#prendeapaga {display:none;}
+{% endif %}
+
+
+</style>
+
+
+<body>
+
+  <div class="row">
+          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 15px;">
+                          
+                          <h2 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">Temperature</h2>
+                          
+                  </div>
+                    <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+                              <div class="onoffswitch">
+                                  {%if dic['State']==True%}
+                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="On" checked>
+                                  {%else%}
+                                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
+                                  {%endif%}
+                                  <label class="onoffswitch-label" for="myonoffswitch"></label>
+                              </div>
+                    </div> 
+                         
+          </div>
+   <div class="alert alert-success" role="alert" id="activatechange" style="display:none;"> Changes were made madafaca!</div>
+
+    <div class="row" id="prendeapaga" >
+     
+            <form action="{{ url_for('set_temperature') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+            <div class="form-group">
+              <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="{{dic['State']}}">
+                <b><p>Current Set Point: {{dic['Set_Point']}}</p></b>
+                <label for="temp">Set the Desired Temperature</label>
+                <div class="slidecontainer">
+                <input type="range" min="18" max="32" value="{{dic['Set_Point']}}" class="slider" id="myRange" name="set_temp">
+                <b><p>Value: <span id="demo"></span></p></b> 
+        </div>
+    </div>
+
+    <div class="=row">
+      <div class="='col-md-12">
+        <div class="form-group">
+        <!--<button type="submit" class="btn btn-primary">Register Temperature</button>-->
+        <input class="btn btn-primary" id="submit" value="Register Temperature">
+      </div>
+        </div>
+
+      </div>
+            </form>
+    
+  </div>
+
+
+    
+
+</body>
+<script>
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+    
+}
+$(document).ready(function(){
+    $("#myonoffswitch").click(function(){
+        $("#prendeapaga").toggle(500);
+      if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()})}
+      else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()});}
+
+         });
+});
+
+
+$(document).ready(function(){
+    $("#submit").click(function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function() {$("#activatechange").fadeIn('slow').delay(1000).fadeOut('slow');
+    // success callback
+});
+      }
+
+
+      )});
+
+</script>
+{% endblock %}
+
+

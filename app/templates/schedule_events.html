@@ -1,0 +1,642 @@
+<!--https://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal  https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_datetime-local_defaultvalue-->
+{% extends 'base2.html' %}
+{% block app_content %}
+
+<link rel="stylesheet" href="/static/style_slider.css">
+ <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- arregla el tema del zoom en el modal, la romi toda -->
+
+<style type="text/css">
+.modal-body .form-horizontal .col-sm-2,
+.modal-body .form-horizontal .col-sm-10 {
+    width: 100%
+
+}
+
+.modal-body .form-horizontal .control-label {
+    text-align: left;
+}
+.modal-body .form-horizontal .col-sm-offset-2 {
+    margin-left: 15px;
+}
+.weekDays-selector input {
+  display: none!important;
+}
+
+.weekDays-selector input[type=checkbox] + label {
+  display: inline-block;
+  border-radius: 6px;
+  background: #dddddd;
+  height: 40px;
+  width: 30px;
+  margin-right: 3px;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.weekDays-selector input[type=checkbox]:checked + label {
+  background:  #337ab7;
+  color: #ffffff;
+}
+</style>
+    
+    <div class="row">
+      <div class="col-md-2 col-xs-2" style="padding-left:0px;">
+            
+            <a class="navbar-brand edit" style="font-size: 20px; display: flex;justify-content: flex-start;" id="edit"> Edit</a>
+            
+              </div>
+
+         <div class="navbar-header col-md-8 col-xs-8" style="display: flex;justify-content: center;"> 
+                
+                    <a  class="navbar-brand" style="font-size: 20px;color:#333"><span class="glyphicon glyphicon-calendar"></span> {{ title}}</a>
+                
+         </div>
+
+         <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;"> 
+                
+                    <a class="navbar-brand addevent"  href="#"  style="font-size: 20px;padding-right: 0px;"><i class="fa fa-calendar-plus-o"></i></a>
+                
+         </div>
+    </div>
+
+
+           {%if not scheduled_events :%}
+            <row id="no_scheduled_events">
+            <center><h2>You have no scheduled events <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+            </row>
+            <div class="row">
+            <table class="table" id="eventlistid">
+            <tbody>
+            </tbody>
+            </table>
+            </div>
+            {%else:%}
+
+            <row id="no_scheduled_events" style="display: none;" >
+            <center><h2>You have no scheduled events <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+            </row>
+
+<div class="row">
+    <table class="table" id="eventlistid">
+    <tbody>
+      {%for event in scheduled_events:%}
+    <tr id="tr{{event.pid}}"><td>
+
+    <div class="col-xs-1 spandeleteevent" style="display: none;margin-top: 25px;padding-right: 20px;">
+     
+    <span class="glyphicon glyphicon-minus-sign del" onclick='' style="color: #f70707;padding-right: 10px;font-size: 25px;" id="del{{event.pid}}" data-pid="{{event.pid}}" ></span>
+   </div>
+   
+    <div class="col-xs-6 locationstrid" style="display: flex;justify-content: flex-start;padding-left: 10px;">
+      <row >
+        <h2 style="margin-top: 5px;margin-bottom: 5px;">   {{event.location}}</h2>
+        <h3 style="margin-top: 10px;margin-bottom: 5px;" id="str_id_row"><span onclick='' style="display:none;padding-left: 40px;font-size: 25px;" ></span> {{event.str_id}}</h3>
+      </row>
+
+   </div>
+
+   <div class="col-xs-6 datesandhours" id="cont{{event.pid}}" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+    <row >
+      <h2 style="margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{{ ':'.join(event.event_date.split(' ')[1].split(':')[0:2])}} </h2>
+      
+      <h3 style="margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;">{%if event.event_cron != none:%}{{'-'.join(event.event_cron.split('.'))}}{%else:%} {{event.event_date.split(' ')[0]}}{%endif%}<span class="editevent" onclick=''></span></h3>
+      
+       </row>
+   </div>
+
+   <div class="col-xs-1 spaneditevent" id="spanedit{{event.pid}}" style="display: none;margin-top: 25px;padding-left: 20px;">
+     <span class="glyphicon glyphicon-menu-right editevent" onclick='' data-pid={{event.pid}} data-date="{{event.event_date}}" data-location="{{event.location}}" data-str_id="{{event.str_id}}" data-days={{event.event_cron}} data-param_state={{event.event_param_state}} data-param_set_point={{event.event_param_setpoint}} style="color: #333;font-size: 15px;" id="cont{{event.pid}}"></span>
+
+   </div>
+
+  
+    <div class="col-xs-6 tryingtodel" id="cont2{{event.pid}}" style="display: flex;justify-content: flex-center;display: none;">
+      <div class="col-xs-4"></div>
+      <div class="col-xs-8">
+      <button  class="btn btn-danger btn-block delevent"  style="margin-top: 20px;" type="submit" data-title="Delete"  data-pid="{{event.pid}}" data-toggle="modal" data-value="{{event.pid}}" ><span class="glyphicon glyphicon-trash" onclick=''></span></button> 
+    </div>
+
+    </div>
+   
+</tr></td>
+      {%endfor%}
+</tbody>
+</table>
+</div>
+
+{%endif%}
+
+<div class="modal fade" id="modaldelete" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+
+
+            <!-- Modal Body -->
+            <div class="modal-body delmodal">
+              <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+              <center> <h4><span class="glyphicon glyphicon-trash"></span> Are you sure you want to delete this event?</h4></center>
+              <row style="display: flex;justify-content: flex-end;">
+                <form role="form" action="" method="POST">
+                <div class="form-group">
+                      <input id="modal_delete_event" name="delete"  style="display: none;"/>
+                  </div>
+
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Cancel
+                </button>
+                <button type="button" id="delete_event" class="btn btn-danger">
+                    Delete
+                </button>
+        </form>
+      </row>
+                </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalschedule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+         
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+              <button type="button" class="close" data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                
+                <form role="form" action="" method="POST" id="form_id">
+                  <div class="form-group">
+                  <h4> <i class="fa fa-calendar-plus-o"></i> <label for="dateid">Select Date & Time</label></h4>
+                   <div class="alert alert-danger" role="alert" id="errormessage" style="display:none;"> Try picking another date/hour</div>
+                      <input type="datetime-local" class="form-control" id="dateid" name="mail"/>
+                  </div>
+
+                 <h4> <i class="fa fa-repeat"></i> <label for="divdays">Repeat</label></h4>
+                  <div class="weekDays-selector" id=divdays>
+                    <input type="checkbox" id="weekday-Mon" name="day" value="0" class="weekday" />
+                    <label for="weekday-Mon">M</label>
+                    <input type="checkbox" id="weekday-Tue" name="day" value="1" class="weekday" />
+                    <label for="weekday-Tue">T</label>
+                    <input type="checkbox" id="weekday-Wed" name="day" value="2" class="weekday" />
+                    <label for="weekday-Wed">W</label>
+                    <input type="checkbox" id="weekday-Thu" name="day" value="3" class="weekday" />
+                    <label for="weekday-Thu">T</label>
+                    <input type="checkbox" id="weekday-Fri" name="day" value="4" class="weekday" />
+                    <label for="weekday-Fri">F</label>
+                    <input type="checkbox" id="weekday-Sat" name="day" value="5" class="weekday" />
+                    <label for="weekday-Sat">S</label>
+                    <input type="checkbox" id="weekday-Sun" name="day" value="6" class="weekday" />
+                    <label for="weekday-Sun">S</label>
+                  </div>
+
+                  <div class="form-group" style="display: none;" > <input type="text" id="pidplacer" name="pidplace" value="None"></div>
+
+                  <div class="form-group">
+                  <h4>  <i class="fa fa-map-marker"></i> <label for="locationid">Location</label></h4>
+                      <select id="locationid" class="form-control">
+                        {%for location in rooms_devices.keys()|sort:%}
+                        {%if location != 'default'%}
+                          <option value="{{'_'.join(location.split(' '))}}">{{location}}</option>
+                        }
+                        {% endif %}
+                        {% endfor %}
+                      </select>
+                     <h4>  <i class="fa fa-sitemap"></i> <label for="deviceid">Device</label></h4>
+                      <select id="deviceid" class="form-control" >
+                        {%for number,key in enumerate(rooms_devices.keys()|sort):%}
+                          {%if number == 0:%}
+                            {%for devices in rooms_devices[key]:%}
+                               <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
+                            {%endfor%}
+                          {%endif%}
+                        {%endfor%}
+                        
+                      </select>
+                        
+                    </div>
+                    <div class="row" style="margin-bottom: 10px;">
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
+                                  
+                                <h4 id="textoreloco" style="vertical-align: text-top;margin-top: 15px;"><i class="fa fa-power-off"></i>  <b>On/Off</b></h4>
+                                  
+                          </div>
+
+                            <div class="col-xs-6" style="display: flex;justify-content: flex-end;" >
+                              <div class="onoffswitch">
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
+                                <label class="onoffswitch-label" for="myonoffswitch"></label>
+                              </div>
+                            </div>
+                  </div>
+
+            <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
+                        <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
+                              <div class="form-group">
+                                          <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
+                                          <div class="row">
+                                                <div class="col-xs-9">
+                                                  <div class="slidecontainer" style="padding-top: 26px;">
+                                                      <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
+                                                  </div>
+                                                </div>
+                                                <div class="col-xs-3" style="display: flex;justify-content: center;">
+                                                    <b><h3><span id="demo"></span>%</h3></b> 
+                                                </div>
+                                        </div>
+
+                            </div>
+                        </form>
+    
+            </div>
+                        <row style="display: flex;justify-content: flex-end;">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel"> Cancel </button>
+                <button type="button" class="btn btn-primary" id="submit_event"> Save changes </button>
+            </row>
+            </div>
+            <!-- Modal Footer -->
+
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+
+ 
+<script >
+  
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    var minutes = today.getMinutes();
+    var hours = today.getHours();
+     if(dd<10){
+            dd='0'+dd
+        } 
+        if(mm<10){
+            mm='0'+mm
+        } 
+
+    //today = yyyy+'-'+mm+'-'+dd;
+    today = yyyy+'-'+mm+'-'+dd+'T'+hours+':'+minutes;
+    document.getElementById("dateid").setAttribute("min", today);
+  
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function() { output.innerHTML = this.value;}
+
+    var dic = {
+                {%for location,devices in rooms_devices.items()|sort:%}
+                {%if location != 'default'%}
+
+                {%for device,item in devices.items():%} 
+                '{{'_'.join(location.split(' '))+'_'.join(device.split(' '))}}' : '{{item.dev_type}}',
+
+                {% endfor %}
+                {% endif %}
+                {% endfor %}  
+              };  
+    
+  $("#myonoffswitch").click(function(){   console.log($("#locationid").val()+$("#deviceid").val());
+                                          if (dic[$("#locationid").val()+$("#deviceid").val()]== 'False'){
+
+                                          $("#prendeapaga").toggle(500);}
+                                          if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
+                                          else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
+
+                                             });
+
+  $('#locationid').change(function () {
+                                        $('#deviceid').html('');
+                                            {%for location,devices in rooms_devices.items()|sort:%}
+                                        if($('#locationid').val()=='{{location}}'){
+                                            {%for device,item in devices.items():%} 
+                                        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                            {% endfor %}
+                                        }
+                                                            
+                                          {% endfor %}
+
+                                          if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
+                                                                              $("#prendeapaga").attr("style","display:none;padding-left: 20px;");
+                                        $("#myRange").val('0')
+                                        output.innerHTML = 0;  }
+
+                                    });
+
+  $('#deviceid').change(function () {if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
+                                                                              $("#prendeapaga").attr("style","display:none;padding-left: 20px;");
+                                        $("#myRange").val('0')
+                                        output.innerHTML = 0;  }          });
+  
+
+  $("#edit").click(function(){
+                                  if ($("#edit").text()==' Edit'){
+                                    $("#edit").text("Done");
+                                    $(".datesandhours").removeClass("col-xs-6",300);
+                                    $(".datesandhours").addClass("col-xs-5",300);
+                                    $(".locationstrid").removeClass("col-xs-6",300);
+                                    $(".locationstrid").addClass("col-xs-5",300);
+                                    $(".spandeleteevent").show();
+                                    $(".spaneditevent").show();}
+                                  else{
+                                    $("#edit").text(" Edit");
+                                    $(".datesandhours").removeClass("col-xs-5",300);
+                                    $(".datesandhours").addClass("col-xs-6",300);
+                                    $(".locationstrid").removeClass("col-xs-5",300);
+                                    $(".locationstrid").addClass("col-xs-6",300);
+                                    $(".spaneditevent").hide();
+                                    $(".spandeleteevent").hide(); 
+                                    $(".datesandhours").show();
+                                    $(".tryingtodel").hide();} 
+                                         
+                                          });
+
+  $(document).on("click","span.editevent",function(){
+                                                        var date = $(this).data('date');
+                                                        var location = $(this).data('location');
+                                                        var str_id = $(this).data('str_id');
+                                                        var days =$(this).data('days');
+                                                        var pid = $(this).data('pid');
+                                                        var param_state = $(this).data('param_state');
+                                                        var param_set_point = $(this).data('param_set_point');
+                                                        $("#pidplacer").attr('value',pid);
+                                                        $("#dateid").val(date.replace(' ','T'));
+                                                        $("#locationid").val(location);
+                                                        $('#locationid').trigger('change');
+                                                        $("#deviceid").val(str_id.replace(' ','_'));
+                                                        console.log(str_id);
+                                                        console.log(dic);
+                                                        console.log(str_id.split(' ').join('_'));
+                                                        
+                                                        
+                                                        if (days != 'None'){
+                                                          days_split = days.split('.');
+                                                        for (var i = 0; i < days_split.length; i++) {
+                                                          $('#weekday-'+days_split[i]).prop('checked', true);
+
+                                                        }};
+
+                                                        if (param_state == 'True' || param_state == true){
+                                                          console.log('deberia');
+                                                          if ($("#myonoffswitch").val()=='Off'){
+                                                          $("#myonoffswitch").click();}
+                                                          if (dic[location.split(' ').join('_')+str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {
+                                                          $("#myRange").val('param_set_point')
+                                                          output.innerHTML = param_set_point;
+                                                          $("#prendeapaga").attr("style","display:block;padding-left: 20px;"); }
+                                                          //if ($("#prendeapaga").is(":hidden")) {$("#prendeapaga").toggle(500);}
+                                                        }
+                                                        else {if ($("#myonoffswitch").val()=='On'){
+                                                          $("#myonoffswitch").click();
+                                                        }}
+                                                         //if ($("#prendeapaga").is(":visible")) {$("#prendeapaga").toggle(500);}
+                                                        //$("#myModalLabel").text('Edit Event');
+
+                                                        $('#modalschedule').modal('show');
+
+                                                      }); 
+    
+    $(document).on("click","span.del",function(){
+                                                  var pid = $(this).data('pid');
+                                                  $("#spanedit"+pid).toggle();
+                                                  $("#cont2"+pid).toggle();
+                                                  $("#cont"+pid).toggle();
+                                                  //$(".datesandhours").toggle();
+                                                  
+                                                  
+                                                  }); 
+
+    $(document).on("click","button.delevent",function(){
+                                                        var pid = $(this).data('pid');
+                                                        console.log(pid)
+                                                        $("#modal_delete_event").attr('value',pid);
+                                                        //$("#titlemodaldelete").text('Are you sure you want to delete this event?');
+                                                        $('#modaldelete').modal('show');});
+     
+
+    $(".addevent").click(function(){ $("#dateid").val("");
+                                        //$("#statevalue").val('False');
+                                        //$("#myonoffswitch").val('Off');
+                                        $("#pidplacer").attr('value','None');
+
+                                        $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
+                                        
+                                        if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
+                                                                              $("#prendeapaga").attr("style","display:none;padding-left: 20px;");
+                                        $("#myRange").val('0')
+                                        output.innerHTML = 0;  }
+                                        
+                                        //$("#myModalLabel").text('Schedule New Event');
+
+
+                                        $('#modalschedule').modal('show');
+                                      if ($("#edit").text()=='Done'){$("#edit").click();}});
+
+    $("#delete_event").click(function(){
+                                            var pid = $("#modal_delete_event").val();
+                                            console.log(pid);
+                                            $.post("{{ url_for('delete_event') }}",{'event_id_to_delete':$("#modal_delete_event").val()});
+                                            $('#modaldelete').modal('hide');
+                                            $("#tr"+pid).remove();
+                                              if ($('#eventlistid tr').length == 0 ) {
+                                                  $("#no_scheduled_events").show();
+                                                  $("#edit").text(" Edit");
+                                                  $('.delevent').hide(500);
+                                                  $('.editevent').hide(500); //--> ver estos ids
+                                                  $('.del').hide(500);
+                                                }
+                                          });
+       
+       
+    $("#submit_event").click(function(){
+                                            var selectedDay = new Array();
+                                            $('input[name="day"]:checked').each(function() { selectedDay.push(this.value); });
+                                            $('input[name="day"]:checked').each(function() { $('.weekday').prop('checked', false); });
+                                            
+
+                                            $.post("{{ url_for('schedule_events') }}",{'date':$("#dateid").val(),'repeat': selectedDay,'location':$("#locationid").val(),'device':$('#deviceid').val(),'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'pid':$("#pidplacer").val()}).done(function(result) {
+                                              console.log(result)
+                                            
+                                            if (result['status']==200) {
+
+                                                                          if (result['reschedule']== true) {$("#tr"+result['old_pid']).remove();};
+
+                                                                          var father = $("<tr></tr>")
+                                                                                        .attr("id","tr"+result['pid']);
+                                                                          var child = $("<td></td>");
+                                                                          
+                                                                          var div1 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-1 spandeleteevent")
+                                                                                 .attr("style","display: none;margin-top: 25px;padding-right: 20px;");
+
+                                                                          $("<span></span>")
+                                                                                  .attr("class","glyphicon glyphicon-minus-sign del")
+                                                                                  .attr("style","color: #f70707;padding-right: 10px;font-size: 25px;")
+                                                                                  .attr("data-pid",result['pid'])
+                                                                                  .attr("onclick","")
+                                                                                  .appendTo(div1);
+                                                                          div1.appendTo(child);
+
+                                                                          var div2=$("<div></div>")
+                                                                                                  .attr("class","col-xs-6 locationstrid")
+                                                                                                  .attr("style","display: flex;justify-content: flex-start;padding-left: 10px;");
+
+                                                                          var row = $("<row></row>");
+                                                                          var a = $("<h2></h2>")
+                                                                                    .text(result['location'])
+                                                                                    .attr('style',"margin-top: 5px;margin-bottom: 5px;");
+                                                                                  
+                                                                          var b = $("<h3></h3>")
+                                                                                    .text(result['str_id'])
+                                                                                    .attr('style',"margin-top: 10px;margin-bottom: 5px;");
+                                                                          a.appendTo(row);
+                                                                          b.appendTo(row);
+                                                                          row.appendTo(div2);
+                                                                          div2.appendTo(child);
+
+
+                                                                          var div3 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-6 datesandhours")
+                                                                                 .attr("id", "cont"+result['pid'])
+                                                                                 .attr("style","display: flex;justify-content: flex-end;padding-right: 0px;");
+
+
+                                                                          var row = $("<row></row>");
+                                                                          var a = $("<h2></h2>")
+                                                                                  .attr("style","margin-top: 5px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                                                                  .text(result['date'].split(' ')[1].split(':').slice(0,2).join(':'));
+                                                                                  
+                                                                           if (result['type']== 'cron'){
+                                                                           
+                                                                                    var b = $("<h3></h3>")
+                                                                                                        .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                                                                                        .text(result['cron_days'].join('-'));
+                                                                                    var cron_days = result['cron_days'].join('.');
+
+                                                                                  } else {
+
+                                                                                    var b = $("<h3></h3>")
+                                                                                                        .attr("style","margin-top: 10px;margin-bottom: 5px;display: flex;justify-content: flex-end;")
+                                                                                                        .text(result['date'].split(' ')[0]);
+
+                                                                                    var cron_days = 'None';
+                                                                                  };
+
+                                                                          a.appendTo(row);
+                                                                          b.appendTo(row);
+                                                                          row.appendTo(div3);
+                                                                          div3.appendTo(child);
+
+                                                                          var div4 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-1 spaneditevent")
+                                                                                 .attr("id", "spanedit"+result['pid'])
+                                                                                 .attr("style","display: none;margin-top: 25px;padding-left: 20px;");
+
+                                                                           $("<span></span>")
+                                                                                  .attr("class","glyphicon glyphicon-menu-right editevent")
+                                                                                  .attr("style","color: #333;font-size: 15px;")
+                                                                                  .attr("onclick","")
+                                                                                  .attr("data-date",result['date'])
+                                                                                  .attr("data-location",result['location'])
+                                                                                  .attr("data-str_id",result['str_id'])
+                                                                                  .attr("data-days",cron_days)
+                                                                                  .attr("data-param_state",result['param_state'])
+                                                                                  .attr("data-param_set_point",result['param_set_point'])
+                                                                                  .attr("data-pid",result['pid'])
+                                                                                 .appendTo(div4);
+                                                                           div4.appendTo(child);
+                                                                          
+                                                                          var div5 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-6 tryingtodel")
+                                                                                 .attr("id", "cont2"+result['pid'])
+                                                                                 .attr("style","display: flex;justify-content: flex-center;display: none;");
+
+                                                                          var div6 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-4")
+                                                                                 .appendTo(div5);
+                                                                          
+                                                                          var div7 = $("<div></div>")
+                                                                                 .attr("class", "col-xs-8");
+                                                                                 
+
+                                                                          var button =  $("<button></button")
+                                                                                       .attr("class","btn btn-danger btn-block delevent")
+                                                                                       .attr("style","margin-top: 20px;")
+                                                                                       .attr("type","submit")
+                                                                                       .attr("name","delete")
+                                                                                       .attr("data-pid",result['pid']);
+                                                                                       //.text("Delete");
+
+                                                                          $("<span></span>")
+                                                                                              .attr("class","glyphicon glyphicon-trash")
+                                                                                              .attr("onclick","")
+                                                                                              .appendTo(button);
+                                                                           button.appendTo(div7);
+
+                                                                           div7.appendTo(div5);
+                                                                           div5.appendTo(child);
+
+                                                                          child.appendTo(father);
+
+                                                                          if ($('#eventlistid tr').length == 0 ) {
+                                                                            $('#eventlistid').append(father);
+                                                                            $("#no_scheduled_events").hide();
+
+                                                                          } 
+
+                                                                         else {
+
+                                                                            $('#eventlistid tr:last').after(father);};
+                                                                            $('#modalschedule').modal('hide');
+  
+    
+                                        } else {
+                                          $('#errormessage').text(result['error_message']);
+                                          $("#errormessage").fadeIn('slow').delay(2000).fadeOut('slow');};
+
+
+});
+
+
+        
+
+        });
+       
+
+
+
+
+
+ 
+     
+</script>
+
+
+
+    
+{% endblock %}
+
+

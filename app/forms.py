@@ -20,3 +20,9 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
+
+class ChangePassword(FlaskForm):
+    current_password=PasswordField('Current Password', validators=[DataRequired(), validators.Length(min=4,max=10)])
+    new_password=PasswordField('New Password', validators=[DataRequired(), validators.Length(min=4,max=10)])
+    check_new_password=PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
