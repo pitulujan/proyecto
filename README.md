@@ -1,3 +1,5 @@
 # proyecto
-Aplicación web para el proyecto de ingeniería
-Proyecto 2018 Boris-Martin
+
+Web application in process for engineering project
+
+2019 Boris-Martin
