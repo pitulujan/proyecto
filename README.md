@@ -1,4 +1,4 @@
-# proyecto
+# Final Project for Electronic Engineering 
 
 Web application in process for engineering project
 
