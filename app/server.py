@@ -12,7 +12,6 @@ import ast
 import random 
 import time
 
-
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
 Current_sensors ={}
@@ -25,7 +24,7 @@ flag= False
 new_dev_mac=''
 new_dev_mac_enabled=False
 
-seq_num=0 #Este es para verificar que la respuesta recibida fue la del mensaje enviado random.randint(0,256)
+seq_num = 0  #Este es para verificar que la respuesta recibida fue la del mensaje enviado random.randint(0,256)
 
 def start_client():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
