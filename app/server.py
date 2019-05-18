@@ -568,9 +568,6 @@ def delete_scheduled_event(user,id_event):
                 scheduler.remove_job('_'.join(aux)) 
             except Exception as e:
                 pass
-            
-            
-
         else:
             try:
                 scheduler.remove_job(id_event)
