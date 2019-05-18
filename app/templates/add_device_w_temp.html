@@ -84,6 +84,23 @@
 
                   <div class="form-group" style="display: none;" > <input type="text" id="dataplaceraddsensor" name="dataplacesensor" data-location="" data-battery="" data-online="" data-presence_state="" data-mac_address=""  data-battery_state="" data-temp_state="" / ></div>
 
+                   <div class="row" style="margin-bottom: 10px;">
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
+                            <h4 id="textorelocoaverage" style="vertical-align: text-top;margin-top: 10px;"><i class="fa fa-area-chart"></i>  <b>Active for average</b></h4>
+                          </div>
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-top: 10px;padding-right: 20px;">
+                                <form name="myForm">
+                                <label class="radio-inline">
+                                      <input type="radio" name="optradio" value="False">No
+                                  </label>
+                                  <label class="radio-inline">
+                                     <input type="radio" value="True" name="optradio" checked>Yes
+                                  </label>
+                                </form>
+                          </div>
+                  </div>
+
+
                 
           <row style="display: flex;justify-content: flex-end;">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -296,7 +313,7 @@
             $("#submit_changes_sensor").click(function(){
 
 
-        $.post("{{ url_for('add_sensor') }}",{'location':$("#sensor_location").val(),'battery':$("#dataplaceraddsensor").data('battery'),'presence_state':$("#dataplaceraddsensor").data('presence_state'),'mac_address':$("#dataplaceraddsensor").data('mac_address'),'online':$("#dataplaceraddsensor").data('online'),'battery_state':$("#dataplaceraddsensor").data('battery_state'),'temp_state':$("#dataplaceraddsensor").data('temp_state'),'temp_dev':'False'}).done(function(result) {
+        $.post("{{ url_for('add_sensor') }}",{'location':$("#sensor_location").val(),'battery':$("#dataplaceraddsensor").data('battery'),'presence_state':$("#dataplaceraddsensor").data('presence_state'),'mac_address':$("#dataplaceraddsensor").data('mac_address'),'online':$("#dataplaceraddsensor").data('online'),'battery_state':$("#dataplaceraddsensor").data('battery_state'),'temp_state':$("#dataplaceraddsensor").data('temp_state'),'temp_dev':'False','active_average':$('input[name="optradio"]:checked').val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')

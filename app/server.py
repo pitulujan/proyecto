@@ -254,7 +254,7 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        Current_sensors[sensor.location]={'presence_state':False,'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20}
+        Current_sensors[sensor.location]={'presence_state':False,'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20, 'active_average': sensor.active_temp_avegare}
         Sensors_state[sensor.mac_address]=sensor.last_update
 
 
@@ -361,7 +361,7 @@ def get_temp_state():
         count=0
 
         for key in Current_sensors.keys():
-            if Current_sensors[key]['online'] == True: # --> hacemos un promedio de los sensores que esten activos
+            if Current_sensors[key]['online'] == True and Current_sensors[key]['active_average'] == True: # --> hacemos un promedio de los sensores que esten activos y activos para el average
                 active=True
                 aux_temp+= Current_sensors[key]['temp_state']
                 count+=1
@@ -629,25 +629,47 @@ def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set
 
         return {'status': 200, 'message' : "Device "+new_str_id+" has been successfully added to "+new_location}
 
-def edit_sensor_server(old_location,new_location,mac_address):
+def edit_sensor_server(old_location,new_location,mac_address,active_average):
     global Current_sensors
 
-    if new_location in Current_sensors.keys():
-        message = "There's already a sensor in "+new_location
-        return {'status': 400, 'message' : message}
+    if active_average == 'True':
+        active_average=True
+    else:
+        active_average=False
+
+
+    if new_location == old_location :
+        sensor_to_edit = Sensors.query.filter_by(mac_address=mac_address).first()
+
+        sensor_to_edit.active_temp_avegare=active_average
+
+        db.session.add(sensor_to_edit)
         
-    sensor_to_edit = Sensors.query.filter_by(mac_address=mac_address).first()
+        Current_sensors[new_location]['active_average']=active_average
 
-    sensor_to_edit.location=new_location
+        db.session.commit()
+        return {'status': 200, 'message' : "Sensor in "+old_location+" is now being taken into account for temp calculation"}
+    else:
 
-    db.session.add(sensor_to_edit)
-    
-    Current_sensors[new_location] = Current_sensors[old_location]
-    del Current_sensors[old_location]
 
-    db.session.commit()
+        if new_location in Current_sensors.keys():
+            message = "There's already a sensor in "+new_location
+            return {'status': 400, 'message' : message}
+            
+        sensor_to_edit = Sensors.query.filter_by(mac_address=mac_address).first()
 
-    return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}
+        sensor_to_edit.location=new_location
+        sensor_to_edit.active_temp_avegare=active_average
+
+        db.session.add(sensor_to_edit)
+        
+        Current_sensors[new_location] = Current_sensors[old_location]
+        Current_sensors[new_location]['active_average']=active_average
+        del Current_sensors[old_location]
+
+        db.session.commit()
+
+        return {'status': 200, 'message' : "Sensor has been successfully moved from "+old_location+" to "+new_location}      
 
 def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_dev):
     global flag
@@ -694,7 +716,7 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_
             flag = False
         return {'status': 200, 'message' : "Device "+str_id+" has been successfully added to "+location , 'ndkl':len(new_dev_mac)}
 
-def add_new_sensor_server(user,location,mac_address,battery,presence_state,online,battery_state,temp_state):
+def add_new_sensor_server(user,location,mac_address,battery,presence_state,online,battery_state,temp_state,active_average):
 
     if presence_state == 'True':
         presence_state = True
@@ -716,6 +738,11 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
         battery_state = True
     else:
         battery_state=False
+    
+    if active_average =='True':
+        active_average=True
+    else:
+        active_average=False
 
     global flag
     global new_dev_mac
@@ -725,9 +752,9 @@ def add_new_sensor_server(user,location,mac_address,battery,presence_state,onlin
     if location in Current_sensors.keys():
         return {'status': 400, 'message' : 'There is already a sensor with that name in that room'}
     else:
-        Current_sensors[location]={'presence_state':presence_state,'online':online, 'mac_address':mac_address,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state)}
+        Current_sensors[location]={'presence_state':presence_state,'online':online, 'mac_address':mac_address,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state),'active_average': active_average}
 
-    sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address)
+    sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address,active_temp_avegare=active_average)
     description= "New sensor has been added to "+location
     log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
     db.session.add(log_entry)
@@ -749,7 +776,7 @@ def check_sensor_state(mac_address):
     #print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
     for sensor in Current_sensors:
         if mac_address == Current_sensors[sensor]['mac_address']:
-            if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<1:
+            if round((datetime.now()-Sensors_state[mac_address]).total_seconds()/60)<2:
                 Current_sensors[sensor]['online']= True
             else:
                 Current_sensors[sensor]['online']=False

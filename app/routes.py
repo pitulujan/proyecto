@@ -160,7 +160,7 @@ def edit_sensor():
 
     if request.method == 'POST':
         print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
-        answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
+        answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
 
@@ -210,8 +210,9 @@ def add_device():
 @login_required
 def add_sensor():
     if request.method == 'POST':
-        print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
-        answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
+        #print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
+        print(request.form['active_average'],type(request.form['active_average']))
+        answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
         #print(request.form['dev_type'],request.form['location'],request.form['mac_address'],request.form['state'],request.form['online'])

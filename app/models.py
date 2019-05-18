@@ -29,7 +29,7 @@ class Devices(db.Model):
     user_perm=db.Column(db.Boolean,default=False) #False for everyone , True for admins
     str_id=db.Column(db.String(64),default='default') #Luz, motor, etc
     location=db.Column(db.String(64),default='default') #Nombre de la habitacion donde se encuentra el device
-    dev_type=db.Column(db.Boolean,default=False) #True para booleano y False no booleano(dimmer)
+    dev_type=db.Column(db.Boolean,default=False) #True para booleano y False no booleano(dimmer -> solo la temp por ahora)
     state=db.Column(db.Boolean,default=False) #On/Off 
     set_point=db.Column(db.Integer,default=None) #En caso de dev_type=False y está expresado en porcentaje
     temp_device = db.Column(db.Boolean,default=False)
@@ -43,6 +43,7 @@ class Sensors(db.Model):
     battery = db.Column(db.Boolean,default=True)
     mac_address=db.Column(db.String(128),unique=True)
     last_update=db.Column(db.DateTime,default=datetime.now)
+    active_temp_avegare = db.Column(db.Boolean,default=True)
     
 
 class Log(db.Model):

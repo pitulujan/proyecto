@@ -43,7 +43,7 @@
             </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{k}}" data-mac_address="{{current_sensors[k]['mac_address']}}"  ></span>
+              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{k}}" data-mac_address="{{current_sensors[k]['mac_address']}}" data-active_average="{{current_sensors[k]['active_average']}}"  ></span>
            </div>
       </div>
 
@@ -66,7 +66,7 @@
                     </div>
                     <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-                      <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{key}}" data-mac_address="{{current_sensors[key]['mac_address']}}"  ></span>
+                      <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{key}}" data-mac_address="{{current_sensors[key]['mac_address']}}" data-active_average="{{current_sensors[k]['active_average']}}" ></span>
                    </div>
               </div>
 </div>
@@ -97,11 +97,25 @@
                 <form role="form" action="" method="POST" id="form_id">
                   <div class="form-group">
                    <h4><h4><i class="fa fa-map-marker"></i> <label for="new_sensor_location"> New Location</label></h4>
-                      <input type="text" class="form-control" id="new_sensor_location" name="new_location_sensor" value="Location" onfocus="if (this.value=='Location') this.value='';"/>
+                      <input type="text" class="form-control" id="new_sensor_location" name="new_location_sensor" value="" />
                   </div>
 
                   <div class="form-group" style="display: none;" > <input type="text" id="dataplacereditsensor" name="dataplacereditsensor" data-old_location="" data-mac_address=""  / ></div>
-
+                  <div class="row" style="margin-bottom: 10px;">
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
+                            <h4 id="textorelocoaverage" style="vertical-align: text-top;margin-top: 10px;"><i class="fa fa-area-chart"></i>  <b>Active for average</b></h4>
+                          </div>
+                          <div class="col-xs-6" style="display: flex;justify-content: flex-end;padding-top: 10px;padding-right: 20px;">
+                                <form name="myForm">
+                                <label class="radio-inline">
+                                      <input type="radio" name="optradio" value="False" id="optradiono">No
+                                  </label>
+                                  <label class="radio-inline">
+                                     <input type="radio" value="True" name="optradio" id="optradioyes">Yes
+                                  </label>
+                                </form>
+                          </div>
+                  </div>
                 
                   <row style="display: flex;justify-content: flex-end;">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -277,7 +291,17 @@
 
                                                         var old_location = $(this).data('old_location');
                                                         var mac_address = $(this).data('mac_address');
+                                                        var active_average = $(this).data('active_average');
 
+                                                        if(active_average == "True"){
+                                                          $('#optradioyes').prop('checked', true);
+                                                        } else {
+
+                                                          $('#optradiono').prop('checked', true);
+                                                        };
+
+                                                        $("#new_sensor_location").val(old_location);
+                                                        $("#new_sensor_location").attr('onfocus',"if (this.value=='"+old_location+"') this.value='';");
 
                                                         $("#dataplacereditsensor").attr('data-old_location',old_location);
                                                         $("#dataplacereditsensor").attr('data-mac_address',mac_address);
@@ -290,7 +314,7 @@
         console.log($("#new_sensor_location").val());
         console.log($("#new_sensor_location").val());
 
-        $.post("{{url_for('edit_sensor')}}",{'new_location':$("#new_sensor_location").val(),'old_location':$("#dataplacereditsensor").data('old_location'),'mac_address':$("#dataplacereditsensor").data('mac_address')}).done(function(result) {
+        $.post("{{url_for('edit_sensor')}}",{'new_location':$("#new_sensor_location").val(),'old_location':$("#dataplacereditsensor").data('old_location'),'mac_address':$("#dataplacereditsensor").data('mac_address'),'active_average':$('input[name="optradio"]:checked').val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')};
