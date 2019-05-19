@@ -195,8 +195,8 @@ def add_device():
 
     temp_device=get_temp_device()
     if request.method == 'POST':
-        print(request.form['temp_dev'])
-        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'])
+        print(request.form['presence_state'])
+        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'])
         flash(answer['message'])
         return jsonify(answer)
 
@@ -212,7 +212,7 @@ def add_sensor():
     if request.method == 'POST':
         #print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
         print(request.form['active_average'],type(request.form['active_average']))
-        answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'],request.form['active_average'])
+        answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['online'],request.form['battery_state'],request.form['temp_state'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
         #print(request.form['dev_type'],request.form['location'],request.form['mac_address'],request.form['state'],request.form['online'])
@@ -248,7 +248,7 @@ def generate_dummy_device():
 
     if request.method == 'POST':
 
-        generate_dummy_device_test(request.form.get('dev_type'))
+        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'))
         return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
@@ -260,7 +260,7 @@ def generate_dummy_sensor():
 
         
         #print(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
-        generate_dummy_sensor_test(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
+        generate_dummy_sensor_test(request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
     return redirect(url_for('generate_dummy_device'))
 
 @app.route('/disable_new_dev_mac_enabled', methods=['POST'])

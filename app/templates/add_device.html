@@ -23,7 +23,8 @@
 	          </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
 
-              <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}"  data-dev_type="{{v.dev_type}}" data-mac_address={{v.mac_address}} ></span>
+
+              <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}"  data-dev_type="{{v.dev_type}}" data-mac_address={{v.mac_address}} data-presence_state="{{v.presence_state}}" data-online="{{v.online}}"></span>
 	  </div>
     	</div>
 
@@ -50,7 +51,7 @@
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
               
 
-              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-location="{{k}}" data-battery="{{v.battery}}" data-online="{{v.online}}" data-presence_state="{{v.presence_state}}" data-mac_address={{v.mac_address}}  data-battery_state="{{v.battery_state}}" data-temp_state="{{v.temp_state}}"></span>
+              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-location="{{k}}" data-battery="{{v.battery}}" data-online="{{v.online}}"  data-mac_address={{v.mac_address}}  data-battery_state="{{v.battery_state}}" data-temp_state="{{v.temp_state}}"></span>
     </div>
       </div>
 
@@ -82,7 +83,7 @@
                       <input type="text" class="form-control" id="sensor_location" name="location_sensor" value="Location" onfocus="if (this.value=='Location') this.value='';"/>
                   </div>
 
-                  <div class="form-group" style="display: none;" > <input type="text" id="dataplaceraddsensor" name="dataplacesensor" data-location="" data-battery="" data-online="" data-presence_state="" data-mac_address=""  data-battery_state="" data-temp_state="" / ></div>
+                  <div class="form-group" style="display: none;" > <input type="text" id="dataplaceraddsensor" name="dataplacesensor" data-location="" data-battery="" data-online=""  data-mac_address=""  data-battery_state="" data-temp_state="" / ></div>
 
                   <div class="row" style="margin-bottom: 10px;">
                           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
@@ -158,7 +159,7 @@
                       <input type="text" class="form-control" id="device_name" name="name" value="Name" onfocus="if (this.value=='Name') this.value='';"/ >
                   </div>
 
-                  <div class="form-group" style="display: none;" > <input type="text" id="dataplaceradd" name="dataplace" value="" data-dev_type=""  data-mac_address="" / ></div>
+                  <div class="form-group" style="display: none;" > <input type="text" id="dataplaceradd" name="dataplace" value="" data-dev_type=""  data-mac_address="" data-online="" data-presence_state="" / ></div>
 
                 <div class="row" style="margin-bottom: 10px;">
                           <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
@@ -321,10 +322,14 @@
                                                         var location = $(this).data('location');
                                                         var dev_type = $(this).data('dev_type');
                                                         var mac_address = $(this).data('mac_address');
+                                                        var presence_state = $(this).data('presence_state');
+                                                        var online = $(this).data('online');
 
                                                         $("#dataplaceradd").val(dev_type);
                                                         $("#dataplaceradd").attr('data-old_location',location);
                                                         $("#dataplaceradd").attr('data-mac_address',mac_address);
+                                                        $("#dataplaceradd").attr('data-presence_state',presence_state);
+                                                        $("#dataplaceradd").attr('data-online',online);
                                                         $("#body_device_com_buttons").attr("style","display:none;");
                                                         $('input[name="optradio"]:checked').prop('checked', false);
                                                         $("#body_device_com").attr("style","display:none;");
@@ -340,9 +345,9 @@
 
       $("#submit_changes").click(function(){
 
-
-
-        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
+        console.log('tu vieja');
+        console.log($("#dataplaceradd").data('presence_state'));
+        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
@@ -369,7 +374,7 @@
                                                                 
                                                                 var battery = $(this).data('battery');
                                                                 var mac_address = $(this).data('mac_address');
-                                                                var presence_state = $(this).data('presence_state');
+                                                               
                                                                 var online = $(this).data('online');
                                                                 var battery_state = $(this).data('battery_state');
                                                                 var temp_state = $(this).data('temp_state');
@@ -378,7 +383,7 @@
                                                                 $("#dataplaceraddsensor").attr('data-mac_address',mac_address); 
                                                                 
                                                                 $("#dataplaceraddsensor").attr('data-battery',battery); 
-                                                                $("#dataplaceraddsensor").attr('data-presence_state',presence_state); 
+                                                                 
                                                                 $("#dataplaceraddsensor").attr('data-online',online); 
                                                                 $("#dataplaceraddsensor").attr('data-battery_state',battery_state); 
                                                                 $("#dataplaceraddsensor").attr('data-temp_state',temp_state); 
@@ -389,7 +394,7 @@
             $("#submit_changes_sensor").click(function(){
 
 
-        $.post("{{ url_for('add_sensor') }}",{'location':$("#sensor_location").val(),'battery':$("#dataplaceraddsensor").data('battery'),'presence_state':$("#dataplaceraddsensor").data('presence_state'),'mac_address':$("#dataplaceraddsensor").data('mac_address'),'online':$("#dataplaceraddsensor").data('online'),'battery_state':$("#dataplaceraddsensor").data('battery_state'),'temp_state':$("#dataplaceraddsensor").data('temp_state'),'active_average':$('input[name="optradio"]:checked').val()}).done(function(result) {
+        $.post("{{ url_for('add_sensor') }}",{'location':$("#sensor_location").val(),'battery':$("#dataplaceraddsensor").data('battery'),'mac_address':$("#dataplaceraddsensor").data('mac_address'),'online':$("#dataplaceraddsensor").data('online'),'battery_state':$("#dataplaceraddsensor").data('battery_state'),'temp_state':$("#dataplaceraddsensor").data('temp_state'),'active_average':$('input[name="optradio"]:checked').val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
@@ -416,7 +421,7 @@
 
 
 
-        $.post("{{ url_for('add_device') }}",{'location':'Temperature','str_id': 'Temperature' ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'location':'Temperature','str_id': 'Temperature' ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')

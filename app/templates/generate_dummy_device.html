@@ -12,6 +12,24 @@
 
                       </select>
 
+                       <label for="presence_state">Presence State</label>
+                      <select id="presence_state" class="form-control" name="presence_state">
+
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                          
+
+                      </select>
+
+                      <label for="online_dev">Online</label>
+                      <select id="online_dev" class="form-control" name="online_dev">
+
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+
+                      </select>
+
+
                   <div class="form-group">
                   	<br>
                   	<button class="btn btn-primary">Add New Dummy Device</button>
@@ -24,14 +42,7 @@
 <form role="form" action="{{url_for('generate_dummy_sensor')}}" method="POST" id="form_id_sensors">
       <br>            
   <div class="form-group">
-                    <label for="presence_state_sensor">Presence State</label>
-                      <select id="presence_state_sensor" class="form-control" name="presence_state_sensor">
 
-                          <option value="True">True</option>
-                          <option value="False">False</option>
-                          
-
-                      </select>
                       
                       <label for="online_sensor">Online</label>
                       <select id="online_sensor" class="form-control" name="online_sensor">
@@ -63,11 +74,6 @@
                           <label for="temperature_state">Temperature</label>
                           <input type="text" class="form-control"  value="34" id="temperature_state" name="temperature_state">
                         </div>
-                          
-
-                     
-
-
 
                   <div class="form-group">
                     <br>
