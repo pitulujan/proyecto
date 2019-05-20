@@ -294,10 +294,12 @@ def post_tests():
 #@login_required
 #https://www.journaldev.com/19392/python-xml-to-json-dict
 def pruebitas2():
+
+    users = User.query.all()
     
     if request.method == 'POST':
         #print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
-    return render_template('pruebitas2.html')
+    return render_template('dele_user2.html', title=' Delete User', users=users)
 
 
