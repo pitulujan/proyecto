@@ -18,8 +18,8 @@ get_initial_values()
 def index():
     temp=get_temp_state()
     print(temp)
-
-    return render_template('index.html', title='Home', devices=get_devices(),temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
+    devices,state = get_devices()
+    return render_template('index.html', title='Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
    
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -121,13 +121,14 @@ def set_dev():
 @login_required
 def remove_device():
 
-	if request.method == 'POST':
-		#print(request.form.get('delete'))
-		ans=remove_dev(current_user.username,request.form.get('delete'))
-		flash(ans)
-		return render_template('remove_device.html', title='Remove Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
+    devices,state=get_devices()
+    if request.method == 'POST':
+        #print(request.form.get('delete'))
+        ans=remove_dev(current_user.username,request.form.get('delete'))
+        flash(ans)
+        return render_template('remove_device.html', title='Remove Device', devices=devices,state=state,current_sensors=get_current_sensors(),list=list)
 
-	return render_template('remove_device.html', title='Remove Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
+    return render_template('remove_device.html', title='Remove Device', devices=devices,state=state,current_sensors=get_current_sensors(),list=list)
 
 
 @app.route('/remove_sensor', methods=['POST'])
@@ -138,13 +139,14 @@ def remove_sensor():
         #print(request.form.get('delete'))
         ans=remove_sens(current_user.username,request.form.get('delete_sensor'))
         flash(ans)
-        return render_template('remove_device.html', title='Remove Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
+        devices,state=get_devices()
+        return render_template('remove_device.html', title='Remove Device', devices=devices,current_sensors=get_current_sensors(),list=list)
 
  
 @app.route('/edit_device', methods=['GET','POST'])
 @login_required
 def edit_device():
-
+    devices,state=get_devices()
     if request.method == 'POST':
         ##print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
         answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
@@ -152,7 +154,7 @@ def edit_device():
         return jsonify(answer)
 
 
-    return render_template('edit_device.html',title='Edit Device', devices=get_devices(),current_sensors=get_current_sensors(),list=list)
+    return render_template('edit_device.html',title='Edit Device', devices=devices,current_sensors=get_current_sensors(),list=list)
 
 @app.route('/edit_sensor', methods=['POST'])
 @login_required
@@ -169,12 +171,12 @@ def edit_sensor():
 @login_required
 def schedule_events():
 
-
+    devices,state=get_devices()
     if request.method == 'POST':
         #print(request.form['pid'])
         answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],request.form['pid'],request.form['state'],request.form['set_point'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
         return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
-    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=get_devices(),temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
+    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=devices,temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 
 @app.route('/reschedule_event', methods=['POST'])
 @login_required

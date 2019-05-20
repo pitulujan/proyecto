@@ -225,7 +225,6 @@ def remove_dev(user,location_str_id):
         del Current_state_dic_rooms[location]
     db.session.commit()
     return 'Device '+str_id+' was successfully removed from '+location
-              
 
 def tick():
     print('Tick! The time is: %s' % datetime.now())
@@ -245,9 +244,9 @@ def get_initial_values():
     query_devices=Devices.query.all()
     for location in query_devices:
         if location.location in Current_state_dic_rooms.keys():
-            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device,'online': True,'presence_state':True}
+            Current_state_dic_rooms[location.location][location.str_id]={'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device,'online': True,'presence_state':False}
         else:
-            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device,'online': True,'presence_state':True}}
+            Current_state_dic_rooms[location.location] = {location.str_id:{'dev_type' : location.dev_type, 'State': location.state , 'set_point' : location.set_point, 'user_perm' : location.user_perm, 'mac_address':location.mac_address,'temp_dev':location.temp_device,'online': True,'presence_state':False}}
     #query_temp=Temperature.query.first()
     #Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
@@ -306,8 +305,6 @@ def set_temp(state,set_point,user):#Aca no tengo en cuenta si hay mas de un sect
         print('que onda?')
         return jsonify({'status':400, 'str_id':'Temperature','location':'Temperature'})
 
-
-
 def set_device(location, str_id,state,set_point):
     global Current_state_dic_rooms
     global Sent_messages
@@ -350,7 +347,6 @@ def set_device(location, str_id,state,set_point):
     else:
         return jsonify({'status':400, 'str_id':str_id,'location':location})
 
-
 def get_temp_state():
     global Current_sensors
     global Current_state_dic_rooms
@@ -377,7 +373,23 @@ def get_temp_state():
         return None 
 
 def get_devices():
-    return Current_state_dic_rooms #--> que se la arrgle routes
+### esto se fija en cada room si hay al menos un sensor conectado y con presencia y si hay alguno online
+    state={}
+
+    for key, value in Current_state_dic_rooms.items():
+ 
+        presence_state=False
+        online = False
+        for k,v in value.items():
+            if v['presence_state']:
+                presence_state = True
+            if v['online']:
+                online=True 
+        state[key]={'presence_state':presence_state,'online':online}
+
+
+
+    return Current_state_dic_rooms,state #--> que se la arrgle routes
 
 def get_scheduled_events(*args):
 
@@ -694,6 +706,7 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_
             temp_dev=False
 
         presence_state=ast.literal_eval(presence_state)
+        online=ast.literal_eval(online)
 
         device_to_add = Devices(user_perm=New_devices[mac_address]['user_perm'],str_id=str_id,location=location,dev_type=New_devices[mac_address]['dev_type'],state=state,set_point=set_point,temp_device=temp_dev,mac_address=mac_address)
         
