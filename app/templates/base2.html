@@ -64,8 +64,8 @@
             <!-- Modal Body -->
             <div class="modal-body">
 
-                <form role="form" action="{{ url_for('logout') }}">
-                <div class="form-group">
+                <form role="form" action="{{ url_for('logout') }}" style="display: flex;justify-content: flex-end;">
+                <div class="form-group" >
                   </div>
 
                 <button type="button" class="btn btn-primary"
@@ -108,9 +108,8 @@
 
               <row style="display: flex;justify-content: flex-end;" >
                 
-                <button type="submit" class="btn btn-primary" id="dismiss_notification" >
-                            Accept
-                </button>
+                <button type="submit" class="btn btn-primary" id="dismiss_notification" > Accept</button>
+                <button type="button" class="btn btn-primary" id="redirect_add" > Add </button>
               </row>
                         </div>
 
@@ -235,6 +234,7 @@
   $(document).ready(function() {
 
 $(".logoutButton").click(function(){$('#logoutmodal').modal('show');});
+$("#redirect_add").click(function(){$.post("{{ url_for('disable_new_dev_mac_enabled') }}").done(function(result) {location.href = "{{url_for('add_device')}}";});});
 $("#dismiss_notification").click(function(){$.post("{{ url_for('disable_new_dev_mac_enabled') }}").done(function(result) {$('#notificationsmodal').modal('hide');});});
 
 // Making 2 variable month and day
