@@ -86,12 +86,12 @@ def delete_user():
     users = User.query.all()
 
     if request.method == 'POST':
-        post_id = request.form.get('delete')
+        post_id = request.form['user_to_del']
         #print(post_id)
         ans=delete_user_full(post_id)
-        flash(ans)
-        return redirect(url_for('delete_user'))
-    return render_template('delete_user.html', title=' Delete User', users=users)
+        
+        return jsonify({'ans':ans})
+    return render_template('delete_user2.html', title=' Delete User', users=users)
 
 
 @app.route('/set_temperature', methods=['POST'])

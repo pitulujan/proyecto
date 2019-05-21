@@ -34,7 +34,7 @@ def delete_user_full(user):
     
     db.session.commit()
 
-    return 'Congratulations, you have just deleted '+delete_user.username+ ' from the users list!'
+    return 'User '+delete_user.username+ ' was successfully deleted'
 
 def change_user_password(form,user):
     

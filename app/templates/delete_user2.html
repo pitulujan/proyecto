@@ -7,7 +7,7 @@
 <div class="row" style="display: flex;justify-content: center;">
         <div class="col-xs-8">
   <h2><span class="glyphicon glyphicon-trash"></span>{{title}}</h2>
-        
+   <div class="alert alert-info" role="alert" id="delete_success" style="display:none;"> </div>     
   <table class="table">
     <thead>
       <tr>
@@ -18,7 +18,7 @@
       
         
         {% for users in users %}
-            <tr id="{{users.username}}"><td>
+            <tr id="tr{{users.username}}"><td>
                 <button class="btn btn-danger btn-block del_user_class"  type="button" data-user ="{{users.username}}" name="delete" ><span class="glyphicon glyphicon-trash"></span> {{ users.username }}</button>
              </td></tr>
                 
@@ -78,7 +78,21 @@
 
       $("#delete_btn").click(function(){
 
-        $.post("{{ url_for('delete_user') }}",{'user_to_del':$("#dataplacerdeleteuser").data('user')});
+        var pid = $("#dataplacerdeleteuser").data('user');
+        console.log(pid);
+        $.post("{{ url_for('delete_user') }}",{'user_to_del':$("#dataplacerdeleteuser").data('user')}).done(function(result) {
+
+        $("#tr"+pid).remove();
+        $('#modal_del_user').modal('hide');
+
+        $('#delete_success').text(result['ans']);
+        $("#delete_success").fadeIn('slow').delay(2000).fadeOut('slow');
+
+
+        });
+
+
+       
       });
 
 
