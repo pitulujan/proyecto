@@ -96,12 +96,18 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                <center><h4><span class="fa fa-exclamation-triangle"></span> New Device Found</h4></center>
+
+                
+                <center><h4><span class="fa fa-exclamation-triangle"></span> New Notification</h4></center>
             </div>
 
             <!-- Modal Body -->
             <div class="modal-body" >
-              <div id="modal_body_devices"></div>
+              <div id="modal_header_devices" style="padding-bottom: 10px"></div>
+              <div id="modal_body_devices" style="padding-bottom: 10px"></div>
+
+              <div id="modal_header_battery"></div>
+              <div id="modal_body_battery"></div>
 
               <row style="display: flex;justify-content: flex-end;" >
                 
@@ -218,45 +224,6 @@
 </body>
 <script >
 
-{%if current_user.is_authenticated %}
-$(function(){
-
-
-  setInterval(function() { 
-
-    $.post("{{url_for('get_notifications')}}").done(function(result){
-
-    if (result['new_dev_mac_enabled'] ==true) { 
-
-      
-      $('#modal_body_devices').html('');
-      for (i = 0; i < result['new_dev_mac'].length; i++) {
-
-        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result['new_dev_mac'][i]+'</h4>');
-      };
-      $('#notificationsmodal').modal('show');};
-    
-  });
-
-    $.post("{{url_for('get_low_bat_notifications')}}").done(function(result){
-      console.log('jola');
-      console.log(result['flag_bat']);
-
-
-    if (result['flag_bat']== true ) {
-      console.log('baja bat vieja');
-     }});
-
-
-
-
-    
-                
-            }, 5000);
-});
-{%endif%}
-
-
     $(function() {
    $('#flash_message').delay().fadeIn('slow', function() {
       $(this).delay(2500).fadeOut('slow');
@@ -265,9 +232,62 @@ $(function(){
 
   $(document).ready(function() {
 
+
+    {%if current_user.is_authenticated %}
+
+
+
+  setInterval(function() { 
+    console.log('tumama');
+    $.post("{{url_for('get_notifications')}}").done(function(result){
+
+    if (result['new_dev_mac_enabled'] || result['flag_bat'] ) { 
+
+      
+      $('#modal_header_devices').html('');
+      $('#modal_body_devices').html('');
+      $('#modal_header_battery').html('');
+      $('#modal_body_battery').html('');
+
+      if (result['new_dev_mac_enabled']) {
+        $('#modal_header_devices').append('<h4><span class="fa fa-exclamation-triangle"></span> New Device </h4>');
+        
+      for (i = 0; i < result['new_dev_mac'].length; i++) {
+
+        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result['new_dev_mac'][i]+'</h4>');
+      };};
+
+
+      if (result['flag_bat']) {
+
+        
+        $('#modal_header_battery').append('<h4><span class="fa fa-exclamation-triangle"></span> Low battery </h4>');
+       
+      for (i = 0; i < result['sensors_list'].length; i++) {
+
+        $('#modal_body_battery').append('<h4><span class="fa fa-battery-empty"></span></span> Location: '+result['sensors_list'][i][0]+'</h4>');
+      };};
+
+
+
+
+
+
+      $('#notificationsmodal').modal('show');};
+    
+  });
+
+  
+                
+            },10000);
+
+
+
+{%endif%}
+
 $(".logoutButton").click(function(){$('#logoutmodal').modal('show');});
-$("#redirect_add").click(function(){$.post("{{ url_for('disable_new_dev_mac_enabled') }}").done(function(result) {location.href = "{{url_for('add_device')}}";});});
-$("#dismiss_notification").click(function(){$.post("{{ url_for('disable_new_dev_mac_enabled') }}").done(function(result) {$('#notificationsmodal').modal('hide');});});
+$("#redirect_add").click(function(){$.post("{{ url_for('disable_notifications') }}").done(function(result) {location.href = "{{url_for('add_device')}}";});});
+$("#dismiss_notification").click(function(){$.post("{{ url_for('disable_notifications') }}").done(function(result) {$('#notificationsmodal').modal('hide');});});
 
 // Making 2 variable month and day
 var monthNames = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ]; 

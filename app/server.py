@@ -256,7 +256,7 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        Current_sensors[sensor.location]={'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20, 'active_average': sensor.active_temp_avegare}
+        Current_sensors[sensor.location]={'online':True, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':True, 'temp_state': 20, 'active_average': sensor.active_temp_avegare}
         Sensors_state[sensor.mac_address]=sensor.last_update
 
 
@@ -607,20 +607,20 @@ def get_new_device():
     return flag,new_dev_mac,new_dev_mac_enabled
 
 def get_new_notifications():
-    return {'flag': flag,'new_dev_mac':new_dev_mac,'new_dev_mac_enabled':new_dev_mac_enabled}
-
-def get_low_battery_notifications():
-
+    global Current_sensors
+    global low_baterry_not
     low_battery_list=[]
     for key,value in Current_sensors.items():
-        if sensor['battery_state']:
+        print(value)
+        if value['battery_state']:
+
             low_battery_list.append((key,value['battery_state']))
-    print(low_baterry_not)
-    return {'flag_bat':low_baterry_not,'sensors_list': low_battery_list}
+    #print(low_baterry_not)
 
+    return {'flag': flag,'new_dev_mac':new_dev_mac,'new_dev_mac_enabled':new_dev_mac_enabled,'flag_bat':low_baterry_not,'sensors_list': low_battery_list}
 
-    
-def disable_low_battery_notifications():
+   
+def disable_low_battery_notifications_server():
     global low_baterry_not
     low_baterry_not = False
     return
@@ -761,11 +761,13 @@ def add_new_sensor_server(user,location,mac_address,battery,online,battery_state
     online=ast.literal_eval(online)
     battery = ast.literal_eval(battery)
     active_average = ast.literal_eval(active_average)
+    battery_state = ast.literal_eval(battery_state)
 
     global flag
     global new_dev_mac
     global New_sensors
     global Current_sensors
+    global low_baterry_not
     
     if location in Current_sensors.keys():
         return {'status': 400, 'message' : 'There is already a sensor with that name in that room'}
@@ -781,6 +783,10 @@ def add_new_sensor_server(user,location,mac_address,battery,online,battery_state
     Sensors_state[mac_address]=datetime.now()
     scheduler.add_job(check_sensor_state, 'interval', seconds=2,args=[mac_address],id=mac_address)
     New_sensors.pop(mac_address)
+
+    if battery_state:
+        low_baterry_not = True 
+        print('pituuuu')
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     if len(new_dev_mac)==0:  
         #print('flag server entro bien ')
@@ -859,8 +865,6 @@ def generate_dummy_sensor_test(online,battery,battery_state,temp_state):
 
     #print(New_devices)
     flag = True
-    if battery_state:
-        low_baterry_not = True 
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
     return
