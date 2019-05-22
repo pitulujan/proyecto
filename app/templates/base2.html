@@ -3,7 +3,8 @@
     {% if title %}{{ title }} - Proyecto{% else %}Proyecto{% endif %}
 {% endblock %}
 {% block navbar %}
-<script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+<!-- <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script> -->
+<script type="text/javascript" src="/static/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>
 <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
 <link rel="stylesheet" href="/static/base.css">
 <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
@@ -68,11 +69,11 @@
                 <div class="form-group" >
                   </div>
 
-                <button type="button" class="btn btn-primary"
+                <button type="button" class="btn btn-default"
                         data-dismiss="modal">
                             Cancel
                 </button>
-                <button type="submit" id="logout_btn"class="btn btn-default"  >
+                <button type="submit" id="logout_btn"class="btn btn-danger"  >
                     Logout
                 </button>
         </form>
@@ -99,16 +100,12 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="modal-body">
-              {%if g.flag==1%}   
-              {%for mac in g.new_dev_macs:%}
-              <h4><span class="fa fa-address-book-o"></span> Mac Adress : {{mac}}</h4>
-              {%endfor%}
-              {%endif%}
+            <div class="modal-body" >
+              <div id="modal_body_devices"></div>
 
               <row style="display: flex;justify-content: flex-end;" >
                 
-                <button type="submit" class="btn btn-primary" id="dismiss_notification" > Accept</button>
+                <button type="submit" class="btn btn-default" id="dismiss_notification" > Accept</button>
                 <button type="button" class="btn btn-primary" id="redirect_add" > Add </button>
               </row>
                         </div>
@@ -220,11 +217,46 @@
 <!-- /#wrapper -->
 </body>
 <script >
-  {%if g.flag==1 and current_user.is_authenticated and g.new_dev_mac_enabled%}
-      $(window).on('load',function(){
-        $('#notificationsmodal').modal('show');
-    });
+
+{%if current_user.is_authenticated %}
+$(function(){
+
+
+  setInterval(function() { 
+
+    $.post("{{url_for('get_notifications')}}").done(function(result){
+
+    if (result['new_dev_mac_enabled'] ==true) { 
+
+      
+      $('#modal_body_devices').html('');
+      for (i = 0; i < result['new_dev_mac'].length; i++) {
+
+        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result['new_dev_mac'][i]+'</h4>');
+      };
+      $('#notificationsmodal').modal('show');};
+    
+  });
+
+    $.post("{{url_for('get_low_bat_notifications')}}").done(function(result){
+      console.log('jola');
+      console.log(result['flag_bat']);
+
+
+    if (result['flag_bat']== true ) {
+      console.log('baja bat vieja');
+     }});
+
+
+
+
+    
+                
+            }, 5000);
+});
 {%endif%}
+
+
     $(function() {
    $('#flash_message').delay().fadeIn('slow', function() {
       $(this).delay(2500).fadeOut('slow');

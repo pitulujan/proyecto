@@ -23,6 +23,7 @@ Sent_messages={}
 flag= False
 new_dev_mac=''
 new_dev_mac_enabled=False
+low_baterry_not=False
 
 seq_num = 0  #Este es para verificar que la respuesta recibida fue la del mensaje enviado random.randint(0,256)
 
@@ -102,6 +103,7 @@ def process_input(input_str):
     global New_devices
     global Sensors_state
     global Sent_messages
+    global low_baterry_not
     print("Processing the input received from client")
     input_str=str(input_str).replace(chr(0), '')
     
@@ -127,6 +129,7 @@ def process_input(input_str):
 
                 if message['sensor_update']['battery_state'] == 1:
                     battery_state = True
+                    low_baterry_not = True
                 else:
                     battery_state = False
 
@@ -599,7 +602,28 @@ def delete_scheduled_event(user,id_event):
     return
 
 def get_new_device():
+
+    #return {'flag': flag,'new_dev_mac':new_dev_mac,'new_dev_mac_enabled':new_dev_mac_enabled}
     return flag,new_dev_mac,new_dev_mac_enabled
+
+def get_new_notifications():
+    return {'flag': flag,'new_dev_mac':new_dev_mac,'new_dev_mac_enabled':new_dev_mac_enabled}
+
+def get_low_battery_notifications():
+
+    low_battery_list=[]
+    for key,value in Current_sensors.items():
+        if sensor['battery_state']:
+            low_battery_list.append((key,value['battery_state']))
+    print(low_baterry_not)
+    return {'flag_bat':low_baterry_not,'sensors_list': low_battery_list}
+
+
+    
+def disable_low_battery_notifications():
+    global low_baterry_not
+    low_baterry_not = False
+    return
 
 def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set_point,mac_address):
     global Current_rooms
@@ -825,6 +849,7 @@ def generate_dummy_sensor_test(online,battery,battery_state,temp_state):
     global new_dev_mac
     global new_dev_mac_enabled
     global New_devices
+    global low_baterry_not
     
     if '08:00:27:60:04:00' not in New_sensors.keys():
         New_sensors['08:00:27:60:04:00'] = {'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state), 'mac_address':'08:00:27:60:04:00'}
@@ -833,7 +858,9 @@ def generate_dummy_sensor_test(online,battery,battery_state,temp_state):
         New_sensors['08:00:27:60:04:0'+str(len(New_sensors.keys()))] = {'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':'08:00:27:60:04:0'+str(len(New_sensors.keys()))} 
 
     #print(New_devices)
-    flag = True 
+    flag = True
+    if battery_state:
+        low_baterry_not = True 
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
     return

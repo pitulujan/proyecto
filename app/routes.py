@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,get_low_battery_notifications
 
 #import xmltodict, requests
 
@@ -226,7 +226,23 @@ def log():
 
     return render_template('log.html', title='Activity Log',logdb=get_activity_log())
 
+@app.route('/get_notifications', methods=['POST'])
+@login_required
+def get_notifications():
 
+    if request.method == 'POST':
+        ans = get_new_notifications()
+        print(ans)
+        return jsonify(ans)
+
+@app.route('/get_low_bat_notifications', methods=['POST'])
+@login_required
+def get_low_bat_notifications():
+
+    if request.method == 'POST':
+        ans = get_low_battery_notifications()
+        print(ans)
+        return jsonify(ans)
 
 @app.before_request
 def new_device_notifier_after():
