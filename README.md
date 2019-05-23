@@ -25,9 +25,9 @@ You then have to install all the application requirements before you can run it 
 
 To run the application `python proyecto.py` 
 
-User : Test
+User : Admin
 
-Password : test
+Password : admin
 
 Note : The application is being desing to run on mobile devices, we still need to fix the views for a more friendly experience on large screens.
 
