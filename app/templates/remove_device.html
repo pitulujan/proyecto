@@ -57,7 +57,7 @@
     {%for key in current_sensors.keys():%}
 
         {%if key not in devices.keys()%}
-                <button class="dropdown-btn index" data-toggle="collapse" "> {{key}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+                <button class="dropdown-btn index" data-toggle="collapse"> {{key}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
               <div class="dropdown-container-pitu collapse " >
 
 
@@ -129,7 +129,7 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                <center><h4 class="modal-title" id="myModalLabelsensor"></h4></center>
+                <center><h4 id="myModalLabelsensor"><span class="glyphicon glyphicon-trash " ></span></h4></center>
             </div>
 
             <!-- Modal Body -->
@@ -171,7 +171,7 @@
         var location = $(this).data('location');
         
         $("#device_to_rem_sensor").val(mac_address);
-        $("#myModalLabelsensor").text('Are you sure you want to delete the sensor from "'+location+'" ?');
+        $("#myModalLabelsensor").html('<span class="glyphicon glyphicon-trash " ></span> Are you sure want to delete the sensor from "'+location+'" ?');
 
         $('#myModalNormsensor').modal('show');
 

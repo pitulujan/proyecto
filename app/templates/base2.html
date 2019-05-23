@@ -238,6 +238,8 @@
     console.log('tumama');
     $.post("{{url_for('get_notifications')}}").done(function(result){
 
+      $("#redirect_add").hide();
+
     if (result['new_dev_mac_enabled'] || result['flag_bat'] ) { 
 
       
@@ -247,6 +249,7 @@
       $('#modal_body_battery').html('');
 
       if (result['new_dev_mac_enabled']) {
+        $("#redirect_add").show();
         $('#modal_header_devices').append('<h4><span class="fa fa-exclamation-triangle"></span> New Device </h4>');
         
       for (i = 0; i < result['new_dev_mac'].length; i++) {
