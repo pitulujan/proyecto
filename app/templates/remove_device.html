@@ -163,7 +163,7 @@
       var location = $(this).data('location');
       var str_id = $(this).data('str_id');
       $(".modal-body #device_to_rem").val(location+'/'+str_id);
-      $("#myModalLabel").text('Are you sure you want to delete "'+(str_id.split('.')).join(' ')+ '" from "'+(location.split('-')).join(' ')+'" ?');
+      $("#myModalLabel").html('<span class="glyphicon glyphicon-trash " ></span> Are you sure you want to delete "'+(str_id.split('.')).join(' ')+ '" from "'+(location.split('-')).join(' ')+'" ?');
       $('#myModalNorm').modal('show');});
 
       $(".deleteButtonsensor").click(function(){
