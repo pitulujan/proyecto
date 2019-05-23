@@ -8,7 +8,7 @@
         <div class="col-xs-8">
   <h2><span class="glyphicon glyphicon-trash"></span>{{title}}</h2>
    <div class="alert alert-info" role="alert" id="delete_success" style="display:none;"> </div>     
-  <table class="table">
+  <table class="table" id="delete_table">
     <thead>
       <tr>
         <th><center>User Name</center></th>
@@ -18,10 +18,11 @@
       
         
         {% for users in users %}
+        {%if users.username != 'Admin'%}
             <tr id="tr{{users.username}}"><td>
                 <button class="btn btn-danger btn-block del_user_class"  type="button" data-user ="{{users.username}}" name="delete" ><span class="glyphicon glyphicon-trash"></span> {{ users.username }}</button>
              </td></tr>
-                
+        {%endif%}        
         {% endfor %}
         
       
@@ -83,6 +84,7 @@
         $.post("{{ url_for('delete_user') }}",{'user_to_del':$("#dataplacerdeleteuser").data('user')}).done(function(result) {
 
         $("#tr"+pid).remove();
+        if ($('#delete_table tr').length == 1 ) {window.location.replace("{{url_for('index')}}");}; 
         $('#modal_del_user').modal('hide');
 
         $('#delete_success').text(result['ans']);

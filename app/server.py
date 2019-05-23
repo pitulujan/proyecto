@@ -198,7 +198,7 @@ def remove_sens(user,mac_address):
     db.session.delete(sensor_to_delete)
 
     description= "Sensor has been removed from "+sensor_location
-    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
     db.session.add(log_entry)
     
     del Current_sensors[sensor_location]
@@ -225,7 +225,7 @@ def remove_dev(user,location_str_id):
         db.session.delete(scheduled_events_to_del)
 
     description= "Device "+str_id+" has been removed from "+location
-    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
     db.session.add(log_entry)
     
     db.session.delete(device_to_remove)
@@ -497,7 +497,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
             ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
 
         description= "An event for "+str_id+" in "+location+" has been set"
-        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
         db.session.add(log_entry)
         db.session.add(event_to_schedule)
         db.session.commit()
@@ -600,7 +600,7 @@ def delete_scheduled_event(user,id_event):
         event = Scheduled_events.query.filter_by(pid=id_event).first()
 
         description= "An event for "+event.str_id+" in "+event.location+" has been deleted"
-        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
         db.session.add(log_entry)
         db.session.delete(event)
         db.session.commit()
@@ -747,7 +747,7 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_
                 Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address,'temp_dev':temp_dev,'online':online,'presence_state':presence_state}
         
         description= "New device "+str_id+" has been added to "+location
-        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
         db.session.add(log_entry)
         
         db.session.add(device_to_add)
@@ -781,7 +781,7 @@ def add_new_sensor_server(user,location,mac_address,battery,online,battery_state
 
     sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address,active_temp_avegare=active_average)
     description= "New sensor has been added to "+location
-    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
     db.session.add(log_entry)
     db.session.add(sensor_to_add)
     db.session.commit()
