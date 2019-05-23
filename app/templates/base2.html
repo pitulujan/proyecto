@@ -103,11 +103,11 @@
 
             <!-- Modal Body -->
             <div class="modal-body" >
-              <div id="modal_header_devices" style="padding-bottom: 10px"></div>
-              <div id="modal_body_devices" style="padding-bottom: 10px"></div>
+              <div id="modal_header_devices" style="padding-bottom: 0px;"></div>
+              <div id="modal_body_devices" style="padding-top: 0px;padding-bottom: 0px;padding-left: 10px;"></div>
 
-              <div id="modal_header_battery"></div>
-              <div id="modal_body_battery"></div>
+              <div id="modal_header_battery" style="padding-bottom: 0px;"></div>
+              <div id="modal_body_battery" style="padding-top: 0px;padding-bottom: 0px;padding-left: 10px;"></div>
 
               <row style="display: flex;justify-content: flex-end;" >
                 
@@ -250,7 +250,7 @@
 
       if (result['new_dev_mac_enabled']) {
         $("#redirect_add").show();
-        $('#modal_header_devices').append('<h4><span class="fa fa-exclamation-triangle"></span> New Device </h4>');
+        $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
         
       for (i = 0; i < result['new_dev_mac'].length; i++) {
 
@@ -261,11 +261,11 @@
       if (result['flag_bat']) {
 
         
-        $('#modal_header_battery').append('<h4><span class="fa fa-exclamation-triangle"></span> Low battery </h4>');
+        $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
        
       for (i = 0; i < result['sensors_list'].length; i++) {
 
-        $('#modal_body_battery').append('<h4><span class="fa fa-battery-empty"></span></span> Location: '+result['sensors_list'][i][0]+'</h4>');
+        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result['sensors_list'][i][0]+'</h4>');
       };};
 
 
