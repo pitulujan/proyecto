@@ -230,14 +230,11 @@
    });
 });
 
-  $(document).ready(function() {
-
-
     {%if current_user.is_authenticated %}
 
 
 
-  setInterval(function() { 
+ function get_not() { 
     console.log('tumama');
     $.post("{{url_for('get_notifications')}}").done(function(result){
 
@@ -279,11 +276,18 @@
 
   
                 
-            },10000);
+            };
+  $(window).on('load',get_not);
+
+  setInterval(get_not,5000);
 
 
 
 {%endif%}
+  $(document).ready(function() {
+
+
+
 
 $(".logoutButton").click(function(){$('#logoutmodal').modal('show');});
 $("#redirect_add").click(function(){$.post("{{ url_for('disable_notifications') }}").done(function(result) {location.href = "{{url_for('add_device')}}";});});

@@ -2,6 +2,7 @@
 {% block app_content %}
 
 <link rel="stylesheet" type="text/css" href="/static/DataTables/datatables.min.css"/>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
 
 <style type="text/css">
   
@@ -39,7 +40,7 @@
   
   $(document).ready(function () {
   $('.dataTables_length').addClass('bs-select');
-  $('#table_log').DataTable({"pagingType": "simple","order": [[ 1, "desc" ]],"scrollY": "100vh","scrollCollapse": true});
+  $('#table_log').DataTable({"pagingType": "simple","order": [[ 1, "desc" ]]});
   
 });
 </script>
