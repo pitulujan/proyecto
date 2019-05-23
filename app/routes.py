@@ -53,7 +53,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        ans=create_user_full(form)
+        ans=create_user_full(form,current_user.username)
         flash(ans)
         return redirect(url_for('index'))
         
@@ -88,7 +88,7 @@ def delete_user():
     if request.method == 'POST':
         post_id = request.form['user_to_del']
         #print(post_id)
-        ans=delete_user_full(post_id)
+        ans=delete_user_full(post_id,current_user.username)
         
         return jsonify({'ans':ans})
     return render_template('delete_user2.html', title=' Delete User', users=users)
