@@ -17,7 +17,7 @@ get_initial_values()
 @login_required
 def index():
     temp=get_temp_state()
-    print(temp)
+    #print(temp)
     devices,state = get_devices()
     return render_template('index.html', title='Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
    
@@ -161,7 +161,7 @@ def edit_device():
 def edit_sensor():
 
     if request.method == 'POST':
-        print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
+        #print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
         answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
@@ -197,7 +197,7 @@ def add_device():
 
     temp_device=get_temp_device()
     if request.method == 'POST':
-        print(request.form['presence_state'])
+        #print(request.form['presence_state'])
         answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'])
         flash(answer['message'])
         return jsonify(answer)
@@ -213,7 +213,7 @@ def add_device():
 def add_sensor():
     if request.method == 'POST':
         #print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
-        print(request.form['active_average'],type(request.form['active_average']))
+        #print(request.form['active_average'],type(request.form['active_average']))
         answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['online'],request.form['battery_state'],request.form['temp_state'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
@@ -231,7 +231,7 @@ def log():
 def get_notifications():
     if request.method == 'POST':
         ans = get_new_notifications()
-        print(ans)
+        #print(ans)
         return jsonify(ans)
 
 @app.before_request
