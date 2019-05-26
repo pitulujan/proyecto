@@ -23,6 +23,8 @@ You then have to install all the application requirements before you can run it 
 
 #### TO RUN
 
+Go to `.../venv/lib/python3.6/site-packages/flask_bootstrap/templates/bootstrap/base.html` and comment the following line : `<script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>`
+
 To run the application `python proyecto.py` 
 
 User : Admin
