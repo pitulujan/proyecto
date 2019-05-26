@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server
 
 #import xmltodict, requests
 
@@ -17,7 +17,7 @@ get_initial_values()
 @login_required
 def index():
     temp=get_temp_state()
-    print(temp)
+    #print(temp)
     devices,state = get_devices()
     return render_template('index.html', title='Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
    
@@ -53,7 +53,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        ans=create_user_full(form)
+        ans=create_user_full(form,current_user.username)
         flash(ans)
         return redirect(url_for('index'))
         
@@ -88,7 +88,7 @@ def delete_user():
     if request.method == 'POST':
         post_id = request.form['user_to_del']
         #print(post_id)
-        ans=delete_user_full(post_id)
+        ans=delete_user_full(post_id,current_user.username)
         
         return jsonify({'ans':ans})
     return render_template('delete_user2.html', title=' Delete User', users=users)
@@ -161,7 +161,7 @@ def edit_device():
 def edit_sensor():
 
     if request.method == 'POST':
-        print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
+        #print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
         answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
@@ -197,7 +197,7 @@ def add_device():
 
     temp_device=get_temp_device()
     if request.method == 'POST':
-        print(request.form['presence_state'])
+        #print(request.form['presence_state'])
         answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'])
         flash(answer['message'])
         return jsonify(answer)
@@ -213,7 +213,7 @@ def add_device():
 def add_sensor():
     if request.method == 'POST':
         #print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
-        print(request.form['active_average'],type(request.form['active_average']))
+        #print(request.form['active_average'],type(request.form['active_average']))
         answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['online'],request.form['battery_state'],request.form['temp_state'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
@@ -226,7 +226,13 @@ def log():
 
     return render_template('log.html', title='Activity Log',logdb=get_activity_log())
 
-
+@app.route('/get_notifications', methods=['POST'])
+@login_required
+def get_notifications():
+    if request.method == 'POST':
+        ans = get_new_notifications()
+        #print(ans)
+        return jsonify(ans)
 
 @app.before_request
 def new_device_notifier_after():
@@ -265,10 +271,11 @@ def generate_dummy_sensor():
         generate_dummy_sensor_test(request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
     return redirect(url_for('generate_dummy_device'))
 
-@app.route('/disable_new_dev_mac_enabled', methods=['POST'])
+@app.route('/disable_notifications', methods=['POST'])
 @login_required
-def disable_new_dev_mac_enabled():
+def disable_notifications():
     disable_new_dev_mac()
+    disable_low_battery_notifications_server()
     return 'Ok'
 
 @app.route('/post_tests', methods=['GET', 'POST'])

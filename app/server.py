@@ -23,6 +23,8 @@ Sent_messages={}
 flag= False
 new_dev_mac=''
 new_dev_mac_enabled=False
+low_baterry_not=False
+Low_baterry_array=[]
 
 seq_num = 0  #Este es para verificar que la respuesta recibida fue la del mensaje enviado random.randint(0,256)
 
@@ -102,6 +104,8 @@ def process_input(input_str):
     global New_devices
     global Sensors_state
     global Sent_messages
+    global low_baterry_not
+    global Low_baterry_array
     print("Processing the input received from client")
     input_str=str(input_str).replace(chr(0), '')
     
@@ -127,6 +131,8 @@ def process_input(input_str):
 
                 if message['sensor_update']['battery_state'] == 1:
                     battery_state = True
+
+
                 else:
                     battery_state = False
 
@@ -142,6 +148,9 @@ def process_input(input_str):
                         Current_sensors[location]['temp_state'] = temp_state
                         Current_sensors[location]['online'] = True
                         Sensors_state[mac_address]=datetime.now()
+                        if battery_state:
+                            low_baterry_not = True
+                            Low_baterry_array.append((location,mac_address))
 
                 if new and mac_address not in New_sensors.keys() :
                     New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
@@ -189,7 +198,7 @@ def remove_sens(user,mac_address):
     db.session.delete(sensor_to_delete)
 
     description= "Sensor has been removed from "+sensor_location
-    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
     db.session.add(log_entry)
     
     del Current_sensors[sensor_location]
@@ -216,7 +225,7 @@ def remove_dev(user,location_str_id):
         db.session.delete(scheduled_events_to_del)
 
     description= "Device "+str_id+" has been removed from "+location
-    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
     db.session.add(log_entry)
     
     db.session.delete(device_to_remove)
@@ -253,7 +262,7 @@ def get_initial_values():
     query_sensors = Sensors.query.all()
 
     for sensor in query_sensors:
-        Current_sensors[sensor.location]={'online':False, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':False, 'temp_state': 20, 'active_average': sensor.active_temp_avegare}
+        Current_sensors[sensor.location]={'online':True, 'mac_address':sensor.mac_address,'battery': sensor.battery, 'battery_state':True, 'temp_state': 20, 'active_average': sensor.active_temp_avegare}
         Sensors_state[sensor.mac_address]=sensor.last_update
 
 
@@ -488,7 +497,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
             ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
 
         description= "An event for "+str_id+" in "+location+" has been set"
-        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
         db.session.add(log_entry)
         db.session.add(event_to_schedule)
         db.session.commit()
@@ -591,7 +600,7 @@ def delete_scheduled_event(user,id_event):
         event = Scheduled_events.query.filter_by(pid=id_event).first()
 
         description= "An event for "+event.str_id+" in "+event.location+" has been deleted"
-        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
         db.session.add(log_entry)
         db.session.delete(event)
         db.session.commit()
@@ -599,7 +608,26 @@ def delete_scheduled_event(user,id_event):
     return
 
 def get_new_device():
+
+    #return {'flag': flag,'new_dev_mac':new_dev_mac,'new_dev_mac_enabled':new_dev_mac_enabled}
     return flag,new_dev_mac,new_dev_mac_enabled
+
+def get_new_notifications():
+    global Current_sensors
+    global low_baterry_not
+    global Low_baterry_array
+
+    return {'flag': flag,'new_dev_mac':new_dev_mac,'new_dev_mac_enabled':new_dev_mac_enabled,'flag_bat':low_baterry_not,'sensors_list': Low_baterry_array}
+
+def disable_low_battery_notifications_server():
+    global low_baterry_not
+    global Low_baterry_array
+
+    if low_baterry_not:
+        Low_baterry_array=[]
+
+        low_baterry_not = False
+    return
 
 def edit_device_server(old_location,new_location,old_str_id,new_str_id,state,set_point,mac_address):
     global Current_rooms
@@ -719,7 +747,7 @@ def add_new_device_server(user,location,str_id,state,set_point,mac_address,temp_
                 Current_state_dic_rooms[location][str_id] = {'dev_type' : New_devices[mac_address]['dev_type'], 'State': state , 'set_point' : set_point, 'user_perm' : New_devices[mac_address]['user_perm'], 'mac_address': mac_address,'temp_dev':temp_dev,'online':online,'presence_state':presence_state}
         
         description= "New device "+str_id+" has been added to "+location
-        log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+        log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
         db.session.add(log_entry)
         
         db.session.add(device_to_add)
@@ -737,11 +765,14 @@ def add_new_sensor_server(user,location,mac_address,battery,online,battery_state
     online=ast.literal_eval(online)
     battery = ast.literal_eval(battery)
     active_average = ast.literal_eval(active_average)
+    battery_state = ast.literal_eval(battery_state)
 
     global flag
     global new_dev_mac
     global New_sensors
     global Current_sensors
+    global low_baterry_not
+    global Low_baterry_array
     
     if location in Current_sensors.keys():
         return {'status': 400, 'message' : 'There is already a sensor with that name in that room'}
@@ -750,13 +781,18 @@ def add_new_sensor_server(user,location,mac_address,battery,online,battery_state
 
     sensor_to_add = Sensors(location=location,battery=battery,mac_address=mac_address,active_temp_avegare=active_average)
     description= "New sensor has been added to "+location
-    log_entry = Log(user=user,timestamp=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),description = description)
+    log_entry = Log(user=user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
     db.session.add(log_entry)
     db.session.add(sensor_to_add)
     db.session.commit()
     Sensors_state[mac_address]=datetime.now()
     scheduler.add_job(check_sensor_state, 'interval', seconds=2,args=[mac_address],id=mac_address)
     New_sensors.pop(mac_address)
+
+    if battery_state:
+        low_baterry_not = True 
+        Low_baterry_array.append((location,mac_address))
+        print('pituuuu')
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     if len(new_dev_mac)==0:  
         #print('flag server entro bien ')
@@ -825,6 +861,7 @@ def generate_dummy_sensor_test(online,battery,battery_state,temp_state):
     global new_dev_mac
     global new_dev_mac_enabled
     global New_devices
+    global low_baterry_not
     
     if '08:00:27:60:04:00' not in New_sensors.keys():
         New_sensors['08:00:27:60:04:00'] = {'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': int(temp_state), 'mac_address':'08:00:27:60:04:00'}
@@ -833,7 +870,7 @@ def generate_dummy_sensor_test(online,battery,battery_state,temp_state):
         New_sensors['08:00:27:60:04:0'+str(len(New_sensors.keys()))] = {'online':online,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':'08:00:27:60:04:0'+str(len(New_sensors.keys()))} 
 
     #print(New_devices)
-    flag = True 
+    flag = True
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
     return
