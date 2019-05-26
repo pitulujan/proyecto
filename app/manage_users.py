@@ -23,7 +23,7 @@ def delete_user_full(user,current_user):
 
     delete_user = User.query.filter_by(username=user).first()
       
-    shceduled_events_to_del=Scheduled_events.query.filter_by(user=user)
+    shceduled_events_to_del=Scheduled_events.query.filter_by(user=user).all()
     
     #Agarro tods los pids del usuario que voy a eliminar y se los mando al metodo para que la libreria apscheduler se haga cargo
     
@@ -32,12 +32,10 @@ def delete_user_full(user,current_user):
         pids.append(pid.pid)
     
     if len(pids)!=0:
-        delete_scheduled_event(pids)
-        db.session.delete(shceduled_events_to_del)
+        delete_scheduled_event(current_user,pids)
+        for ev in shceduled_events_to_del:
+            db.session.delete(ev)
 
-    description= "User "+user+" has been deleted."
-    log_entry = Log(user=current_user,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),description = description)
-    db.session.add(log_entry)    
     db.session.delete(delete_user)
     
     db.session.commit()
