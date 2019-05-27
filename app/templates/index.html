@@ -2,11 +2,6 @@
 {% block app_content %}
      <link rel="stylesheet" href="/static/style_slider.css">
      <link rel="stylesheet" href="/static/index_y_remove_device.css">
-     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
-     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
-
-
-  
 
   <style type="text/css">
 
@@ -23,7 +18,9 @@
 
   </style>
 
-    <br>
+    <div class="row" style="display: flex;justify-content: center;">
+    <h1><span class="fa fa-home"></span> {{ title}}</h1>
+</div>
 
 {%if temp%}
 
@@ -182,8 +179,8 @@
 
 {%if temp==None and devices|length==0 and current_sensors|length==0%}
 
-<div class="row" id="no_scheduled_events">
- <center><h2>No devices associated yet! <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+<div class="row" >
+ <center><h2 style="margin-top: 5px;">No devices associated yet! <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
 </div>
 
 {%endif%}

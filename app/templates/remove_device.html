@@ -10,6 +10,10 @@
 }
 </style>
 
+<div class="row" style="display: flex;justify-content: center;">
+    <h1><span class="glyphicon glyphicon-trash"></span> {{ title}}</h1>
+</div>
+
 {% for k,v in devices.items()|sort: %}
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >

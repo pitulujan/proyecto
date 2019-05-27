@@ -19,7 +19,7 @@ def index():
     temp=get_temp_state()
     #print(temp)
     devices,state = get_devices()
-    return render_template('index.html', title='Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
+    return render_template('index.html', title=' Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
    
 
 @app.route('/login', methods=['GET', 'POST'])
