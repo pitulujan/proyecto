@@ -196,6 +196,7 @@ def delete_event():
 def add_device():
 
     temp_device=get_temp_device()
+    devices,state=get_devices()
     if request.method == 'POST':
         #print(request.form['presence_state'])
         answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'])
@@ -203,7 +204,7 @@ def add_device():
         return jsonify(answer)
 
     if temp_device == None:
-        return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device)
+        return render_template('test_add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
     else:
         return render_template('add_device_w_temp.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors())
 
