@@ -11,7 +11,7 @@ from app.server import set_temp, get_temp_state, get_initial_values, get_devices
 
 #import xmltodict, requests
 
-get_initial_values()
+#get_initial_values()
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -204,7 +204,7 @@ def add_device():
         return jsonify(answer)
 
     if temp_device == None:
-        return render_template('test_add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
+        return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
     else:
         return render_template('add_device_w_temp.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors())
 
