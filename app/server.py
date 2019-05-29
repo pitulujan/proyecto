@@ -409,10 +409,11 @@ def get_scheduled_events(*args):
     
     return query_scheduled
 
-def alarm(state,set_point,event_type,id_job,mac_address):
-
+def alarm(state,set_point,event_type,id_job,mac_address,user):
+    print(event_type)
     if event_type == 'date':
-        delete_scheduled_event(id_job)
+        print ('que onda')
+        delete_scheduled_event(user,id_job)
 
         #aca falta llamar al cliente para que mande el mensaje al programa en C
     if state == True:
@@ -420,7 +421,7 @@ def alarm(state,set_point,event_type,id_job,mac_address):
     else:
         state=0
 
-    message = ' 1 '+mac_address+' '+state+' '+set_point
+    message = ' 1 '+mac_address+' '+str(state)+' '+str(set_point)
     message=str(len(message)+1)+message
     send_socket(message)
     print(state,set_point,event_type,id_job)
@@ -475,8 +476,8 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
 
         if len(day_of_week)!=0:
 
-            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'cron',id_job,getting_mac.mac_address],id=id_job)
-            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point,'cron',id_job,getting_mac.mac_address],id=id_job+'_cron') #para que lo haga ese dia y despues repita
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'cron',id_job,getting_mac.mac_address,user],id=id_job)
+            scheduler.add_job(alarm, 'cron', start_date=date, day_of_week=','.join(day_of_week), hour=hour, minute=minute , args=[param_state,param_set_point,'cron',id_job,getting_mac.mac_address,user],id=id_job+'_cron') #para que lo haga ese dia y despues repita
             
             days={'0':'Mon','1':'Tue','2':'Wed','3':'Thu','4':'Fri','5':'Sat','6':'Sun'}
             cron_days=[]   
@@ -492,7 +493,7 @@ def schedule_event(user,str_id,location,start_date,pidd,param_state,param_set_po
 
         else:
 
-            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'date',id_job,getting_mac.mac_address],id=id_job)
+            scheduler.add_job(alarm, 'date', run_date=date_date, args=[param_state,param_set_point,'date',id_job,getting_mac.mac_address,user],id=id_job)
             event_to_schedule= Scheduled_events(user=user,str_id=str_id,location=location,event_date=date_date,event_type='date',event_cron=None,event_param_state=param_state,event_param_setpoint=param_set_point, pid=id_job)
             ans={'status':200,'pid':id_job,'date':date_date,'hour':hour,'type':'date','cron_days':None,'location':location,'str_id':str_id,'reschedule':reschedule,'old_pid':pidd,'param_state':param_state,'param_set_point':param_set_point}
 
