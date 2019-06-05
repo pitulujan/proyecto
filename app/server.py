@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log,Scheduled_events,Sensors,Log
-from app import db
+from app import db,socketio
 from flask import jsonify
 from threading import Thread
 import socket
@@ -11,6 +11,7 @@ import time
 import ast
 import random 
 import time
+from flask_socketio import send, emit
 
 Current_state_dic_temp= {}
 Current_state_dic_rooms ={}
@@ -236,9 +237,10 @@ def remove_dev(user,location_str_id):
     return 'Device '+str_id+' was successfully removed from '+location
 
 def tick():
+    socketio.emit('my response', {'number': 'hola desde el server'}, namespace='/test')
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=300,id='basic',replace_existing=True)
+scheduler.add_job(tick, 'interval', seconds=2,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
 scheduler.start()

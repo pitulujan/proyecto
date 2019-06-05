@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, request, url_for,jsonify,g
-from app import app, db
+from app import app, db, socketio
 import json
 from app.forms import LoginForm, RegistrationForm, ChangePassword
 from app.manage_users import *
@@ -8,7 +8,7 @@ from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
 from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server
-
+from flask_socketio import send, emit
 #import xmltodict, requests
 
 #get_initial_values()
@@ -308,6 +308,24 @@ def pruebitas2():
     if request.method == 'POST':
         #print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
-    return render_template('dele_user2.html', title=' Delete User', users=users)
+    return render_template('pruebitas.html', title=' Delete User', users=users)
 
+@socketio.on('my event', namespace='/test')
+def test_message(message):
+    print(message['data'])
+    emit('my response', {'data': message['data']})
 
+@socketio.on('my broadcast event', namespace='/test')
+def test_message(message):
+    emit('my response', {'data': message['data']}, broadcast=True)
+
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    print('me tu viejaaaaaaaaaaaa')
+    emit('my response', {'data': 'Connected'})
+    sid = request.sid
+    print(sid)
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')
