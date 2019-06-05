@@ -11,7 +11,7 @@ from app.server import set_temp, get_temp_state, get_initial_values, get_devices
 
 #import xmltodict, requests
 
-get_initial_values()
+#get_initial_values()
 @app.route('/')
 @app.route('/index')
 @login_required
