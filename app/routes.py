@@ -309,23 +309,3 @@ def pruebitas2():
         #print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
     return render_template('pruebitas.html', title=' Delete User', users=users)
-
-@socketio.on('my event', namespace='/test')
-def test_message(message):
-    print(message['data'])
-    emit('my response', {'data': message['data']})
-
-@socketio.on('my broadcast event', namespace='/test')
-def test_message(message):
-    emit('my response', {'data': message['data']}, broadcast=True)
-
-@socketio.on('connect', namespace='/test')
-def test_connect():
-    print('me tu viejaaaaaaaaaaaa')
-    emit('my response', {'data': 'Connected'})
-    sid = request.sid
-    print(sid)
-
-@socketio.on('disconnect', namespace='/test')
-def test_disconnect():
-    print('Client disconnected')

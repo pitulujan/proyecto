@@ -144,6 +144,7 @@ def process_input(input_str):
                     if Current_sensors[location]['mac_address']== mac_address:
                         new = False 
                         Current_sensors[location]['presence_state'] = presence_state
+                        socketio.emit('presence_state_tobrowser', {'presence_ToSendToBrowser' : location }, namespace='/test')
                         Current_sensors[location]['battery'] = battery 
                         Current_sensors[location]['battery_state'] = battery_state
                         Current_sensors[location]['temp_state'] = temp_state
@@ -152,6 +153,7 @@ def process_input(input_str):
                         if battery_state:
                             low_baterry_not = True
                             Low_baterry_array.append((location,mac_address))
+                            socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
 
                 if new and mac_address not in New_sensors.keys() :
                     New_sensors[mac_address] = {'presence_state':presence_state,'online':True,'battery': battery, 'battery_state':battery_state, 'temp_state': temp_state, 'mac_address':mac_address}
@@ -159,6 +161,7 @@ def process_input(input_str):
                     flag = True 
                     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
                     new_dev_mac_enabled = True
+                    socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
 
                 message = ' 5 '+str(1)
                 message=str(len(message)+1)+message
@@ -238,9 +241,13 @@ def remove_dev(user,location_str_id):
 
 def tick():
     socketio.emit('my response', {'number': 'hola desde el server'}, namespace='/test')
+    if len(new_dev_mac) != 0:
+
+        #socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
+        socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=2,id='basic',replace_existing=True)
+scheduler.add_job(tick, 'interval', seconds=5,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
 scheduler.start()
@@ -849,9 +856,12 @@ def generate_dummy_device_test(dev_type,presence_state,online):
         New_devices['08:00:27:60:03:9'+str(len(New_devices.keys()))] = {'presence_state': presence_state,'dev_type' : dev_type , 'State': False , 'set_point' : None, 'user_perm' : False,'online':online , 'new_device': True, 'mac_address':'08:00:27:60:03:9'+str(len(New_devices.keys()))} 
 
     #print(New_devices)
+
     flag = True 
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
+
+    #socketio.emit('new_dev_mac_enabled', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
     return
 
 def generate_dummy_sensor_test(online,battery,battery_state,temp_state):

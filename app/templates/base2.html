@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="/static/base.css">
 <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css"> 
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<script type="text/javascript" src="static/socket.io.js"></script>
 
 <body>
  
@@ -251,62 +252,72 @@
    });
 });
 
-    {%if current_user.is_authenticated %}
 
+{%if current_user.is_authenticated %}
 
+  var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+   
+  socket.on('new_dev_tobrowser', function(result) {
 
- function get_not() { 
-    $.post("{{url_for('get_notifications')}}").done(function(result){
+    $('#modal_header_devices').html('');
+    $('#modal_body_devices').html('');
+    $('#modal_header_battery').html('');
+    $('#modal_body_battery').html('');
 
-      $("#redirect_add").hide();
-
-    if (result['new_dev_mac_enabled'] || result['flag_bat'] ) { 
-
-      
-      $('#modal_header_devices').html('');
-      $('#modal_body_devices').html('');
-      $('#modal_header_battery').html('');
-      $('#modal_body_battery').html('');
-
-      if (result['new_dev_mac_enabled']) {
-        $("#redirect_add").show();
-        $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
+    //$("#redirect_add").show();
+    $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
         
-      for (i = 0; i < result['new_dev_mac'].length; i++) {
+      for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
 
-        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result['new_dev_mac'][i]+'</h4>');
-      };};
+        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result.arrayToSendToBrowser[i]+'</h4>');
+      };
 
-
-      if (result['flag_bat']) {
-
-        
-        $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
-       
-      for (i = 0; i < result['sensors_list'].length; i++) {
-
-        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result['sensors_list'][i][0]+'</h4>');
-      };};
+    $('#notificationsmodal').modal('show');
+   
 
 
 
 
+    return false
 
 
-      $('#notificationsmodal').modal('show');};
-    
   });
 
-  
-                
-            };
-  $(window).on('load',get_not);
+   socket.on('low_bat_tobrowser', function(result) {
 
-  setInterval(get_not,5000);
+    $('#modal_header_devices').html('');
+    $('#modal_body_devices').html('');
+    $('#modal_header_battery').html('');
+    $('#modal_body_battery').html('');
+    $("#redirect_add").hide();
 
+   
+
+
+
+    $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
+       
+      for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
+
+        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result.arrayToSendToBrowser[i][0]+'</h4>');
+      }; 
+
+    $('#notificationsmodal').modal('show');
+
+
+
+
+    return false
+
+
+  });
+
+ 
 
 
 {%endif%}
+
+
   $(document).ready(function() {
 
 

@@ -147,13 +147,9 @@ color: black; }
 <script type="text/javascript" src="static/socket.io.js"></script>
 <script>
   var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
-  socket.on('connect', function(){ console.log('me conecte'); });
-  socket.emit('my event',{'data': 'holus'});
-        
-    
+   
   socket.on('my response', function(msg) {console.log(msg.number); return false});
-  socket.on('event', function(data){});
-  socket.on('disconnect', function(){});
+
 </script>
 
 <script >
