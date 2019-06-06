@@ -76,12 +76,12 @@
 
 {%if k in current_sensors.keys()%}
   <h1>{{devices[k]['online']}}</h1>
-        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%}{%else%} <span class="fa fa-street-view "  style="color: grey;"></span>{%endif%}{%if not current_sensors[k]['online'] %} <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id={{k}} style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%}{%else%} <span class="fa fa-street-view " id={{k}} style="color: grey;"></span>{%endif%}{%if not current_sensors[k]['online'] %} <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
 
 {%else%}
 
-<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%}{%else%} <span class="fa fa-street-view "  style="color: grey;"></span>{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id={{k}} style="color: green;"></span>{%else%} <span class="fa fa-street-view " id={{k}}></span>{%endif%}{%else%} <span class="fa fa-street-view " id={{k}} style="color: grey;"></span>{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
 
  {%endif%}
    <div class="dropdown-container-pitu collapse " >
@@ -156,7 +156,7 @@
 {%for key in current_sensors.keys():%}
 {%if key not in devices.keys()%}
 
-<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa fa-street-view "  style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[key]['presence_state']%} <span class="fa fa-street-view"  style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa fa-street-view " id={{key}} style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[key]['presence_state']%} <span class="fa fa-street-view" id={{key}} style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
                  <div class="dropdown-container-pitu collapse " >
 
@@ -221,6 +221,23 @@
     </div>
 </div>
   <script>
+
+    socket.on('presence_state_tobrowser', function(result) {
+
+      if (result.presence_ToSendToBrowser[1]) {
+        document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "green";
+      } else {
+        document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "black";
+      }
+
+      
+
+
+    return false
+
+
+  });
+
     {%if temp!=None%}
   $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 

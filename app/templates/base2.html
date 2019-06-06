@@ -11,6 +11,75 @@
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script type="text/javascript" src="static/socket.io.js"></script>
 
+<script type="text/javascript">
+  
+{%if current_user.is_authenticated %}
+
+  var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+   
+  socket.on('new_dev_tobrowser', function(result) {
+
+    $('#modal_header_devices').html('');
+    $('#modal_body_devices').html('');
+    $('#modal_header_battery').html('');
+    $('#modal_body_battery').html('');
+
+    //$("#redirect_add").show();
+    $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
+        
+      for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
+
+        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result.arrayToSendToBrowser[i]+'</h4>');
+      };
+
+    $('#notificationsmodal').modal('show');
+   
+
+
+
+
+    return false
+
+
+  });
+
+   socket.on('low_bat_tobrowser', function(result) {
+
+    $('#modal_header_devices').html('');
+    $('#modal_body_devices').html('');
+    $('#modal_header_battery').html('');
+    $('#modal_body_battery').html('');
+    $("#redirect_add").hide();
+
+   
+
+
+
+    $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
+       
+      for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
+
+        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result.arrayToSendToBrowser[i][0]+'</h4>');
+      }; 
+
+    $('#notificationsmodal').modal('show');
+
+
+
+
+    return false
+
+
+  });
+
+ 
+ 
+
+
+{%endif%}
+  
+</script>
+
 <body>
  
   <nav class="navbar navbar-inverse navbar-fixed-top " >
@@ -253,69 +322,7 @@
 });
 
 
-{%if current_user.is_authenticated %}
 
-  var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
-   
-  socket.on('new_dev_tobrowser', function(result) {
-
-    $('#modal_header_devices').html('');
-    $('#modal_body_devices').html('');
-    $('#modal_header_battery').html('');
-    $('#modal_body_battery').html('');
-
-    //$("#redirect_add").show();
-    $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
-        
-      for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
-
-        $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result.arrayToSendToBrowser[i]+'</h4>');
-      };
-
-    $('#notificationsmodal').modal('show');
-   
-
-
-
-
-    return false
-
-
-  });
-
-   socket.on('low_bat_tobrowser', function(result) {
-
-    $('#modal_header_devices').html('');
-    $('#modal_body_devices').html('');
-    $('#modal_header_battery').html('');
-    $('#modal_body_battery').html('');
-    $("#redirect_add").hide();
-
-   
-
-
-
-    $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
-       
-      for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
-
-        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result.arrayToSendToBrowser[i][0]+'</h4>');
-      }; 
-
-    $('#notificationsmodal').modal('show');
-
-
-
-
-    return false
-
-
-  });
-
- 
-
-
-{%endif%}
 
 
   $(document).ready(function() {

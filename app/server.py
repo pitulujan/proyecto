@@ -144,7 +144,7 @@ def process_input(input_str):
                     if Current_sensors[location]['mac_address']== mac_address:
                         new = False 
                         Current_sensors[location]['presence_state'] = presence_state
-                        socketio.emit('presence_state_tobrowser', {'presence_ToSendToBrowser' : location }, namespace='/test')
+                        socketio.emit('presence_state_tobrowser', {'presence_ToSendToBrowser' : [location,presence_state] }, namespace='/test')
                         Current_sensors[location]['battery'] = battery 
                         Current_sensors[location]['battery_state'] = battery_state
                         Current_sensors[location]['temp_state'] = temp_state
@@ -241,13 +241,14 @@ def remove_dev(user,location_str_id):
 
 def tick():
     socketio.emit('my response', {'number': 'hola desde el server'}, namespace='/test')
-    if len(new_dev_mac) != 0:
+    socketio.emit('presence_state_tobrowser', {'presence_ToSendToBrowser' : ['Patio',True] }, namespace='/test')
+    #if len(new_dev_mac) != 0:
 
         #socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
-        socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
+        #socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
     print('Tick! The time is: %s' % datetime.now())
 scheduler = config_scheduler()
-scheduler.add_job(tick, 'interval', seconds=5,id='basic',replace_existing=True)
+scheduler.add_job(tick, 'interval', seconds=10,id='basic',replace_existing=True)
 scheduler.add_job(start_server,  'date', run_date=datetime.now(), id='basic_server',replace_existing=True)
 
 scheduler.start()
