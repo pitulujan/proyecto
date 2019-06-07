@@ -30,7 +30,7 @@
        <div class="row">
           <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                           
-                         <h2 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">Temperature: {{temp['Current_value']}} °C</h2>
+                         <h2 id="temp_num" style="vertical-align: text-top;margin-top: 5px;">Temperature: {{temp['Current_value']}} °C</h2>
                           
                   </div>
                     <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -76,7 +76,7 @@
 
 {%if k in current_sensors.keys()%}
   <h1>{{devices[k]['online']}}</h1>
-        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id={{k}} style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%}{%else%} <span class="fa fa-street-view " id={{k}} style="color: grey;"></span>{%endif%}{%if not current_sensors[k]['online'] %} <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id={{k}} style="color: green;"></span>{%else%} <span class="fa fa-street-view "id={{k}}></span>{%endif%}{%else%} <span class="fa fa-street-view " id={{k}} style="color: grey;"></span>{%endif%}{%if not current_sensors[k]['online'] %} <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
 
 {%else%}
@@ -222,7 +222,7 @@
 </div>
   <script>
 
-    socket.on('presence_state_tobrowser', function(result) {
+socket.on('presence_state_tobrowser', function(result) {
 
       if (result.presence_ToSendToBrowser[1]) {
         document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "green";
@@ -230,6 +230,33 @@
         document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "black";
       }
 
+      
+
+
+    return false
+
+
+  });
+
+socket.on('low_bat_tobrowser', function(result) {
+
+      if (result.presence_ToSendToBrowser[1]) {
+        document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "green";
+      } else {
+        document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "black";
+      }
+
+      
+
+
+    return false
+
+
+  });
+
+socket.on('update_temp', function(result) {
+
+  $("#temp_num").text('Temperature: '+result.arrayToSendToBrowser+'°C');
       
 
 

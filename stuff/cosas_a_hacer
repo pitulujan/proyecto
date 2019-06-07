@@ -143,3 +143,10 @@ cuando llegue info de un sensor, calcular el promedio nuevo de la temp y guardar
 
 -------------------------UPDATE 4/5/2019-----------------------------------------
 cambiar el set_temp para que pase primero por el take_action y mande por el socket, cmo en set_dev 
+
+
+
+-------------------------UPDATE 7/6/2019--------------------------------------------
+cambiar todo  process_input(input_str) para diferenciar entre mensajes de un sensor y otro de un device, para actualizar la temp solo o los states de los muñequitos y las baterias
+
+'user_perm' : False --> esto lo puedo usar para darle privilegios sobre algunos actuadores a usuarios admin/no admin
