@@ -125,6 +125,7 @@ def process_input(input_str):
     try:
         print("pitu-->", type(input_str))
         message = ast.literal_eval(input_str)
+        print(message)
 
         try:
             print("pitu-->", message.keys(), message)
@@ -153,14 +154,14 @@ def process_input(input_str):
                         Current_sensors[location]["temp_state"] = temp_state
                         Current_sensors[location]["online"] = True
                         Sensors_state[mac_address] = datetime.now()
+
+                        temp = get_temp_state()
                         
-                        if get_temp_device != None:
-                            temp = get_temp_state() 
-                            socketio.emit(
-                            "update_temp",
-                            {"arrayToSendToBrowser": temp['Current_value']},
-                            namespace="/test",
-                        )
+                        if temp != None:
+                             
+                            socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
+                        else:
+                            socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
 
 
                         if battery_state:
@@ -196,6 +197,7 @@ def process_input(input_str):
                 send_socket(message)
 
             elif "device_update" in message.keys():
+                print('deberia entrar aca')
 
                 mac_address = message["device_update"]["mac_address"]
                 if message["device_update"]["presence_state"] == 1:
@@ -220,11 +222,11 @@ def process_input(input_str):
 
                 new = True
                 for location in Current_state_dic_rooms:
-                    for str_id in Current_sensors[location]:
-                        if (
-                            Current_sensors[location][str_id]["mac_address"]
-                            == mac_address
-                        ):
+                    print(location,location)
+                    for str_id in Current_state_dic_rooms[location]:
+                        
+                        if (Current_state_dic_rooms[location][str_id]["mac_address"] == mac_address):
+                            print(str_id)
                             new = False
                             Current_state_dic_rooms[location][str_id][
                                 "presence_state"
@@ -243,6 +245,7 @@ def process_input(input_str):
                             Current_state_dic_rooms[location][str_id][
                                 "set_point"
                             ] = set_point
+                            break
 
                 if new and mac_address not in New_devices.keys():
                     New_devices[mac_address] = {
@@ -344,17 +347,8 @@ def remove_dev(user, location_str_id):
 
 
 def tick():
-    socketio.emit("my response", {"number": "hola desde el server"}, namespace="/test")
-    socketio.emit(
-        "presence_state_tobrowser",
-        {"presence_ToSendToBrowser": ["Patio", True]},
-        namespace="/test",
-    )
-    socketio.emit(
-        "update_temp",
-        {"arrayToSendToBrowser": "30"},
-        namespace="/test",
-        )
+    #socketio.emit("presence_state_tobrowser",{"presence_ToSendToBrowser": ["Patio", True]},namespace="/test")
+    #socketio.emit("update_temp",{"gtonoff": False,"general_temp": '30','sensor_loc': 'Patio','sensor_temp': '30'},namespace="/test")
     # if len(new_dev_mac) != 0:
 
     # socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
@@ -1265,14 +1259,12 @@ def check_sensor_state(mac_address):
     for sensor in Current_sensors:
         if mac_address == Current_sensors[sensor]["mac_address"]:
             if (
-                round(
-                    (datetime.now() - Sensors_state[mac_address]).total_seconds() / 60
-                )
-                < 2
-            ):
+                round((datetime.now() - Sensors_state[mac_address]).total_seconds() / 60 ) < 2 ):
                 Current_sensors[sensor]["online"] = True
+                socketio.emit("sensor_online",{"sensor_loc": sensor,"sensor_state": True},namespace="/test")
             else:
                 Current_sensors[sensor]["online"] = False
+                socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")
 
     return
 

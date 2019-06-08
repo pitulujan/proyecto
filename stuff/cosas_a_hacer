@@ -150,3 +150,17 @@ cambiar el set_temp para que pase primero por el take_action y mande por el sock
 cambiar todo  process_input(input_str) para diferenciar entre mensajes de un sensor y otro de un device, para actualizar la temp solo o los states de los muñequitos y las baterias
 
 'user_perm' : False --> esto lo puedo usar para darle privilegios sobre algunos actuadores a usuarios admin/no admin
+
+
+notificaciones : 
+
+- bateria baja
+- nuevo device
+- sensor/actuador desconectado
+- presence state
+- distintas temperaturas
+- se prede/apaga un on/off
+
+
+{'device_update':{'presence_state':1, 'mac_address':'08:00:27:60:03:79','dev_type':0,'state':0,'set_point':100}}
+

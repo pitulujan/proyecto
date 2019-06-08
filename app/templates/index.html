@@ -72,10 +72,11 @@
 {%endif%}
 
 {% for k,v in devices.items()|sort: %}
+
 {%if k != 'Temperature' %}
 
 {%if k in current_sensors.keys()%}
-  <h1>{{devices[k]['online']}}</h1>
+<h1>{{devices[k]['online']}}</h1>
         <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id={{k}} style="color: green;"></span>{%else%} <span class="fa fa-street-view "id={{k}}></span>{%endif%}{%else%} <span class="fa fa-street-view " id={{k}} style="color: grey;"></span>{%endif%}{%if not current_sensors[k]['online'] %} <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
 
@@ -94,7 +95,7 @@
                                         
                         </div>
 
-                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 16px;"> {%if not current_sensors[k]['online'] %} - {%else%}{{current_sensors[k]['temp_state']}}°C{%endif%}</h3>
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{k}}" style="margin-top: 5px;padding-right: 16px;"> {%if not current_sensors[k]['online'] %} - {%else%}{{current_sensors[k]['temp_state']}}°C{%endif%}</h3>
                         </div>
             </div>
 
@@ -167,7 +168,7 @@
                                         
                         </div>
                         
-                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{key}}" style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
                         </div>
             </div>
         
@@ -256,7 +257,39 @@ socket.on('low_bat_tobrowser', function(result) {
 
 socket.on('update_temp', function(result) {
 
-  $("#temp_num").text('Temperature: '+result.arrayToSendToBrowser+'°C');
+  console.log(result.gtonoff);
+
+  if (result.gtonoff){
+
+    $("#temp_num").text('Temperature: '+result.general_temp+'°C');
+    $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C'); }
+
+    else{
+
+      $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C');}
+
+  
+      
+
+
+    return false
+
+
+  });
+
+socket.on('sensor_online', function(result) {
+
+
+  if (result.sensor_state){
+
+    $("#temp_num").text('Temperature: '+result.general_temp+'°C');
+    $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C'); }
+
+    else{
+
+      $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C');}
+
+  
       
 
 
@@ -269,12 +302,7 @@ socket.on('update_temp', function(result) {
   $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-console.log(result);
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama')
-            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            $('#text_error_body').text('It seems like device Temperature is offline');
             $('#temp_for_back').addClass('prevent-click');
             $('#temp_for_back').css('background-color', 'silver');
             $('#connectionlostnotification').modal('show');
@@ -295,14 +323,8 @@ console.log(result);
           $("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-
-          console.log(result);
-
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
             
-            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            $('#text_error_body').text('It seems like device Temperature is offline');
             
             $('#connectionlostnotification').modal('show');
           }
@@ -314,12 +336,8 @@ console.log(result);
         else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-console.log(result);
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama')
-            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+
+            $('#text_error_body').text('It seems like device Temperature is offline');
             
             $('#connectionlostnotification').modal('show');
           }
@@ -339,10 +357,7 @@ console.log(result);
 
         if (result['status']==400) { 
 
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            
+           
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
             $('#connectionlostnotification').modal('show');
@@ -364,7 +379,6 @@ console.log(result);
 
           if (result['status']==400) { 
 
-            console.log(result['status'])
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
@@ -382,7 +396,6 @@ console.log(result);
 
           if (result['status']==400) { 
 
-            console.log(result['status'])
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
@@ -405,11 +418,6 @@ console.log(result);
 
 
           if (result['status']==400) { 
-
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama 1')
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
           
@@ -426,11 +434,6 @@ console.log(result);
 
 
           if (result['status']==400) { 
-
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama')
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
             $('#connectionlostnotification').modal('show');
