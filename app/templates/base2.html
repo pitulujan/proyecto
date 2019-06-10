@@ -43,7 +43,7 @@
 
   });
 
-   socket.on('low_bat_tobrowser', function(result) {
+  function low_bat(result){
 
     $('#modal_header_devices').html('');
     $('#modal_body_devices').html('');
@@ -70,7 +70,9 @@
     return false
 
 
-  });
+  }
+
+   socket.on('low_bat_tobrowser', low_bat);
 
  
  function get_not() { 

@@ -162,16 +162,16 @@ def process_input(input_str):
                             socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
                         else:
                             socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
-
+                             
 
                         if battery_state:
                             low_baterry_not = True
                             Low_baterry_array.append((location, mac_address))
-                            socketio.emit(
-                                "low_bat_tobrowser",
-                                {"arrayToSendToBrowser": Low_baterry_array},
-                                namespace="/test",
-                            )
+                            socketio.emit("low_bat_tobrowser",{"arrayToSendToBrowser": Low_baterry_array},namespace="/test")
+                            socketio.emit("low_bat_index",{"location": location, "low_bat": True},namespace="/test")
+                        else:
+                            socketio.emit("low_bat_index",{"location": location, "low_bat": False},namespace="/test")
+
 
                 if new and mac_address not in New_sensors.keys():
                     New_sensors[mac_address] = {
@@ -352,12 +352,12 @@ def tick():
     # if len(new_dev_mac) != 0:
 
     # socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
-    # socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
+    #socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
     print("Tick! The time is: %s" % datetime.now())
 
 
 scheduler = config_scheduler()
-scheduler.add_job(tick, "interval", seconds=10, id="basic", replace_existing=True)
+scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=True)
 scheduler.add_job(
     start_server,
     "date",
@@ -1232,7 +1232,7 @@ def add_new_sensor_server(
     db.session.commit()
     Sensors_state[mac_address] = datetime.now()
     scheduler.add_job(
-        check_sensor_state, "interval", seconds=2, args=[mac_address], id=mac_address
+        check_sensor_state, "interval", seconds=300, args=[mac_address], id=mac_address
     )
     New_sensors.pop(mac_address)
 
