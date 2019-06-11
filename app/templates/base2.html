@@ -24,14 +24,14 @@
     $('#modal_header_battery').html('');
     $('#modal_body_battery').html('');
 
-    //$("#redirect_add").show();
+    $("#redirect_add").show();
     $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
         
       for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
 
         $('#modal_body_devices').append('<h4><span class="fa fa-address-book-o"></span> Mac Adress : '+result.arrayToSendToBrowser[i]+'</h4>');
       };
-
+      document.getElementById("green_flag_new_device").style.display = "inline";
     $('#notificationsmodal').modal('show');
    
 
@@ -272,7 +272,7 @@
                 </button>
                 <div class="dropdown-container collapse" >
                  <li>
-                  <a href="{{url_for('add_device')}}"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add{%if g.flag==1%}<span class="fa fa-flag" style="color:green;"></span>{%endif%}</a>
+                  <a href="{{url_for('add_device')}}"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add<span id="green_flag_new_device" class="fa fa-flag" style="color:green;padding-left: 20px;display:{%if g.flag==1%}inline;{%else%}none;{%endif%}"></span></a>
                 </li>
                  <li>
                   <a href="{{url_for('remove_device')}}"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</a>
