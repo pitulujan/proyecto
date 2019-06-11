@@ -228,23 +228,10 @@ def process_input(input_str):
                         if (Current_state_dic_rooms[location][str_id]["mac_address"] == mac_address):
                             print(str_id)
                             new = False
-                            Current_state_dic_rooms[location][str_id][
-                                "presence_state"
-                            ] = presence_state
-                            socketio.emit(
-                                "presence_state_tobrowser",
-                                {
-                                    "presence_ToSendToBrowser": [
-                                        location,
-                                        presence_state,
-                                    ]
-                                },
-                                namespace="/test",
-                            )
+                            Current_state_dic_rooms[location][str_id]["presence_state"] = presence_state
                             Current_state_dic_rooms[location][str_id]["State"] = state
-                            Current_state_dic_rooms[location][str_id][
-                                "set_point"
-                            ] = set_point
+                            socketio.emit("device_update",{"location": location.replace(' ','_'),"presence_state":presence_state,"state": state,"str_id": str_id.replace(' ','_')}, namespace="/test")
+                            Current_state_dic_rooms[location][str_id]["set_point"] = set_point
                             break
 
                 if new and mac_address not in New_devices.keys():

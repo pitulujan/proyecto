@@ -223,16 +223,18 @@
 </div>
   <script>
 
-socket.on('presence_state_tobrowser', function(result) {
+socket.on('device_update', function(result) {
 
-      if (result.presence_ToSendToBrowser[1]) {
-        document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "green";
+      if (result.presence_state) {
+        document.getElementById(result.location).style.color = "green";
       } else {
-        document.getElementById(result.presence_ToSendToBrowser[0]).style.color = "black";
+        document.getElementById(result.location).style.color = "black";
       }
 
+      if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
+      $("#myonoffswitch"+result.location+result.str_id).click();;}
       
-
+      //myonoffswitch
 
     return false
 
