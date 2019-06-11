@@ -222,11 +222,11 @@ def process_input(input_str):
 
                 new = True
                 for location in Current_state_dic_rooms:
-                    print(location,location)
+                    
                     for str_id in Current_state_dic_rooms[location]:
                         
                         if (Current_state_dic_rooms[location][str_id]["mac_address"] == mac_address):
-                            print(str_id)
+                            
                             new = False
                             Current_state_dic_rooms[location][str_id]["presence_state"] = presence_state
                             Current_state_dic_rooms[location][str_id]["State"] = state
@@ -234,7 +234,9 @@ def process_input(input_str):
                             Current_state_dic_rooms[location][str_id]["set_point"] = set_point
                             break
 
+                
                 if new and mac_address not in New_devices.keys():
+                    print(new, mac_address,New_devices)
                     New_devices[mac_address] = {
                         "presence_state": presence_state,
                         "dev_type": dev_type,
@@ -244,9 +246,14 @@ def process_input(input_str):
                         "mac_address": mac_address,
                     }
 
-                message = " 5 " + str(1)
-                message = str(len(message) + 1) + message
-                send_socket(message)
+                    flag = True
+                    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+                    new_dev_mac_enabled = True
+                    socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+
+                    message = " 5 " + str(1)
+                    message = str(len(message) + 1) + message
+                    send_socket(message)
 
             elif "tx_ok" in message.keys():
                 mac_address = message["tx_ok"]["mac_address"]
