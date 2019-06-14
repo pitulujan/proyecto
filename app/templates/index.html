@@ -256,10 +256,6 @@ console.log('3');
   $("#battery_"+result.location).attr("style","color: black;font-size:25px;");
   }
 
-
-      
-
-
     return false
 
 
@@ -271,7 +267,7 @@ socket.on('update_temp', function(result) {
 
   if (result.gtonoff){
 
-    $("#temp_num").text('Temperature: '+result.general_temp+'°C');
+    $("#temp_num").text('Temperature:'+result.general_temp+'°C');
     $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C'); }
 
     else{

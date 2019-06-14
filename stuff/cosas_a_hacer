@@ -154,12 +154,12 @@ cambiar todo  process_input(input_str) para diferenciar entre mensajes de un sen
 
 notificaciones : 
 
-- bateria baja
-- nuevo device
+- bateria baja CHECK
+- nuevo device CHECK
 - sensor/actuador desconectado
-- presence state
+- presence state CHECK
 - distintas temperaturas
-- se prede/apaga un on/off
+- se prede/apaga un on/off CHECK
 
 
 {'device_update':{'presence_state':1, 'mac_address':'08:00:27:60:03:79','dev_type':0,'state':0,'set_point':100}}
@@ -167,4 +167,5 @@ notificaciones :
 
 {'sensor_update':{ 'mac_address':"08:00:27:60:04:00",'battery': 1, 'battery_state':0, 'temp_state': 20}}
 {'sensor_update':{ 'mac_address':"08:00:27:60:04:00",'battery': 1, 'battery_state':1, 'temp_state': 20}}
+{'sensor_update':{ 'mac_address':"08:00:27:60:04:01",'battery': 1, 'battery_state':0, 'temp_state': 30}}
 

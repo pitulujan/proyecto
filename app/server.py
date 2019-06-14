@@ -573,7 +573,7 @@ def get_scheduled_events(*args):
     return query_scheduled
 
 
-def alarm(state, set_point, event_type, id_job, mac_address, user):
+def alarm(state, set_point, event_type, id_job, mac_address, user,str_id):
     print(event_type)
     if event_type == "date":
         print("que onda")
@@ -584,12 +584,24 @@ def alarm(state, set_point, event_type, id_job, mac_address, user):
         state = 1
     else:
         state = 0
-
+    #acá deberiamos llamar a take_action no? acho que sim
+    ans=take_action(mac_address,state,set_point)
+    if type(ans)==str:
+        description = ans +" when trying to execute scheduled event for " + str_id 
+        log_entry = Log(
+            user=user,
+            timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+            description=description,
+        )
+        db.session.add(log_entry)
+        db.session.commit()
+        
+    '''
     message = " 1 " + mac_address + " " + str(state) + " " + str(set_point)
     message = str(len(message) + 1) + message
     send_socket(message)
     print(state, set_point, event_type, id_job)
-
+    '''
 
 def schedule_event(
     user,
@@ -665,6 +677,7 @@ def schedule_event(
                     id_job,
                     getting_mac.mac_address,
                     user,
+                    str_id,
                 ],
                 id=id_job,
             )
@@ -682,6 +695,7 @@ def schedule_event(
                     id_job,
                     getting_mac.mac_address,
                     user,
+                    str_id,
                 ],
                 id=id_job + "_cron",
             )  # para que lo haga ese dia y despues repita
@@ -741,6 +755,7 @@ def schedule_event(
                     id_job,
                     getting_mac.mac_address,
                     user,
+                    str_id,
                 ],
                 id=id_job,
             )
