@@ -21,6 +21,8 @@ Install virtual environment `python3 -m venv venv` and then activate it using `s
 
 You then have to install all the application requirements before you can run it using `pip install -r requirements.txt`
 
+Comment line  `<script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>` from `~/proyecto/venv/lib/python3.6/site-packages/flask_bootstrap/templates/bootstrap`
+
 #### TO RUN
 
 To run the application `python proyecto.py` 
