@@ -9,6 +9,7 @@ Flask-Bootstrap==3.3.7.1
 Flask-Login==0.4.1
 Flask-Migrate==2.4.0
 Flask-Moment==0.7.0
+Flask-SocketIO==4.1.0
 Flask-SQLAlchemy==2.4.0
 Flask-WTF==0.14.2
 gunicorn==19.9.0
@@ -22,6 +23,8 @@ PyMySQL==0.9.3
 pyserial==3.4
 python-dateutil==2.8.0
 python-editor==1.0.4
+python-engineio==3.8.1
+python-socketio==4.1.0
 pytz==2019.1
 requests==2.21.0
 six==1.12.0
