@@ -130,7 +130,7 @@ def process_input(input_str):
         try:
             print("pitu-->", message.keys(), message)
             if "sensor_update" in message.keys():
-
+                print('hasta aca va')
                 mac_address = message["sensor_update"]["mac_address"]
 
                 if message["sensor_update"]["battery"] == 1:
@@ -172,10 +172,10 @@ def process_input(input_str):
                         else:
                             socketio.emit("low_bat_index",{"location": location, "low_bat": False},namespace="/test")
 
-
+                print('deberia llegar aca')
                 if new and mac_address not in New_sensors.keys():
+                    print('deberia llegar aca 2')
                     New_sensors[mac_address] = {
-                        "presence_state": presence_state,
                         "online": True,
                         "battery": battery,
                         "battery_state": battery_state,
@@ -186,12 +186,9 @@ def process_input(input_str):
                     flag = True
                     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
                     new_dev_mac_enabled = True
-                    socketio.emit(
-                        "new_dev_tobrowser",
-                        {"arrayToSendToBrowser": new_dev_mac},
-                        namespace="/test",
-                    )
-
+                    print('no entiendo')
+                    socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+                    print('kii')
                 message = " 5 " + str(1)
                 message = str(len(message) + 1) + message
                 send_socket(message)
