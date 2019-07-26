@@ -12,6 +12,13 @@ import ast
 import random
 import time
 from flask_socketio import send, emit
+import paho.mqtt.client as mqtt
+
+
+
+
+
+
 
 Current_state_dic_temp = {}
 Current_state_dic_rooms = {}
@@ -30,6 +37,28 @@ Low_baterry_array = []
 seq_num = (
     0
 )  # Este es para verificar que la respuesta recibida fue la del mensaje enviado random.randint(0,256)
+
+
+
+def callback_mqtt(client, userdata, message):
+    print("message received " ,str(message.payload.decode("utf-8")))
+    print("message topic=",message.topic)
+    print("message qos=",message.qos)
+    print("message retain flag=",message.retain)
+########################################
+broker_address="127.0.0.1"
+client = mqtt.Client("web_app") #create new instance
+client.on_message=callback_mqtt #attach function to callback
+client.connect(broker_address) #connect to broker
+client.subscribe("house/bulbs/bulb1")
+
+def server_mqtt():
+
+    client.loop_start() #start the loop
+    
+
+    
+    
 
 
 def start_client():
@@ -182,7 +211,7 @@ def process_input(input_str):
                         "temp_state": temp_state,
                         "mac_address": mac_address,
                     }
-
+                    client.publish("house/bulbs/bulb1","OFF")
                     flag = True
                     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
                     new_dev_mac_enabled = True
@@ -349,13 +378,8 @@ def tick():
 
 scheduler = config_scheduler()
 scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=True)
-scheduler.add_job(
-    start_server,
-    "date",
-    run_date=datetime.now(),
-    id="basic_server",
-    replace_existing=True,
-)
+scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
+scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
 scheduler.start()
 
