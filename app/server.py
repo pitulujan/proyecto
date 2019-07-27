@@ -15,11 +15,6 @@ from flask_socketio import send, emit
 import paho.mqtt.client as mqtt
 
 
-
-
-
-
-
 Current_state_dic_temp = {}
 Current_state_dic_rooms = {}
 Current_sensors = {}
@@ -41,24 +36,61 @@ seq_num = (
 
 
 def callback_mqtt(client, userdata, message):
+    global flag
     print("message received " ,str(message.payload.decode("utf-8")))
     print("message topic=",message.topic)
     print("message qos=",message.qos)
     print("message retain flag=",message.retain)
+
+def info1_mqtt(client, userdata, message):
+    global flag
+    global new_dev_mac
+    global new_dev_mac_enabled
+    global New_devices
+    global Sensors_state
+    global Current_state_dic_rooms
+    print(client)
+    print(userdata)
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
+    new=True
+    for location in Current_state_dic_rooms:
+    
+        for str_id in Current_state_dic_rooms[location]:
+            
+            if (Current_state_dic_rooms[location][str_id]["mac_address"] == fallback):
+                
+                new = False
+                break
+
+
+    if new and fallback not in New_devices.keys():
+        
+        New_devices[fallback.split('/')[1]] = {
+            "presence_state": False,
+            "dev_type": True,
+            "State": False,
+            "set_point": 0,
+            "online": True,
+            "mac_address": fallback.split('/')[1],
+        }
+
+        flag = True
+        new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+        new_dev_mac_enabled = True
+        print('no entiendo')
+        socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+
 ########################################
-broker_address="127.0.0.1"
+broker_address="192.168.0.20"
 client = mqtt.Client("web_app") #create new instance
+client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.on_message=callback_mqtt #attach function to callback
 client.connect(broker_address) #connect to broker
-client.subscribe("+/devices/+")
+client.subscribe("+/sonoff/+")
 
 def server_mqtt():
 
     client.loop_start() #start the loop
-    
-
-    
-    
 
 
 def start_client():
@@ -1145,7 +1177,7 @@ def add_new_device_server(
         online = ast.literal_eval(online)
 
         device_to_add = Devices(
-            user_perm=New_devices[mac_address]["user_perm"],
+            user_perm=True,
             str_id=str_id,
             location=location,
             dev_type=New_devices[mac_address]["dev_type"],
@@ -1161,7 +1193,7 @@ def add_new_device_server(
                     "dev_type": New_devices[mac_address]["dev_type"],
                     "State": state,
                     "set_point": set_point,
-                    "user_perm": New_devices[mac_address]["user_perm"],
+                    "user_perm": True,
                     "mac_address": mac_address,
                     "temp_dev": temp_dev,
                     "online": online,
@@ -1175,7 +1207,7 @@ def add_new_device_server(
                     "dev_type": New_devices[mac_address]["dev_type"],
                     "State": state,
                     "set_point": set_point,
-                    "user_perm": New_devices[mac_address]["user_perm"],
+                    "user_perm": True,
                     "mac_address": mac_address,
                     "temp_dev": temp_dev,
                     "online": online,
@@ -1436,10 +1468,16 @@ def send_socket(text):
 def take_action(mac_address, state, set_point):
     global Sent_messages
     if state == True:
-        state = 1
+        state = 'ON'
     else:
-        state = 0
+        state = 'OFF'
 
+    client.publish("cmnd/"+mac_address+"/POWER",state)
+    seq_number = random.randint(0, 256)
+    return seq_number
+
+
+'''
     seq_number = random.randint(0, 256)
 
     message = " 1 " + mac_address + " " + str(state) + " " + str(set_point)
@@ -1453,3 +1491,4 @@ def take_action(mac_address, state, set_point):
         return seq_number
     else:
         return ans
+'''
