@@ -50,7 +50,7 @@ broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.on_message=callback_mqtt #attach function to callback
 client.connect(broker_address) #connect to broker
-client.subscribe("house/bulbs/bulb1")
+client.subscribe("+/devices/+")
 
 def server_mqtt():
 
@@ -211,7 +211,7 @@ def process_input(input_str):
                         "temp_state": temp_state,
                         "mac_address": mac_address,
                     }
-                    client.publish("house/bulbs/bulb1","OFF")
+                    client.publish("house/devices/bulb1","OFF")
                     flag = True
                     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
                     new_dev_mac_enabled = True

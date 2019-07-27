@@ -24,13 +24,19 @@
 
 {%if temp%}
 
-
-
+<div class="row">
+          <div class="col-xs-12" style="display: flex;justify-content: center;">
+                          
+                         <h2 id="temp_num" style="vertical-align: text-top;margin-top: 5px;"><span class="fa fa-thermometer-half"></span> {{temp['Current_value']}} °C</h2>
+                          
+                  
+          </div>
+</div>
 <div id="temp_for_back" >
        <div class="row">
           <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                           
-                         <h2 id="temp_num" style="vertical-align: text-top;margin-top: 5px;">Temperature: {{temp['Current_value']}} °C</h2>
+                         <h2 id="temp_numm" style="vertical-align: text-top;margin-top: 5px;">Temperature </h2>
                           
                   </div>
                     <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -267,7 +273,8 @@ socket.on('update_temp', function(result) {
 
   if (result.gtonoff){
 
-    $("#temp_num").text('Temperature: '+result.general_temp+'°C');
+    //$("#temp_num").text('Temperature: '+result.general_temp+'°C');
+    $("#temp_num").html('<span class="fa fa-thermometer-half"></span> '+result.general_temp+'°C')
     $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C'); }
 
     else{
