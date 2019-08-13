@@ -41,6 +41,9 @@ def callback_mqtt(client, userdata, message):
     print("message topic=",message.topic)
     print("message qos=",message.qos)
     print("message retain flag=",message.retain)
+    print("message info=",message.info)
+    print("message state=",message.state)
+    #print(dir(message))
 
 def info1_mqtt(client, userdata, message):
     global flag
@@ -49,9 +52,8 @@ def info1_mqtt(client, userdata, message):
     global New_devices
     global Sensors_state
     global Current_state_dic_rooms
-    print(client)
-    print(userdata)
-    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
+
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
     new=True
     for location in Current_state_dic_rooms:
     
@@ -80,13 +82,23 @@ def info1_mqtt(client, userdata, message):
         print('no entiendo')
         socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
 
+def result_mqtt(client, userdata,message):
+    print("message received " ,str(message.payload.decode("utf-8")))
+    print("message topic=",message.topic)
+    print("message qos=",message.qos)
+    print("message retain flag=",message.retain)
+    print("message info=",message.info)
+    print("message state=",message.state)
+    print('tuviejakkk')
+
 ########################################
-broker_address="192.168.0.20"
-client = mqtt.Client("web_app") #create new instance
-client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
-client.on_message=callback_mqtt #attach function to callback
-client.connect(broker_address) #connect to broker
-client.subscribe("+/sonoff/+")
+#broker_address="192.168.0.81"
+#client = mqtt.Client("web_app") #create new instance
+#client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
+#client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
+#client.on_message=callback_mqtt #attach function to callback
+#client.connect(broker_address) #connect to broker
+#client.subscribe("+/sonoff/+")
 
 def server_mqtt():
 
@@ -410,8 +422,8 @@ def tick():
 
 scheduler = config_scheduler()
 scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=True)
-scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
-scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
+#scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
+#scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
 scheduler.start()
 
@@ -1471,8 +1483,10 @@ def take_action(mac_address, state, set_point):
         state = 'ON'
     else:
         state = 'OFF'
+    print('concha')
 
-    client.publish("cmnd/"+mac_address+"/POWER",state)
+    sent=client.publish("cmnd/"+mac_address+"/POWER",state)
+    print(sent.is_published())
     seq_number = random.randint(0, 256)
     return seq_number
 
