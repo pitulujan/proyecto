@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server
+from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server,get_switches
 from flask_socketio import send, emit
 #import xmltodict, requests
 
@@ -204,9 +204,9 @@ def add_device():
         return jsonify(answer)
 
     if temp_device == None:
-        return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
+        return render_template('add_device_switch.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
     else:
-        return render_template('add_device_w_temp.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors())
+        return render_template('add_device_w_temp.html', title='Add New Device',enumerate=enumerate,rooms_devices=devices,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors())
 
 
 @app.route('/add_sensor', methods=['POST'])
@@ -257,7 +257,7 @@ def generate_dummy_device():
 
     if request.method == 'POST':
 
-        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'))
+        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'),request.form.get('switch'))
         return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
@@ -308,4 +308,4 @@ def pruebitas2():
     if request.method == 'POST':
         #print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
-    return render_template('pruebitas.html', title=' Delete User', users=users)
+    return render_template('pruebitas2.html', title=' Delete User', users=users)

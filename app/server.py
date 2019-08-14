@@ -73,7 +73,48 @@ def info1_mqtt(client, userdata, message):
             "State": False,
             "set_point": 0,
             "online": True,
+            "tactil_switch": False,
             "mac_address": fallback.split('/')[1],
+        }
+
+        flag = True
+        new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+        new_dev_mac_enabled = True
+        print('no entiendo')
+        socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+
+def add_switch_mqtt(client, userdata, message):
+    global flag
+    global new_dev_mac
+    global new_dev_mac_enabled
+    global New_devices
+    global New_sensors
+    global Sensors_state
+    global Current_state_dic_rooms
+
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
+    new=True
+    for location in Current_state_dic_rooms:
+    
+        for str_id in Current_state_dic_rooms[location]:
+            
+            if (Current_state_dic_rooms[location][str_id]["mac_address"] == fallback):
+                
+                new = False
+                break
+
+
+    if new and fallback not in New_devices.keys():
+        
+        New_devices[fallback.split('/')[1]] = {
+            "presence_state": False,
+            "dev_type": True,
+            "State": False,
+            "set_point": 0,
+            "online": True,
+            "tactil_switch": True,
+            "handles": [],
+            "mac_address" : fallback.split('/')[1],
         }
 
         flag = True
@@ -446,6 +487,8 @@ def get_initial_values():
                 "user_perm": location.user_perm,
                 "mac_address": location.mac_address,
                 "temp_dev": location.temp_device,
+                "tactil_switch" : location.tactil_switch,
+                "handles" : location.handles,
                 "online": True,
                 "presence_state": False,
             }
@@ -458,6 +501,8 @@ def get_initial_values():
                     "user_perm": location.user_perm,
                     "mac_address": location.mac_address,
                     "temp_dev": location.temp_device,
+                    "tactil_switch" : location.tactil_switch,
+                    "handles" : location.handles,
                     "online": True,
                     "presence_state": False,
                 }
@@ -607,6 +652,17 @@ def get_temp_state():
     else:
         return None
 
+def get_switches():
+    new_switches={}
+    
+    for mac,devs in New_devices.items():
+        if devs['tactil_switch']:
+            new_switches[mac]=devs
+
+    if len(new_switches)!=0:
+        return new_switches
+    else:
+        return None
 
 def get_devices():
     ### esto se fija en cada room si hay al menos un sensor conectado y con presencia y si hay alguno online
@@ -1162,6 +1218,8 @@ def add_new_device_server(
     set_point,
     mac_address,
     temp_dev,
+    tactil_switch,
+    handles,
     presence_state,
     online,
 ):
@@ -1197,6 +1255,8 @@ def add_new_device_server(
             set_point=set_point,
             temp_device=temp_dev,
             mac_address=mac_address,
+            tactil_switch = tactil_switch,
+            handles = handles,
         )
 
         if location not in Current_state_dic_rooms.keys():
@@ -1210,6 +1270,8 @@ def add_new_device_server(
                     "temp_dev": temp_dev,
                     "online": online,
                     "presence_state": presence_state,
+                    "tactil_switch" : tactil_switch,
+                    "handles" : handles,
                 }
             }
         # Current_rooms[location]=False
@@ -1224,6 +1286,8 @@ def add_new_device_server(
                     "temp_dev": temp_dev,
                     "online": online,
                     "presence_state": presence_state,
+                    "tactil_switch": tactil_switch,
+                    "handles":handles,
                 }
 
         description = "New device " + str_id + " has been added to " + location
@@ -1345,8 +1409,14 @@ def check_sensor_state(mac_address):
 
 def get_new_devices():
 
-    if len(New_devices.keys()) != 0:
-        return New_devices
+    new_devices={}
+    
+    for mac,devs in New_devices.items():
+        if not devs['tactil_switch']:
+            new_devices[mac]=dev
+
+    if len(new_devices)!=0:
+        return new_devices
     else:
         return None
 
@@ -1361,11 +1431,12 @@ def get_current_sensors():
     return Current_sensors
 
 
-def generate_dummy_device_test(dev_type, presence_state, online):
+def generate_dummy_device_test(dev_type, presence_state, online,switch):
 
     dev_type = ast.literal_eval(dev_type)
     presence_state = ast.literal_eval(presence_state)
     online = ast.literal_eval(online)
+    switch = ast.literal_eval(switch)
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
     global flag
     global new_dev_mac
@@ -1381,6 +1452,8 @@ def generate_dummy_device_test(dev_type, presence_state, online):
             "user_perm": False,
             "online": online,
             "new_device": True,
+            "tactil_switch" : switch,
+            "handles": '[]',
             "mac_address": "08:00:27:60:03:90",
         }
     else:
@@ -1393,6 +1466,8 @@ def generate_dummy_device_test(dev_type, presence_state, online):
             "user_perm": False,
             "online": online,
             "new_device": True,
+            "tactil_switch" : tactil_switch,
+            "handles" : '[]',
             "mac_address": "08:00:27:60:03:9" + str(len(New_devices.keys())),
         }
 

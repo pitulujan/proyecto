@@ -2,121 +2,21 @@
 {% extends "base2.html" %}
 {% block app_content %}
 
-<style type="text/css">
-  
-  .prevent-click {
-     pointer-events: none;
-}
-</style>
-
-<div class="row" id="tu_vieja">
-	<div id="pitu">
-	<p>This is a paragraph.</p>
-  <div class="spinner-grow" role="status">
-  <span class="sr-only">Loading...</span>
-</div>
-	<p>This is another paragraph.</p>
-  <p>&&#xf244;</p>
-
-  <i class="fa fa-battery-empty fa-lg"></i>
-  <i class="fa fa-battery-half fa-lg"></i>
-  <i class="fa fa-battery-full fa-lg"></i>
-  <i class="fa fa-street-view fa-lg"></i>
-  <i class="glyphicon glyphicon-off fa-lg"></i>
-  <button>Insert content after each p element</button>
-
-  <span class="fa-stack fa-lg">
-  <i class="fa fa fa-ban fa-stack-2x"></i>
-  <i class="fa fa-street-view fa-stack-1x"></i>
-</span>
-
-	</div>
-</div>
-
-<div class="spinner-grow" role="status">
-  <span class="sr-only">Loading...</span>
-</div>
-
-                       <label for="deviceid">Device</label>
-                      <select id="deviceid" class="form-control" >
-                       
-                               <option value="hola">hola</option>
-                               <option type="text">hola</option>
-
-                        
-                      </select>
-<label for="cars">Device</label>
-<input type="text" list="cars" id="dog" name="location" value="Location" onfocus="if (this.value=='Location') this.value='';"  autocomplete="off"/>
-<datalist id="cars" autocomplete="off" >
-  <option data-tokens='Volvo'>Volvo</option>
-  <option data-tokens='Saab'>Saab</option>
-  <option data-tokens='Mercedes'>Mercedes</option>
-  <option data-tokens='Audi'>Audi</option>
-</datalist>
-
-<button>Insert content after each p element</button>
+<link rel="stylesheet" type="text/css" href="/static/bootstrap-select-master/bootstrap-select-master/dist/css/bootstrap-select.min.css"/>
+<script type="text/javascript" src="/static/bootstrap-select-master/bootstrap-select-master/dist/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap32.min.js"></script>
 
 
-<form>
-  <!-- these will remember input -->
-  With id: <input id="myInputId" list="myList" /><br />
-  With name: <input name="myInputName" list="myList" /><br />
+<select class="selectpicker" multiple >
+  <option>Mustard</option>
+  <option>Ketchup</option>
+  <option>Relish</option>
+</select>
+<script type="text/javascript">
 
-  <!-- these will NOT remember input -->
-  No id, name, class: <input list="myList" /><br />
-  With class: <input class="myInputClass" list="myList" />
-
-  <datalist id="myList">
-    <option value="pepa 1"></option>
-    <option value="Option 2"></option>
-  </datalist>
-
-  <br />
-
-  <input type="submit" />
-</form>
-
-<script>
-$(document).ready(function(){
-    $("button").click(function(){$.post("{{ url_for('pruebitas2') }}",{'state': 'True','set_point':'rolando'}).done(function(result) {
-
-      $('#tu_vieja').addClass('prevent-click');
-      $('#tu_vieja').css('background-color', 'silver');
-    
-    var div = $("<div></div>")
-           .attr("id", "probando");
-    var a = $("<a></a>")
-           .attr("href", "#")
-           .text("I added this on: " + result.nombre) //esto funca tambien =)
-           .attr("id", "close-note");
-     $("<h1></h1>").text("I added this on: " + result.nombre)
-           .appendTo(a);
-     $("<p></p>").text(result.apellido)
-           .appendTo(a);
-     
-     a.appendTo(div)
-     $("#pitu").after(div);
-    
-
-
-
-});})});
-
-
-
+// Material Select Initialization
+$(document).ready(function() {
+$('.selectpicker').selectpicker();});
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 {% endblock %}

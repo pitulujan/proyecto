@@ -34,6 +34,8 @@ class Devices(db.Model):
     set_point=db.Column(db.Integer,default=None) #En caso de dev_type=False y está expresado en porcentaje
     temp_device = db.Column(db.Boolean,default=False)
     mac_address=db.Column(db.String(128),unique=True)
+    tactil_switch = db.Column(db.Boolean,default=False) #True for switch, false for tactil actuator with presence sensor
+    handles = db.Column(db.String(128),default='[]')
     def __repr__(self):
         return '<str_id {},location {},dev_type {}>'.format(self.str_id,self.location,self.dev_type)
 
