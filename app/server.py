@@ -1414,7 +1414,7 @@ def get_new_devices():
     
     for mac,devs in New_devices.items():
         if not devs['tactil_switch']:
-            new_devices[mac]=dev
+            new_devices[mac]=devs
 
     if len(new_devices)!=0:
         return new_devices
@@ -1467,7 +1467,7 @@ def generate_dummy_device_test(dev_type, presence_state, online,switch):
             "user_perm": False,
             "online": online,
             "new_device": True,
-            "tactil_switch" : tactil_switch,
+            "tactil_switch" : switch,
             "handles" : '[]',
             "mac_address": "08:00:27:60:03:9" + str(len(New_devices.keys())),
         }

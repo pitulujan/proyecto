@@ -288,6 +288,7 @@
                        <span class="sr-only">Close</span>
                 </button>
                 <div class="row">
+                <div class="col-xs-2"></div>
                 <div class="col-xs-6" style="display: flex;justify-content: center;padding-left: 15px;margin-left: 35px;">
                   <h4  ><span class="glyphicon glyphicon-plus-sign"> </span> <b> New Switch</b></h4>
                 </div>
@@ -298,11 +299,6 @@
        <div class="modal-body">
                <div id="body_device_com" > 
                 <form role="form" action="" method="POST" id="form_id">
-                  <div class="form-group">
-                    <h4>  <i class="fa fa-map-marker"></i> <label for="switch_location">Location</label></h4>
-                      <input type="text" class="form-control" id="switch_location" name="location" value="Location" onfocus="if (this.value=='Location') this.value='';"/>
-                  </div>
-
                   <div class="form-group">
                    <h4> <i class="fa fa-id-card-o"></i> <label for="switch_name">Name</label></h4>
                       <input type="text" class="form-control" id="switch_name" name="name" value="Name" onfocus="if (this.value=='Name') this.value='';"/ >
@@ -363,19 +359,6 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 {%else%}
 
 <row id="no_scheduled_events">
@@ -412,7 +395,7 @@
 
                                              });
 
-  $('#locationidhandles').change(function () {
+  $('#locationid').change(function () {
                                         $('#deviceid').html('');
                                             {%for location,devices in rooms_devices.items()|sort:%}
                                         if($('#locationid').val()=='{{location}}'){
@@ -422,7 +405,7 @@
                                         }
                                                             
                                           {% endfor %}
-
+                                          $('.selectpicker').selectpicker('refresh');
                                           if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").click();
                                                                               $("#prendeapaga").attr("style","display:none;padding-left: 20px;");
                                         $("#myRange").val('0')
@@ -643,7 +626,7 @@
                         $("#submit_changes_switch").click(function(){
 
 
-        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':'0', 'mac_address':$("#dataplaceraddswitch").data('mac_address'),'presence_state':$("#dataplaceraddswitch").data('presence_state'),'online':$("#dataplaceraddswitch").data('online'),'temp_dev':'False','tactil_switch':$("#dataplaceraddswitch").data('tactil_switch'),'handles':$('#deviceid').val()}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'location':$("#locationid").val(),'str_id': $("#switch_name").val() ,'state':$("#myonoffswitch").val(),'set_point':'0', 'mac_address':$("#dataplaceraddswitch").data('mac_address'),'presence_state':$("#dataplaceraddswitch").data('presence_state'),'online':$("#dataplaceraddswitch").data('online'),'temp_dev':'False','tactil_switch':$("#dataplaceraddswitch").data('tactil_switch'),'handles':$('#deviceid').val()}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
