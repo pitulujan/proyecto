@@ -1218,10 +1218,10 @@ def add_new_device_server(
     set_point,
     mac_address,
     temp_dev,
-    tactil_switch,
-    handles,
     presence_state,
     online,
+    tactil_switch,
+    handles,
 ):
     global flag
     global new_dev_mac
@@ -1245,6 +1245,7 @@ def add_new_device_server(
 
         presence_state = ast.literal_eval(presence_state)
         online = ast.literal_eval(online)
+        tactil_switch = ast.literal_eval(tactil_switch)
 
         device_to_add = Devices(
             user_perm=True,
