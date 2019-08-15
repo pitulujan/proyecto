@@ -113,7 +113,7 @@ def add_switch_mqtt(client, userdata, message):
             "set_point": 0,
             "online": True,
             "tactil_switch": True,
-            "handles": [],
+            "handles": str([]),
             "mac_address" : fallback.split('/')[1],
         }
 
@@ -673,6 +673,7 @@ def get_devices():
         presence_state = False
         online = False
         for k, v in value.items():
+            print(v)
             if v["presence_state"]:
                 presence_state = True
             if v["online"]:
@@ -1093,7 +1094,7 @@ def disable_low_battery_notifications_server():
 
 
 def edit_device_server(
-    old_location, new_location, old_str_id, new_str_id, state, set_point, mac_address
+    old_location, new_location, old_str_id, new_str_id, mac_address
 ):
     global Current_rooms
 
@@ -1109,36 +1110,20 @@ def edit_device_server(
         return {"status": 400, "message": message}
     else:
 
-        if state == "On":
-            state = True
-        else:
-            state = False
+
         device_to_edit.location = new_location
         device_to_edit.str_id = new_str_id
-        device_to_edit.state = state
-        device_to_edit.set_point = set_point
-        # device_to_add = Devices(user_perm=device_to_edit.user_perm,str_id=new_str_id,location=new_location,dev_type=device_to_edit.dev_type,state=state,set_point=set_point,new_device=False,mac_address=mac_address)
 
+
+        # device_to_add = Devices(user_perm=device_to_edit.user_perm,str_id=new_str_id,location=new_location,dev_type=device_to_edit.dev_type,state=state,set_point=set_point,new_device=False,mac_address=mac_address)
         if new_location not in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[new_location] = {
-                new_str_id: {
-                    "dev_type": device_to_edit.dev_type,
-                    "State": state,
-                    "set_point": set_point,
-                    "user_perm": device_to_edit.user_perm,
-                    "mac_address": mac_address,
-                }
+                new_str_id: Current_state_dic_rooms[old_location][old_str_id]
             }
             # Current_rooms[new_location]=True
         else:
             if new_str_id not in Current_state_dic_rooms[new_location]:
-                Current_state_dic_rooms[new_location][new_str_id] = {
-                    "dev_type": device_to_edit.dev_type,
-                    "State": state,
-                    "set_point": set_point,
-                    "user_perm": device_to_edit.user_perm,
-                    "mac_address": mac_address,
-                }
+                Current_state_dic_rooms[new_location][new_str_id] =  Current_state_dic_rooms[old_location][old_str_id]
 
         Current_state_dic_rooms[old_location].pop(old_str_id)
         if len(Current_state_dic_rooms[old_location]) == 0:
@@ -1253,11 +1238,11 @@ def add_new_device_server(
             location=location,
             dev_type=New_devices[mac_address]["dev_type"],
             state=state,
-            set_point=set_point,
+            set_point=int(set_point),
             temp_device=temp_dev,
             mac_address=mac_address,
             tactil_switch = tactil_switch,
-            handles = handles,
+            handles = str(handles),
         )
 
         if location not in Current_state_dic_rooms.keys():
@@ -1265,14 +1250,14 @@ def add_new_device_server(
                 str_id: {
                     "dev_type": New_devices[mac_address]["dev_type"],
                     "State": state,
-                    "set_point": set_point,
+                    "set_point": int(set_point),
                     "user_perm": True,
                     "mac_address": mac_address,
                     "temp_dev": temp_dev,
                     "online": online,
                     "presence_state": presence_state,
                     "tactil_switch" : tactil_switch,
-                    "handles" : handles,
+                    "handles" : str(handles),
                 }
             }
         # Current_rooms[location]=False
@@ -1281,14 +1266,14 @@ def add_new_device_server(
                 Current_state_dic_rooms[location][str_id] = {
                     "dev_type": New_devices[mac_address]["dev_type"],
                     "State": state,
-                    "set_point": set_point,
+                    "set_point": int(set_point),
                     "user_perm": True,
                     "mac_address": mac_address,
                     "temp_dev": temp_dev,
                     "online": online,
                     "presence_state": presence_state,
                     "tactil_switch": tactil_switch,
-                    "handles":handles,
+                    "handles":str(handles),
                 }
 
         description = "New device " + str_id + " has been added to " + location

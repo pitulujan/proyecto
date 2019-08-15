@@ -149,7 +149,7 @@
             </div>
 
             <!-- Modal Body -->
-       <div class="modal-body">
+       <div class="modal-body" >
                 
                 <form role="form" action="" method="POST" id="form_id">
                   <div class="form-group">
@@ -164,73 +164,20 @@
 
                   <div class="form-group" style="display: none;" > <input type="text" id="dataplacer" name="dataplace" data-dev_type="" ></div>
 
-                <div class="row" style="margin-bottom: 10px;">
-                          <div class="col-xs-6" style="display: flex;justify-content: flex-start;padding-left: 20px;">
-                                  
-                                 <h4 id="textoreloco" style="vertical-align: text-top;margin-top: 10px;"><i class="fa fa-power-off"></i>  <b>On/Off</b></h4>
-                                  
-                          </div>
-
-                            <div class="col-xs-6" style="display: flex;justify-content: flex-end;" >
-                              <div class="onoffswitch">
-                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" value="Off" >
-                                <label class="onoffswitch-label" for="myonoffswitch"></label>
-                              </div>
-                            </div>
-                  </div>
-
-                  <div class="row" id="prendeapaga" style="display:none;padding-left: 20px;">
-                        <form action="" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
-                              <div class="form-group">
-                                          <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="0">
-                                          <div class="row">
-                                                <div class="col-xs-9">
-                                                  <div class="slidecontainer" style="padding-top: 26px;">
-                                                      <input type="range" min="0" max="100" step="5" value="0" class="slider" id="myRange" name="set_point">
-                                                  </div>
-                                                </div>
-                                                <div class="col-xs-3" style="display: flex;justify-content: center;">
-                                                    <b><h3><span id="demo"></span>%</h3></b> 
-                                                </div>
-                                        </div>
-
-                            </div>
-                    </form>
-                  </div>
-                  <row style="display: flex;justify-content: flex-end;">
+                                  <row style="display: flex;justify-content: flex-end;" >
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                   <button type="submit" id="submit_changes" class="btn btn-primary" >Save Changes</button>
                 </row>
                 </form>
-              </div>
-
-
-
-
-
+                  
+                  </div>
         </div>
     </div>
 </div>
 
     <script type="text/javascript">
 
-    var slider = document.getElementById("myRange");
-    var output = document.getElementById("demo");
-    output.innerHTML = slider.value;
-
-    slider.oninput = function() { output.innerHTML = this.value;}
-
-
-
-      $("#myonoffswitch").click(function(){
-
-                                          if ($("#dataplacer").data('dev_type') == 'False'){
-                                                                                    $("#prendeapaga").toggle(500);}
-                                          if ($("#myonoffswitch").val()=='On'){$("#myonoffswitch").val('Off');$("#statevalue").val('False');}
-                                          else{$("#myonoffswitch").val('On');$("#statevalue").val('True');}
-
-                                             });
-      
+     
       $(document).on("click","span.editdevice",function(){
 
                                                         var location = $(this).data('location');
@@ -246,19 +193,7 @@
                                                         $("#dataplacer").attr('data-old_str_id',str_id);
                                                         $("#dataplacer").attr('data-mac_address',mac_address);
 
-                                                          if (state == 'True'){
-                                                          console.log('deberia');
-                                                          if ($("#myonoffswitch").val()=='Off'){
-                                                          $("#myonoffswitch").click();}
-                                                          if (dev_type=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {
-                                                          $("#myRange").val('param_set_point')
-                                                          output.innerHTML = set_point;
-                                                          $("#prendeapaga").attr("style","display:block;padding-left: 20px;"); }
-                                                          //if ($("#prendeapaga").is(":hidden")) {$("#prendeapaga").toggle(500);}
-                                                        }
-                                                        else {if ($("#myonoffswitch").val()=='On'){
-                                                          $("#myonoffswitch").click();
-                                                        }}
+
 
 
         $('#modaleditdevice').modal('show');});
@@ -267,7 +202,7 @@
       $("#submit_changes").click(function(){
 
 
-        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplacer").data('old_location'),'old_str_id':$("#dataplacer").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'mac_address':$("#dataplacer").data('mac_address')}).done(function(result) {
+        $.post("{{ url_for('edit_device') }}",{'old_location':$("#dataplacer").data('old_location'),'old_str_id':$("#dataplacer").data('old_str_id'),'new_location':$("#device_location").val(),'new_str_id': $("#device_name").val() ,'mac_address':$("#dataplacer").data('mac_address')}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')

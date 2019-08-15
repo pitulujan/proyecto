@@ -149,7 +149,7 @@ def edit_device():
     devices,state=get_devices()
     if request.method == 'POST':
         ##print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
-        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['mac_address'])
         flash(answer['message'])
         return jsonify(answer)
 
@@ -199,11 +199,12 @@ def add_device():
     devices,state=get_devices()
     if request.method == 'POST':
         handles=request.form.getlist('handles[]')
-        print(request.form['tactil_switch'],handles)
-        input()
-        #answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'],request.form['tactil_switch'],request.form['handles'])
-        #flash(answer['message'])
-        return jsonify({"status": 200,"message": "Device "}) #jsonify(answer)
+        print(request.form['tactil_switch'],type(handles))
+
+        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'],request.form['tactil_switch'],request.form.getlist('handles[]'))
+        flash(answer['message'])
+        print(answer)
+        return jsonify(answer)
 
     if temp_device == None:
         return render_template('add_device_switch.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
