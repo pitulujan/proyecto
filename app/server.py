@@ -1094,7 +1094,7 @@ def disable_low_battery_notifications_server():
 
 
 def edit_device_server(
-    old_location, new_location, old_str_id, new_str_id, mac_address
+    old_location, new_location, old_str_id, new_str_id, mac_address,handles
 ):
     global Current_rooms
 
@@ -1113,6 +1113,9 @@ def edit_device_server(
 
         device_to_edit.location = new_location
         device_to_edit.str_id = new_str_id
+        device_to_edit.handles = str(handles)
+        Current_state_dic_rooms[old_location][old_str_id]['handles'] = str(handles)
+
 
 
         # device_to_add = Devices(user_perm=device_to_edit.user_perm,str_id=new_str_id,location=new_location,dev_type=device_to_edit.dev_type,state=state,set_point=set_point,new_device=False,mac_address=mac_address)

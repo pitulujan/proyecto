@@ -149,12 +149,12 @@ def edit_device():
     devices,state=get_devices()
     if request.method == 'POST':
         ##print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
-        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['mac_address'])
+        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['mac_address'],request.form.getlist('handles[]'))
         flash(answer['message'])
         return jsonify(answer)
 
 
-    return render_template('edit_device.html',title='Edit Device', devices=devices,current_sensors=get_current_sensors(),list=list)
+    return render_template('edit_device.html',title='Edit Device', devices=devices,current_sensors=get_current_sensors(),list=list,enumerate=enumerate)
 
 @app.route('/edit_sensor', methods=['POST'])
 @login_required

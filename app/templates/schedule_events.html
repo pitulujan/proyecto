@@ -221,7 +221,9 @@
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
                           {%if number == 0:%}
                             {%for devices in rooms_devices[key]:%}
+                            {%if not room_devices[key][devices]['tactil_switch']:%}
                                <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
+                            {%endif%}
                             {%endfor%}
                           {%endif%}
                         {%endfor%}
@@ -331,7 +333,9 @@
                                             {%for location,devices in rooms_devices.items()|sort:%}
                                         if($('#locationid').val()=='{{location}}'){
                                             {%for device,item in devices.items():%} 
+                                            {%if not item['tactil_switch']:%}
                                         $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                        {%endif%}
                                             {% endfor %}
                                         }
                                                             
