@@ -278,7 +278,9 @@
                                                         var dev_type = $(this).data('dev_type');
                                                         var mac_address = $(this).data('mac_address');
                                                         $("#device_location").val(location);
+                                                        $("#device_location").attr('onfocus',"if (this.value=='"+location+"') this.value='';");
                                                         $("#device_name").val(str_id);
+                                                        $("#device_name").attr('onfocus',"if (this.value=='"+str_id+"') this.value='';");
                                                         $("#dataplacer").attr('data-dev_type',dev_type);
                                                         $("#dataplacer").attr('data-old_location',location);
                                                         $("#dataplacer").attr('data-old_str_id',str_id);
@@ -382,6 +384,37 @@
                                                         $("#dataplacereditswitch").attr('data-mac_address',mac_address);
                                                         $("#dataplacereditswitch").attr('data-handles',handles);
                                                         $("#dataplacereditswitch").attr('data-old_str_id',str_id);
+
+                                                        $("#switch_name").val(str_id);
+                                                        $("#switch_name").attr('onfocus',"if (this.value=='"+str_id+"') this.value='';");
+
+                                                        $("#locationid").val(location);
+                                                        $('#locationid').trigger('change');
+
+
+                                                        console.log(eval(handles));
+                                                        console.log(location);
+
+                                             $('#deviceid').html('');
+                                            {%for location_dic,devices in devices.items()|sort:%}
+                                        if($('#locationid').val()=='{{location_dic}}'){
+                                            {%for device,item in devices.items():%} 
+                                            {%if not item['tactil_switch']:%}
+                                        if (eval(handles).includes('{{device}}')) {
+                                        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}" selected>{{device}}</option>');}
+                                        else
+                                          {$('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');}
+                                        {%endif%}
+                                            {% endfor %}
+                                        }
+                                                            
+                                          {% endfor %}
+                                          $('.selectpicker').selectpicker('refresh');
+                                                        
+
+
+
+
                                                     
 
                             $('#modaleditswitch').modal('show');

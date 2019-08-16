@@ -221,7 +221,7 @@
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
                           {%if number == 0:%}
                             {%for devices in rooms_devices[key]:%}
-                            {%if not room_devices[key][devices]['tactil_switch']:%}
+                            {%if not rooms_devices[key][devices]['tactil_switch']:%}
                                <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
                             {%endif%}
                             {%endfor%}
