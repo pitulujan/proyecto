@@ -18,6 +18,7 @@ import paho.mqtt.client as mqtt
 Current_state_dic_temp = {}
 Current_state_dic_rooms = {}
 Current_sensors = {}
+mac_loc_mapping={}
 Sensors_state = {}
 New_devices = {}
 New_sensors = {}
@@ -543,7 +544,7 @@ def set_temp(
     mac_address = query_temp.mac_address
 
     # seq_num=take_action(mac_address,state,set_point)
-    ans = take_action(mac_address, state, set_point)
+    ans = take_action(mac_address, state, set_point,tactil_switch=False,handles='[]',location='Temperature',str_id='Temperature')
 
     if type(ans) == int:
         count = 0
@@ -591,8 +592,10 @@ def set_device(location, str_id, state, set_point):
     print(query_devices)
 
     mac_address = query_devices.mac_address
+    handles = query_devices.handles
+    tactil_switch = query_devices.tactil_switch
 
-    ans = take_action(mac_address, state, set_point)
+    ans = take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id)
 
     if type(ans) == int:
         count = 0
@@ -703,7 +706,7 @@ def get_scheduled_events(*args):
     return query_scheduled
 
 
-def alarm(state, set_point, event_type, id_job, mac_address, user,str_id):
+def alarm(state, set_point, event_type, id_job, mac_address, user,str_id,tactil_switch,handles,location):
     print(event_type)
     if event_type == "date":
         print("que onda")
@@ -715,7 +718,7 @@ def alarm(state, set_point, event_type, id_job, mac_address, user,str_id):
     else:
         state = 0
     #acá deberiamos llamar a take_action no? acho que sim
-    ans=take_action(mac_address,state,set_point)
+    ans=take_action(mac_address,state,set_point,tactil_switch,handles,location,str_id)
     if type(ans)==str:
         description = ans +" when trying to execute scheduled event for " + str_id 
         log_entry = Log(
@@ -808,6 +811,9 @@ def schedule_event(
                     getting_mac.mac_address,
                     user,
                     str_id,
+                    getting_mac.tactil_switch,
+                    getting_mac.handles,
+                    location,
                 ],
                 id=id_job,
             )
@@ -826,6 +832,9 @@ def schedule_event(
                     getting_mac.mac_address,
                     user,
                     str_id,
+                    getting_mac.tactil_switch,
+                    getting_mac.handles,
+                    location,
                 ],
                 id=id_job + "_cron",
             )  # para que lo haga ese dia y despues repita
@@ -886,6 +895,9 @@ def schedule_event(
                     getting_mac.mac_address,
                     user,
                     str_id,
+                    getting_mac.tactil_switch,
+                    getting_mac.handles,
+                    location,
                 ],
                 id=id_job,
             )
@@ -1223,6 +1235,7 @@ def add_new_device_server(
     global new_dev_mac
     global Current_rooms
     global New_sensors
+    global mac_loc_mapping
     location = location.replace('_',' ')
 
     trying_to_add = Devices.query.filter_by(location=location, str_id=str_id).first()
@@ -1287,7 +1300,7 @@ def add_new_device_server(
                     "tactil_switch": tactil_switch,
                     "handles":str(handles),
                 }
-
+        mac_loc_mapping[mac_address]={'location': location,'str_id':str_id}
         description = "New device " + str_id + " has been added to " + location
         log_entry = Log(
             user=user,
@@ -1550,18 +1563,33 @@ def send_socket(text):
     return None
 
 
-def take_action(mac_address, state, set_point):
+def take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id):
     global Sent_messages
+    global Current_state_dic_rooms
     if state == True:
         state = 'ON'
     else:
         state = 'OFF'
-    print('concha')
+    if tactil_switch:
+        handles = ast.literal_eval(handles)
 
-    sent=client.publish("cmnd/"+mac_address+"/POWER",state)
+        for dev in handles:
+            mac_address = Current_state_dic_rooms[location][dev]['mac_address']
+            print(location,str_id,dev,mac_address)
+
+            client.publish("cmnd/"+mac_address+"/POWER",'TOGGLE',qos=2)
+        seq_number = random.randint(0, 256)
+        return seq_number
+
+    print("single",mac_address,state)
+
+    sent=client.publish("cmnd/"+mac_address+"/POWER",state,qos=2)
+
     print(sent.is_published())
     seq_number = random.randint(0, 256)
     return seq_number
+
+
 
 
 '''
