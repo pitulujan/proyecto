@@ -374,17 +374,6 @@
 
  <script>
 
-      var dic = {
-                {%for location,devices in rooms_devices.items()|sort:%}
-                {%if location != 'default'%}
-
-                {%for device,item in devices.items():%} 
-                '{{'_'.join(location.split(' '))+'_'.join(device.split(' '))}}' : '{{item.dev_type}}',
-
-                {% endfor %}
-                {% endif %}
-                {% endfor %}  
-              };  
     
   $("#myonoffswitch").click(function(){   console.log($("#locationid").val()+$("#deviceid").val());
                                           if (dic[$("#locationid").val()+$("#deviceid").val()]== 'False'){
@@ -398,7 +387,7 @@
   $('#locationid').change(function () {
                                         $('#deviceid').html('');
                                             {%for location,devices in rooms_devices.items()|sort:%}
-                                        if($('#locationid').val()=='{{location}}'){
+                                        if($('#locationid').val()=='{{'_'.join(location.split(' '))}}'){
                                             {%for device,item in devices.items():%} 
                                         $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
                                             {% endfor %}
@@ -504,7 +493,7 @@
 
         console.log('tu vieja');
         console.log($("#dataplaceradd").data('presence_state'));
-        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'),'temp_dev':$('input[name="optradio"]:checked').val(),'tactil_switch':'False','handles':[]}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')

@@ -54,6 +54,7 @@ def info1_mqtt(client, userdata, message):
     global Current_state_dic_rooms
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
+    print(fallback)
     new=True
     for location in Current_state_dic_rooms:
     
@@ -67,14 +68,15 @@ def info1_mqtt(client, userdata, message):
 
     if new and fallback not in New_devices.keys():
         
-        New_devices[fallback.split('/')[1]] = {
+        New_devices[fallback] = {
             "presence_state": False,
             "dev_type": True,
             "State": False,
             "set_point": 0,
             "online": True,
             "tactil_switch": False,
-            "mac_address": fallback.split('/')[1],
+            "handles": "[]",
+            "mac_address": fallback,
         }
 
         flag = True
@@ -106,7 +108,7 @@ def add_switch_mqtt(client, userdata, message):
 
     if new and fallback not in New_devices.keys():
         
-        New_devices[fallback.split('/')[1]] = {
+        New_devices[fallback] = {
             "presence_state": False,
             "dev_type": True,
             "State": False,
@@ -114,7 +116,7 @@ def add_switch_mqtt(client, userdata, message):
             "online": True,
             "tactil_switch": True,
             "handles": str([]),
-            "mac_address" : fallback.split('/')[1],
+            "mac_address" : fallback,
         }
 
         flag = True
@@ -133,13 +135,15 @@ def result_mqtt(client, userdata,message):
     print('tuviejakkk')
 
 ########################################
-#broker_address="192.168.0.81"
-#client = mqtt.Client("web_app") #create new instance
-#client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
-#client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
-#client.on_message=callback_mqtt #attach function to callback
-#client.connect(broker_address) #connect to broker
-#client.subscribe("+/sonoff/+")
+broker_address="192.168.2.20"
+client = mqtt.Client("web_app") #create new instance
+client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
+client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
+client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
+client.on_message=callback_mqtt #attach function to callback
+client.connect(broker_address) #connect to broker
+client.subscribe("+/sonoff/+")
+client.subscribe("switch/+")
 
 def server_mqtt():
 
@@ -463,8 +467,8 @@ def tick():
 
 scheduler = config_scheduler()
 scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=True)
-#scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
-#scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
+scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
+scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
 scheduler.start()
 
@@ -584,6 +588,7 @@ def set_device(location, str_id, state, set_point):
     global Sent_messages
 
     query_devices = Devices.query.filter_by(location=location, str_id=str_id).first()
+    print(query_devices)
 
     mac_address = query_devices.mac_address
 
@@ -669,12 +674,12 @@ def get_devices():
     state = {}
 
     for key, value in Current_state_dic_rooms.items():
-
+        print(key)
         presence_state = False
         online = False
         tactil_switch = False
         for k, v in value.items():
-            print(v)
+            print(k,'->',v)
             if v["tactil_switch"]:
                 tactil_switch = True
                 if v["presence_state"]:
@@ -1218,6 +1223,7 @@ def add_new_device_server(
     global new_dev_mac
     global Current_rooms
     global New_sensors
+    location = location.replace('_',' ')
 
     trying_to_add = Devices.query.filter_by(location=location, str_id=str_id).first()
 

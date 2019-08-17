@@ -268,7 +268,8 @@
 
     <script type="text/javascript">
 
-     
+
+
       $(document).on("click","span.editdevice",function(){
 
                                                         var location = $(this).data('location');
@@ -400,10 +401,13 @@
                                         if($('#locationid').val()=='{{location_dic}}'){
                                             {%for device,item in devices.items():%} 
                                             {%if not item['tactil_switch']:%}
+
                                         if (eval(handles).includes('{{device}}')) {
+
                                         $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}" selected>{{device}}</option>');}
                                         else
-                                          {$('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');}
+                                          {$('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                          console.log('poqrueeeeeeee');}
                                         {%endif%}
                                             {% endfor %}
                                         }
