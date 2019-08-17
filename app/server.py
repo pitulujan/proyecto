@@ -672,13 +672,16 @@ def get_devices():
 
         presence_state = False
         online = False
+        tactil_switch = False
         for k, v in value.items():
             print(v)
-            if v["presence_state"]:
-                presence_state = True
-            if v["online"]:
-                online = True
-        state[key] = {"presence_state": presence_state, "online": online}
+            if v["tactil_switch"]:
+                tactil_switch = True
+                if v["presence_state"]:
+                    presence_state = True
+                if v["online"]:
+                    online = True
+        state[key] = {"presence_state": presence_state, "online": online, "tactil_switch": tactil_switch}
 
     return Current_state_dic_rooms, state  # --> que se la arrgle routes
 
