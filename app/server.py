@@ -93,7 +93,7 @@ def add_switch_mqtt(client, userdata, message):
     global New_sensors
     global Sensors_state
     global Current_state_dic_rooms
-
+    print('kkkkkkkkkkkkkkkkkkkkkkkkkkk')
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
     new=True
     for location in Current_state_dic_rooms:
@@ -136,16 +136,17 @@ def result_mqtt(client, userdata,message):
 
 ########################################
 broker_address="192.168.2.20"
-#client = mqtt.Client("web_app") #create new instance
-#client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
-#client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
-#client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
-#client.on_message=callback_mqtt #attach function to callback
-#client.connect(broker_address) #connect to broker
-#client.subscribe("+/sonoff/+")
-#client.subscribe("switch/+")
+client = mqtt.Client("web_app") #create new instance
+client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
+client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
+client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
+client.on_message=callback_mqtt #attach function to callback
+client.connect(broker_address) #connect to broker
+client.subscribe("+/sonoff/+")
+client.subscribe("switch/+")
 
 def server_mqtt():
+    print('starting mqtt server')
 
     client.loop_start() #start the loop
 
@@ -467,8 +468,8 @@ def tick():
 
 scheduler = config_scheduler()
 scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=True)
-#scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
-#scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
+scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
+scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
 scheduler.start()
 
@@ -543,7 +544,7 @@ def set_temp(
     mac_address = query_temp.mac_address
 
     # seq_num=take_action(mac_address,state,set_point)
-    ans = take_action(mac_address, state, set_point,tactil_switch=False,handles='[]',location='Temperature',str_id='Temperature')
+    ans,reset = take_action(mac_address, state, set_point,tactil_switch=False,handles='[]',location='Temperature',str_id='Temperature')
 
     if type(ans) == int:
         count = 0
@@ -594,37 +595,24 @@ def set_device(location, str_id, state, set_point):
     handles = query_devices.handles
     tactil_switch = query_devices.tactil_switch
 
-    ans = take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id)
+    ans,reset = take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id)
 
-    if type(ans) == int:
-        count = 0
-        online = True
-        print(ans)
-        while True:
-            if str(ans) in Sent_messages.keys():
-                count += 1
-                time.sleep(0.2)
-            else:
-                break
-            if count == 5:
-                online = False
-                break
 
-        if online:
-            Current_state_dic_rooms[location][str_id]["State"] = state
-            query_devices.state = state
 
-            if not Current_state_dic_rooms[location][str_id]["dev_type"]:
-                Current_state_dic_rooms[location][str_id]["set_point"] = set_point
-                query_devices.set_point = set_point
-            db.session.add(query_devices)
-            db.session.commit()
-            return jsonify({"status": 200})
-        else:
-            print("la rompi devolviendo")
-            return jsonify({"status": 400, "str_id": str_id, "location": location})
+    if True:
+        Current_state_dic_rooms[location][str_id]["State"] = state
+        query_devices.state = state
+
+        if not Current_state_dic_rooms[location][str_id]["dev_type"]:
+            Current_state_dic_rooms[location][str_id]["set_point"] = set_point
+            query_devices.set_point = set_point
+        db.session.add(query_devices)
+        db.session.commit()
+        return jsonify({"status": 200})
     else:
+        print("la rompi devolviendo")
         return jsonify({"status": 400, "str_id": str_id, "location": location})
+
 
 
 def get_temp_state():
@@ -1591,26 +1579,29 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
             aux_mac_addresses.append(mac)
             mac_loc_mapping[mac]={'location':location,'str_id':dev}
 
-            print(location,str_id,dev,mac_address)
-
+            print(location,str_id,dev,aux_mac_addresses,mac_loc_mapping)
+        print('reset',reset)
         for dev_mac in aux_mac_addresses:
             if reset:
                 client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
-                socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','_'),"state": False,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
+                socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": False,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
             else:
                 client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
-                socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','_'),"state": not aux_state ,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
+                socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": not aux_state ,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
+        
+        if reset:
+            socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
         seq_number = random.randint(0, 256)
-        return seq_number
+        return seq_number,reset
 
     print("single",mac_address,state)
 
     sent=client.publish("cmnd/"+mac_address+"/POWER",state,qos=2)
-    socketio.emit("device_update",{"location": location.replace(' ','_'),"state": True if state=='ON' else False ,"str_id": str_id.replace(' ','_')}, namespace="/test")
+    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True if state=='ON' else False ,"str_id": str_id.replace(' ','_')}, namespace="/test")
 
-    print(sent.is_published())
+    #print(sent.is_published())
     seq_number = random.randint(0, 256)
-    return seq_number
+    return seq_number,False
 
 
 

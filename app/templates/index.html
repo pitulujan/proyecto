@@ -236,7 +236,10 @@ socket.on('device_update', function(result) {
      // } else {
      //   document.getElementById(result.location).style.color = "black";
      // }
-
+     console.log(result.str_id);
+     console.log(result.location);
+     console.log(result.state);
+     console.log()
       if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
       $("#myonoffswitch"+result.location+result.str_id).click();;}
       
