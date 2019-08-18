@@ -18,7 +18,6 @@ import paho.mqtt.client as mqtt
 Current_state_dic_temp = {}
 Current_state_dic_rooms = {}
 Current_sensors = {}
-mac_loc_mapping={}
 Sensors_state = {}
 New_devices = {}
 New_sensors = {}
@@ -137,14 +136,14 @@ def result_mqtt(client, userdata,message):
 
 ########################################
 broker_address="192.168.2.20"
-client = mqtt.Client("web_app") #create new instance
-client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
-client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
-client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
-client.on_message=callback_mqtt #attach function to callback
-client.connect(broker_address) #connect to broker
-client.subscribe("+/sonoff/+")
-client.subscribe("switch/+")
+#client = mqtt.Client("web_app") #create new instance
+#client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
+#client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
+#client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
+#client.on_message=callback_mqtt #attach function to callback
+#client.connect(broker_address) #connect to broker
+#client.subscribe("+/sonoff/+")
+#client.subscribe("switch/+")
 
 def server_mqtt():
 
@@ -468,8 +467,8 @@ def tick():
 
 scheduler = config_scheduler()
 scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=True)
-scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
-scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
+#scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
+#scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
 scheduler.start()
 
@@ -677,12 +676,12 @@ def get_devices():
     state = {}
 
     for key, value in Current_state_dic_rooms.items():
-        print(key)
+        
         presence_state = False
         online = False
         tactil_switch = False
         for k, v in value.items():
-            print(k,'->',v)
+            
             if v["tactil_switch"]:
                 tactil_switch = True
                 if v["presence_state"]:
@@ -1117,13 +1116,20 @@ def edit_device_server(
     old_location, new_location, old_str_id, new_str_id, mac_address,handles
 ):
     global Current_rooms
+    global Current_state_dic_rooms
 
+    old_location = old_location.replace('_',' ')
+    old_str_id = old_str_id.replace('_',' ')
+    new_str_id = new_str_id.replace('_',' ')
+    new_location = new_location.replace('_',' ')
+
+    print(old_location,old_str_id,new_location,new_str_id)
     device_to_edit = Devices.query.filter_by(mac_address=mac_address).first()
     trying_to_change = Devices.query.filter_by(
         location=new_location, str_id=new_str_id
     ).first()
-
-    if trying_to_change != None:
+    print(handles,trying_to_change.handles)
+    if trying_to_change != None and trying_to_change.handles == handles:
         message = (
             "There's already a device called " + new_str_id + " in " + new_location
         )
@@ -1134,6 +1140,7 @@ def edit_device_server(
         device_to_edit.location = new_location
         device_to_edit.str_id = new_str_id
         device_to_edit.handles = str(handles)
+        print('seteando el nuevo handles a ->',str(handles))
         Current_state_dic_rooms[old_location][old_str_id]['handles'] = str(handles)
 
 
@@ -1145,12 +1152,13 @@ def edit_device_server(
             }
             # Current_rooms[new_location]=True
         else:
-            if new_str_id not in Current_state_dic_rooms[new_location]:
-                Current_state_dic_rooms[new_location][new_str_id] =  Current_state_dic_rooms[old_location][old_str_id]
+            print('aca deberia entrar porque existe todo')
+            Current_state_dic_rooms[new_location][new_str_id] =  Current_state_dic_rooms[old_location][old_str_id]
 
-        Current_state_dic_rooms[old_location].pop(old_str_id)
-        if len(Current_state_dic_rooms[old_location]) == 0:
-            Current_state_dic_rooms.pop(old_location)
+        if new_str_id != old_str_id:
+            Current_state_dic_rooms[old_location].pop(old_str_id)
+            if len(Current_state_dic_rooms[old_location]) == 0:
+                Current_state_dic_rooms.pop(old_location)
 
         # db.session.delete(device_to_edit)
         db.session.commit()
@@ -1235,7 +1243,6 @@ def add_new_device_server(
     global new_dev_mac
     global Current_rooms
     global New_sensors
-    global mac_loc_mapping
     location = location.replace('_',' ')
 
     trying_to_add = Devices.query.filter_by(location=location, str_id=str_id).first()
@@ -1300,7 +1307,6 @@ def add_new_device_server(
                     "tactil_switch": tactil_switch,
                     "handles":str(handles),
                 }
-        mac_loc_mapping[mac_address]={'location': location,'str_id':str_id}
         description = "New device " + str_id + " has been added to " + location
         log_entry = Log(
             user=user,
@@ -1573,17 +1579,34 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
     if tactil_switch:
         handles = ast.literal_eval(handles)
 
+        reset = False
+        aux_state=Current_state_dic_rooms[location][handles[0]]['State']
+        aux_mac_addresses=[]
+        mac_loc_mapping = {}
+        
         for dev in handles:
-            mac_address = Current_state_dic_rooms[location][dev]['mac_address']
+            if Current_state_dic_rooms[location][dev]['State'] != aux_state:
+                reset = True
+            mac=Current_state_dic_rooms[location][dev]['mac_address']
+            aux_mac_addresses.append(mac)
+            mac_loc_mapping[mac]={'location':location,'str_id':dev}
+
             print(location,str_id,dev,mac_address)
 
-            client.publish("cmnd/"+mac_address+"/POWER",'TOGGLE',qos=2)
+        for dev_mac in aux_mac_addresses:
+            if reset:
+                client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
+                socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','_'),"state": False,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
+            else:
+                client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
+                socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','_'),"state": not aux_state ,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
         seq_number = random.randint(0, 256)
         return seq_number
 
     print("single",mac_address,state)
 
     sent=client.publish("cmnd/"+mac_address+"/POWER",state,qos=2)
+    socketio.emit("device_update",{"location": location.replace(' ','_'),"state": True if state=='ON' else False ,"str_id": str_id.replace(' ','_')}, namespace="/test")
 
     print(sent.is_published())
     seq_number = random.randint(0, 256)

@@ -33,9 +33,9 @@
               <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;padding-top: 9px;">
 
                 {%if not vv['tactil_switch']:%}
-                <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k}}" data-str_id="{{kk}}" data-state="{{vv.State}}" data-set_point="{{vv.set_point}}" data-dev_type="{{vv.dev_type}}" data-mac_address="{{vv.mac_address}}" data-handles="[]"></span>
+                <span class="glyphicon glyphicon-menu-right editdevice" onclick='' data-location="{{k.replace(' ','_')}}" data-str_id="{{kk.replace(' ','_')}}" data-state="{{vv.State}}" data-set_point="{{vv.set_point}}" data-dev_type="{{vv.dev_type}}" data-mac_address="{{vv.mac_address}}" data-handles="[]"></span>
                 {%else:%}
-                <span class="glyphicon glyphicon-menu-right editswitch" onclick='' data-location="{{k}}" data-str_id="{{kk}}" data-state="{{vv.State}}" data-set_point="{{vv.set_point}}" data-dev_type="{{vv.dev_type}}" data-mac_address="{{vv.mac_address}}" data-handles="{{vv.handles}}" ></span>
+                <span class="glyphicon glyphicon-menu-right editswitch" onclick='' data-location="{{k.replace(' ','_')}}" data-str_id="{{kk.replace(' ','_')}}" data-state="{{vv.State}}" data-set_point="{{vv.set_point}}" data-dev_type="{{vv.dev_type}}" data-mac_address="{{vv.mac_address}}" data-handles="{{vv.handles}}" ></span>
 
                 {%endif%}
       
@@ -356,10 +356,10 @@
          $('#locationid').change(function () {
                                         $('#deviceid').html('');
                                             {%for location,devices in devices.items()|sort:%}
-                                        if($('#locationid').val()=='{{location}}'){
+                                        if($('#locationid').val()=='{{location.replace(' ','_')}}'){
                                             {%for device,item in devices.items():%} 
                                             {%if not item['tactil_switch']:%}
-                                        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                        $('#deviceid').append('<option value="{{device.replace(' ','_')}}">{{device}}</option>');
                                         {%endif%}
                                             {% endfor %}
                                         }
@@ -373,7 +373,7 @@
 
 
                                                         var location = $(this).data('location');
-                                                        var str_id = $(this).data('str_id');
+                                                        var str_id = $(this).data('str_id').replace('_',' ');
                                                         var state = $(this).data('state');
                                                         var set_point = $(this).data('set_point');
                                                         var dev_type = $(this).data('dev_type');
@@ -381,10 +381,10 @@
                                                         var handles = $(this).data('handles')
 
                                                         $("#dataplacereditswitch").val(dev_type);
-                                                        $("#dataplacereditswitch").attr('data-old_location',location);
+                                                        $("#dataplacereditswitch").attr('data-old_location',location.replace(' ','_'));
                                                         $("#dataplacereditswitch").attr('data-mac_address',mac_address);
                                                         $("#dataplacereditswitch").attr('data-handles',handles);
-                                                        $("#dataplacereditswitch").attr('data-old_str_id',str_id);
+                                                        $("#dataplacereditswitch").attr('data-old_str_id',str_id.replace(' ','_'));
 
                                                         $("#switch_name").val(str_id);
                                                         $("#switch_name").attr('onfocus',"if (this.value=='"+str_id+"') this.value='';");
@@ -395,10 +395,11 @@
 
                                                         console.log(eval(handles));
                                                         console.log(location);
+                                                        console.log($('#locationid').val());
 
                                              $('#deviceid').html('');
                                             {%for location_dic,devices in devices.items()|sort:%}
-                                        if($('#locationid').val()=='{{location_dic}}'){
+                                        if($('#locationid').val()=='{{location_dic.replace(' ','_')}}'){
                                             {%for device,item in devices.items():%} 
                                             {%if not item['tactil_switch']:%}
 
