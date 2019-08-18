@@ -134,16 +134,23 @@ def result_mqtt(client, userdata,message):
     print("message state=",message.state)
     print('tuviejakkk')
 
+def touch_switch_mqtt(client,userdata,message):
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
+    print(fallback,'--> TOGGLE')
+
 ########################################
 broker_address="192.168.2.20"
-client = mqtt.Client("web_app") #create new instance
+client = mqtt.Client("web_app_pc") #create new instance
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
 client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
+client.message_callback_add("switch/TOUCH",touch_switch_mqtt )
 client.on_message=callback_mqtt #attach function to callback
-client.connect(broker_address) #connect to broker
-client.subscribe("+/sonoff/+")
-client.subscribe("switch/+")
+client.connect(host=broker_address,port=1883) #connect to broker
+client.subscribe("+/sonoff/+",qos=2)
+client.subscribe("switch/+",qos=2)
+
+
 
 def server_mqtt():
     print('starting mqtt server')
