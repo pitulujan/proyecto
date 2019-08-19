@@ -404,7 +404,7 @@
                                             {%for device,item in devices.items():%} 
                                             {%if not item['tactil_switch']:%}
 
-                                        if (eval(handles).includes('{{device}}')) {
+                                        if (eval(handles).includes('{{device.replace(' ','_')}}')) {
 
                                         $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}" selected>{{device}}</option>');}
                                         else
