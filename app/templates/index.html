@@ -111,22 +111,39 @@
     {% for kk,vv in v.items()|sort: %}
       
           <div class="row">
+            {%if not vv['tactil_switch']:%}
             <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                             
                             <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
                             
             </div>
+            {%else:%}
+            <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;margin-top: 16px;">
+                            
+                            <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
+                            
+            </div>
 
-                      <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-                                <div class="onoffswitch">
-                                    {%if vv['State']==True:%}
-                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
-                                    {%else:%}
-                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="Off" >
-                                    {%endif%}
-                                    <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></label>
-                                </div>
-                      </div> 
+            {%endif%}
+                      {%if not vv['tactil_switch']:%}
+                            <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+                                      
+                                      <div class="onoffswitch">
+                                          {%if vv['State']==True:%}
+                                          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
+                                          {%else:%}
+                                          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="Off" >
+                                          {%endif%}
+                                          <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></label>
+                                      </div> 
+                              </div>
+                      {%else:%}
+                                  <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 13px;"> 
+                                    <h2> <span onclick='' id="{{vv['mac_address']}}" data-mac_address="{{vv['mac_address']}}" class="fa fa-power-off toggleswitch"></span></h2>
+                                  </div>
+                      {%endif%}
+                                
+                      
                            
             </div>
       {%if vv['dev_type'] == False:%}
@@ -459,6 +476,18 @@ socket.on('sensor_online', function(result) {
     $("#dismiss_connection_lost_notification").click(function(){
       //$("#connectionlostnotification").hide();
       location.reload(true);
+    });
+
+
+
+    $(document).on("click","span.toggleswitch",function(){
+
+      var mac_address = $(this).data('mac_address');
+
+      $.post("{{ url_for('toggle_switch_routes') }}",{'mac_address':mac_address}).done(function(result) {});
+
+
+
     });
   </script>
     

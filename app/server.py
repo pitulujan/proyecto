@@ -136,17 +136,17 @@ def result_mqtt(client, userdata,message):
     print('tuviejakkk')
 
 def touch_switch_mqtt(client,userdata,message):
-    global mapping_macs
-    global Current_state_dic_rooms
+
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     print(fallback,'--> TOGGLE')
-    take_action(fallback, 'TOGGLE', 0,True,mapping_macs[fallback]['handles'],mapping_macs[fallback]['location'],mapping_macs[fallback]['str_id'])
+    toggle_switch(fallback)
+    
 
 
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app") #create new instance
+client = mqtt.Client("web_app_pc") #create new instance
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
 client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
@@ -621,6 +621,11 @@ def set_device(location, str_id, state, set_point):
         print("la rompi devolviendo")
         return jsonify({"status": 400, "str_id": str_id, "location": location})
 
+def toggle_switch(mac_address):
+    global mapping_macs
+    global Current_state_dic_rooms
+    take_action(mac_address, 'TOGGLE', 0,True,mapping_macs[mac_address]['handles'],mapping_macs[mac_address]['location'],mapping_macs[mac_address]['str_id'])
+    return
 
 
 def get_temp_state():
@@ -1616,7 +1621,7 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
             if reset:
                 #client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
                 #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = False
-                socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+                #socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                 socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": False,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
                 
             else:
@@ -1624,10 +1629,10 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
                 #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = not Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State']
                 if aux_state and state == 'ON':
                     print('porque verga no swtcheas')
-                    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+                    #socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                     Current_state_dic_rooms[location][str_id]['State']= True
                 if not aux_state and state == 'OFF':
-                    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+                    #socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                     Current_state_dic_rooms[location][str_id]['State']= False
                 socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": not aux_state ,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
         
