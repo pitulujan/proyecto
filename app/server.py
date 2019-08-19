@@ -147,6 +147,7 @@ def touch_switch_mqtt(client,userdata,message):
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
+client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
 client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
@@ -255,7 +256,7 @@ def process_input(input_str):
     input_str = str(input_str).replace(chr(0), "")
 
     try:
-        print("pitu-->", type(input_str))
+        
         message = ast.literal_eval(input_str)
         print(message)
 
@@ -276,6 +277,7 @@ def process_input(input_str):
                     battery_state = False
 
                 temp_state = int(message["sensor_update"]["temp_state"])
+                print('la temp state en el process input es de : ', temp_state)
 
                 new = True
                 for location in Current_sensors:
@@ -288,6 +290,7 @@ def process_input(input_str):
                         Sensors_state[mac_address] = datetime.now()
 
                         temp = get_temp_state()
+                        print('la temp promedio es: ',temp)
                         
                         if temp != None:
                              
@@ -314,7 +317,6 @@ def process_input(input_str):
                         "temp_state": temp_state,
                         "mac_address": mac_address,
                     }
-                    client.publish("house/devices/bulb1","OFF")
                     flag = True
                     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
                     new_dev_mac_enabled = True
@@ -562,39 +564,20 @@ def set_temp(
     # seq_num=take_action(mac_address,state,set_point)
     ans,reset = take_action(mac_address, state, set_point,tactil_switch=False,handles='[]',location='Temperature',str_id='Temperature')
 
-    if type(ans) == int:
-        count = 0
-        online = True
-        print(ans)
-        while True:
-            if str(ans) in Sent_messages.keys():
-                count += 1
-                time.sleep(0.2)
-            else:
-                break
-            if count == 5:
-                online = False
-                break
+    if True:
+        Current_state_dic_rooms["Temperature"]["Temperature"]["State"] = state
+        query_temp.state = state
 
-        if online:
-            Current_state_dic_rooms["Temperature"]["Temperature"]["State"] = state
-            query_temp.state = state
-
-            if not Current_state_dic_rooms["Temperature"]["Temperature"]["dev_type"]:
-                Current_state_dic_rooms["Temperature"]["Temperature"][
-                    "set_point"
-                ] = set_point
-                query_devices.set_point = set_point
-            db.session.add(query_temp)
-            db.session.commit()
-            return jsonify({"status": 200})
-        else:
-            print("la rompi devolviendo")
-            return jsonify(
-                {"status": 400, "str_id": "Temperature", "location": "Temperature"}
-            )
+        if not Current_state_dic_rooms["Temperature"]["Temperature"]["dev_type"]:
+            Current_state_dic_rooms["Temperature"]["Temperature"][
+                "set_point"
+            ] = set_point
+            query_devices.set_point = set_point
+        db.session.add(query_temp)
+        db.session.commit()
+        return jsonify({"status": 200})
     else:
-        print("que onda?")
+        print("la rompi devolviendo")
         return jsonify(
             {"status": 400, "str_id": "Temperature", "location": "Temperature"}
         )
@@ -1360,7 +1343,7 @@ def add_new_sensor_server(
     battery_state = ast.literal_eval(battery_state)
     location = location.replace('_',' ')
 
-
+    print('la temp cuando agrego es : ',str(int(temp_state)))
     global flag
     global new_dev_mac
     global New_sensors

@@ -270,7 +270,7 @@
 </div>
         </div>
     </div>
-</div>
+
 
 
 
@@ -356,7 +356,7 @@
 </div>
         </div>
     </div>
-</div>
+
 
 
 {%else%}
@@ -567,7 +567,7 @@
 
 
 
-        $.post("{{ url_for('add_device') }}",{'location':'Temperature','str_id': 'Temperature' ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val()}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'location':'Temperature','str_id': 'Temperature' ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'), 'mac_address':$("#dataplaceradd").data('mac_address'),'temp_dev':$('input[name="optradio"]:checked').val(),'tactil_switch':'False','handles':'[]'}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
