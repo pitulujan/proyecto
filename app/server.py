@@ -146,7 +146,7 @@ def touch_switch_mqtt(client,userdata,message):
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app_pc") #create new instance
+client = mqtt.Client("web_app") #create new instance
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
 client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
