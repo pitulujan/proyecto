@@ -144,8 +144,8 @@ def touch_switch_mqtt(client,userdata,message):
 
 
 ########################################
-#broker_address="192.168.2.20"
-broker_address="127.0.0.1"
+broker_address="192.168.2.20"
+#broker_address="127.0.0.1"
 client = mqtt.Client("web_app_pc") #create new instance
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -1588,6 +1588,7 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
 
    
     if tactil_switch:
+        print (handles)
 
         handles = ast.literal_eval(handles)
 
