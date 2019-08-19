@@ -1586,12 +1586,7 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
     else:
         state = 'ON' if Current_state_dic_rooms[location][str_id]['State'] == False else 'OFF' 
 
-    print('viendo el state', state, Current_state_dic_rooms[location][str_id]['State'])
-
-   # print('--------------------------------------------------------------------------')
-    #print('tactil_switch',tactil_switch,state)
-    print('entre a take_action',mac_address,state,set_point,tactil_switch,handles,location,str_id)
-
+   
     if tactil_switch:
 
         handles = ast.literal_eval(handles)
