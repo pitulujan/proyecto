@@ -1114,6 +1114,7 @@ def edit_device_server(
 ):
     global Current_rooms
     global Current_state_dic_rooms
+    global mapping_macs
 
     old_location = old_location.replace('_',' ')
     old_str_id = old_str_id.replace('_',' ')
@@ -1139,6 +1140,7 @@ def edit_device_server(
         device_to_edit.handles = str(handles)
         print('seteando el nuevo handles a ->',str(handles))
         Current_state_dic_rooms[old_location][old_str_id]['handles'] = str(handles)
+        mapping_macs[mac_address]['handles']=str(handles)
 
 
 
