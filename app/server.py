@@ -140,7 +140,7 @@ def touch_switch_mqtt(client,userdata,message):
     global Current_state_dic_rooms
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     print(fallback,'--> TOGGLE')
-    take_action(fallback, True, 0,True,mapping_macs[fallback]['handles'],mapping_macs[fallback]['location'],mapping_macs[fallback]['str_id'])
+    take_action(fallback, 'TOGGLE', 0,True,mapping_macs[fallback]['handles'],mapping_macs[fallback]['location'],mapping_macs[fallback]['str_id'])
 
 
 ########################################
@@ -1581,14 +1581,19 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
     global Current_state_dic_rooms
     if state == True:
         state = 'ON'
-    else:
+    elif state == False:
         state = 'OFF'
+    else:
+        state = 'ON' if Current_state_dic_rooms[location][str_id]['State'] == False else 'OFF' 
+
+    print('viendo el state', state, Current_state_dic_rooms[location][str_id]['State'])
 
    # print('--------------------------------------------------------------------------')
     #print('tactil_switch',tactil_switch,state)
     print('entre a take_action',mac_address,state,set_point,tactil_switch,handles,location,str_id)
 
     if tactil_switch:
+
         handles = ast.literal_eval(handles)
 
         reset = False
@@ -1605,6 +1610,8 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
             aux_mac_addresses.append(mac)
             mac_loc_mapping[mac]={'location':location,'str_id':dev.replace('_',' ')}
 
+        if reset:
+            Current_state_dic_rooms[location][str_id]['State']= False if state=='ON' else True
 
         print('reset',reset)
         for dev_mac in aux_mac_addresses:
@@ -1620,7 +1627,10 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
                 if aux_state and state == 'ON':
                     print('porque verga no swtcheas')
                     socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
-
+                    Current_state_dic_rooms[location][str_id]['State']= True
+                if not aux_state and state == 'OFF':
+                    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+                    Current_state_dic_rooms[location][str_id]['State']= False
                 socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": not aux_state ,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
         
        # if reset:
