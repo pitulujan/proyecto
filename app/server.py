@@ -139,7 +139,8 @@ def touch_switch_mqtt(client,userdata,message):
     print(fallback,'--> TOGGLE')
 
 ########################################
-broker_address="192.168.2.20"
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
 client = mqtt.Client("web_app_pc") #create new instance
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -596,25 +597,17 @@ def set_device(location, str_id, state, set_point):
     global Sent_messages
 
     query_devices = Devices.query.filter_by(location=location, str_id=str_id).first()
-    print(query_devices)
 
     mac_address = query_devices.mac_address
     handles = query_devices.handles
     tactil_switch = query_devices.tactil_switch
+
 
     ans,reset = take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id)
 
 
 
     if True:
-        Current_state_dic_rooms[location][str_id]["State"] = state
-        query_devices.state = state
-
-        if not Current_state_dic_rooms[location][str_id]["dev_type"]:
-            Current_state_dic_rooms[location][str_id]["set_point"] = set_point
-            query_devices.set_point = set_point
-        db.session.add(query_devices)
-        db.session.commit()
         return jsonify({"status": 200})
     else:
         print("la rompi devolviendo")
@@ -1258,6 +1251,7 @@ def add_new_device_server(
         presence_state = ast.literal_eval(presence_state)
         online = ast.literal_eval(online)
         tactil_switch = ast.literal_eval(tactil_switch)
+        print('cuando agrego el switch el tacti es: ',tactil_switch)
 
         device_to_add = Devices(
             user_perm=True,
@@ -1571,44 +1565,62 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
         state = 'ON'
     else:
         state = 'OFF'
+
+    print('--------------------------------------------------------------------------')
+    print('tactil_switch',tactil_switch,state)
+    
+
     if tactil_switch:
         handles = ast.literal_eval(handles)
 
         reset = False
         aux_state=Current_state_dic_rooms[location][handles[0]]['State']
+        print(location,handles[0],aux_state)
         aux_mac_addresses=[]
         mac_loc_mapping = {}
         
         for dev in handles:
+            print(dev,Current_state_dic_rooms[location][dev]['State'])
             if Current_state_dic_rooms[location][dev]['State'] != aux_state:
                 reset = True
             mac=Current_state_dic_rooms[location][dev]['mac_address']
             aux_mac_addresses.append(mac)
             mac_loc_mapping[mac]={'location':location,'str_id':dev}
 
-            print(location,str_id,dev,aux_mac_addresses,mac_loc_mapping)
+
         print('reset',reset)
         for dev_mac in aux_mac_addresses:
             if reset:
                 client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
+                #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = False
+                socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                 socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": False,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
+                
             else:
                 client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
+                #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = not Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State']
+                if aux_state and state == 'ON':
+                    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+
                 socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": not aux_state ,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
         
-        if reset:
-            socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+       # if reset:
+        #    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
+        #    Current_state_dic_rooms[location][str_id]['State']= False
         seq_number = random.randint(0, 256)
         return seq_number,reset
+    else:
 
-    print("single",mac_address,state)
-
-    sent=client.publish("cmnd/"+mac_address+"/POWER",state,qos=2)
-    socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True if state=='ON' else False ,"str_id": str_id.replace(' ','_')}, namespace="/test")
-
-    #print(sent.is_published())
-    seq_number = random.randint(0, 256)
-    return seq_number,False
+        print("single",mac_address,state,location,str_id)
+        print('++++++++++++++++++++++++++++++')
+        sent=client.publish("cmnd/"+mac_address+"/POWER",state,qos=2)
+        socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True if state=='ON' else False ,"str_id": str_id.replace(' ','_')}, namespace="/test")
+        print(Current_state_dic_rooms[location][str_id]['State'])
+        Current_state_dic_rooms[location][str_id]['State']= True if state=='ON' else False
+        print(Current_state_dic_rooms[location][str_id]['State'])
+        #print(sent.is_published())
+        seq_number = random.randint(0, 256)
+        return seq_number,False
 
 
 
