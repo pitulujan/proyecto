@@ -665,6 +665,7 @@ def get_devices():
         online = False
         tactil_switch = False
         for k, v in value.items():
+            print(k,v)
             
             if v["tactil_switch"]:
                 tactil_switch = True
