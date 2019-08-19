@@ -1612,13 +1612,13 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
         print('reset',reset)
         for dev_mac in aux_mac_addresses:
             if reset:
-                client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
+                #client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
                 #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = False
                 socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                 socketio.emit("device_update",{"location": mac_loc_mapping[dev_mac]['location'].replace(' ','-'),"state": False,"str_id": mac_loc_mapping[dev_mac]['str_id'].replace(' ','_')}, namespace="/test")
                 
             else:
-                client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
+                #client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
                 #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = not Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State']
                 if aux_state and state == 'ON':
                     print('porque verga no swtcheas')
