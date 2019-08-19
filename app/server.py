@@ -271,7 +271,7 @@ def process_input(input_str):
                 else:
                     battery = False
 
-                if message["sensor_update"]["battery_state"] == 1:
+                if message["sensor_update"]["battery_state"] == 0:
                     battery_state = True
                 else:
                     battery_state = False
@@ -296,7 +296,7 @@ def process_input(input_str):
                              
                             socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
                         else:
-                            socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
+                            socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
                              
 
                         if battery_state:
