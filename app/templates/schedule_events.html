@@ -212,7 +212,7 @@
                         {%for location in rooms_devices.keys()|sort:%}
                         {%if location != 'default'%}
                           <option value="{{'_'.join(location.split(' '))}}">{{location}}</option>
-                        }
+                        
                         {% endif %}
                         {% endfor %}
                       </select>
@@ -330,10 +330,11 @@
   $('#locationid').change(function () {
                                         $('#deviceid').html('');
                                             {%for location,devices in rooms_devices.items()|sort:%}
-                                        if($('#locationid').val()=='{{location}}'){
+                                            console.log($('#locationid').val());
+                                        if($('#locationid').val()=='{{location.replace(' ','_')}}'){
                                             {%for device,item in devices.items():%} 
                                             {%if not item['tactil_switch']:%}
-                                        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                        $('#deviceid').append('<option value="{{device.replace(' ','_')}}">{{device}}</option>');
                                         {%endif%}
                                             {% endfor %}
                                         }

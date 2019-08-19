@@ -272,19 +272,20 @@
 
       $(document).on("click","span.editdevice",function(){
 
-                                                        var location = $(this).data('location');
-                                                        var str_id = $(this).data('str_id');
+                                                        var location = $(this).data('location').replace('_',' ');
+                                                        var str_id = $(this).data('str_id').replace('_',' ');
                                                         var state = $(this).data('state');
                                                         var set_point = $(this).data('set_point');
                                                         var dev_type = $(this).data('dev_type');
                                                         var mac_address = $(this).data('mac_address');
+                                                        
                                                         $("#device_location").val(location);
                                                         $("#device_location").attr('onfocus',"if (this.value=='"+location+"') this.value='';");
                                                         $("#device_name").val(str_id);
                                                         $("#device_name").attr('onfocus',"if (this.value=='"+str_id+"') this.value='';");
                                                         $("#dataplacer").attr('data-dev_type',dev_type);
-                                                        $("#dataplacer").attr('data-old_location',location);
-                                                        $("#dataplacer").attr('data-old_str_id',str_id);
+                                                        $("#dataplacer").attr('data-old_location',location.replace(' ','_'));
+                                                        $("#dataplacer").attr('data-old_str_id',str_id.replace(' ','_'));
                                                         $("#dataplacer").attr('data-mac_address',mac_address);
 
 
