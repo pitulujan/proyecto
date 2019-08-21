@@ -144,8 +144,8 @@ def touch_switch_mqtt(client,userdata,message):
 
 
 ########################################
-#broker_address="192.168.2.20"
-broker_address="127.0.0.1"
+broker_address="192.168.2.20"
+#broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -291,10 +291,10 @@ def process_input(input_str):
 
                         temp = get_temp_state()
                         print('la temp promedio es: ',temp)
-                        
+                        print('temp in',temp,'location',location)
                         if temp != None:
                              
-                            socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location,'sensor_temp': temp_state},namespace="/test")
+                            socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
                         else:
                             socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
                              
@@ -1272,11 +1272,11 @@ def add_new_device_server(
             state = True
         else:
             state = False
-        if temp_dev == "True":
-            temp_dev = True
-        else:
-            temp_dev = False
 
+        temp_dev= ast.literal_eval(temp_dev)
+
+        if temp_dev:
+            scheduler.add_job(controlling_temp, "interval", seconds=300, args=[], id='temp_for_'+str(mac_address))
         presence_state = ast.literal_eval(presence_state)
         online = ast.literal_eval(online)
         tactil_switch = ast.literal_eval(tactil_switch)
@@ -1447,6 +1447,8 @@ def check_sensor_state(mac_address):
 
     return
 
+
+def controlling_temp():
 
 def get_new_devices():
 
