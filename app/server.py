@@ -144,8 +144,8 @@ def touch_switch_mqtt(client,userdata,message):
 
 
 ########################################
-broker_address="192.168.2.20"
-#broker_address="127.0.0.1"
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -442,7 +442,30 @@ def remove_dev(user, location_str_id):
     str_id = " ".join(location_str_id.split("/")[1].split("."))
 
     global Current_state_dic_rooms
+    global mapping_macs
     device_to_remove = Devices.query.filter_by(location=location, str_id=str_id).first()
+
+    gettin_possible_switch = Devices.query.filter_by(location=location,tactil_switch=True)
+    print(gettin_possible_switch)
+
+    if gettin_possible_switch !=None:
+
+        for switches in gettin_possible_switch:
+            handles = switches.handles
+            handles = ast.literal_eval(handles)
+            print('handles del switch antes',handles, 'str_id del dev a eliminar', str_id)
+            for idx, dev in enumerate(handles):
+                if dev == str_id.replace(' ','_'):
+                    handles.pop(str_id.replace(' ','_'))
+                    print('handles del switch desp',handles)
+                    switches.handles = str(handles)
+        
+        db.session.commit()
+
+
+
+
+
 
     scheduled_events_to_del = Scheduled_events.query.filter_by(
         location=location, str_id=str_id
@@ -1235,7 +1258,7 @@ def add_new_device_server(
     location = location.replace('_',' ')
     str_id = str_id.replace('_',' ')
 
-    print(handles)
+    print('should have made it to this point',location,str_id,handles)
 
     trying_to_add = Devices.query.filter_by(location=location, str_id=str_id).first()
 

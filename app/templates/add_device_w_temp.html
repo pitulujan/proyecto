@@ -380,7 +380,7 @@
       $("#submit_changes").click(function(){
 
 
-        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online')}).done(function(result) {
+        $.post("{{ url_for('add_device') }}",{'location':$("#device_location").val(),'str_id': $("#device_name").val() ,'state':$("#myonoffswitch").val(),'set_point':$("#myRange").val(), 'mac_address':$("#dataplaceradd").data('mac_address'),'presence_state':$("#dataplaceradd").data('presence_state'),'online':$("#dataplaceradd").data('online'),'tactil_switch':'False','handles':[],'temp_dev':'False'}).done(function(result) {
 
           if(result['status']==200){
             console.log('200')
