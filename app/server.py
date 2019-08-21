@@ -456,9 +456,11 @@ def remove_dev(user, location_str_id):
             print('handles del switch antes',handles, 'str_id del dev a eliminar', str_id)
             for idx, dev in enumerate(handles):
                 if dev == str_id.replace(' ','_'):
-                    handles.pop(str_id.replace(' ','_'))
+                    handles.pop(idx)
                     print('handles del switch desp',handles)
                     switches.handles = str(handles)
+                    Current_state_dic_rooms[location][switches.str_id]['handles']=str(handles)
+                    mapping_macs[switches.mac_address]['handles']=str(handles)
         
         db.session.commit()
 
@@ -1278,6 +1280,7 @@ def add_new_device_server(
         presence_state = ast.literal_eval(presence_state)
         online = ast.literal_eval(online)
         tactil_switch = ast.literal_eval(tactil_switch)
+        handles=str(handles)
 
         print('cuando agrego el switch el tacti es: ',tactil_switch)
         mapping_macs[mac_address]={'location': location,'str_id':str_id,'handles':handles}
