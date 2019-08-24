@@ -163,21 +163,6 @@ def server_mqtt():
     client.loop_start() #start the loop
 
 
-def start_client():
-    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = "127.0.0.1"
-    port = 9999
-
-    try:
-        soc.connect((host, port))
-    except:
-        print("Connection error")
-        # sys.exit()
-        return "Connection error"
-
-    return soc
-
-
 def start_server():
     host = "127.0.0.1"
     port = 8888  # arbitrary non-privileged port
@@ -258,162 +243,77 @@ def process_input(input_str):
         message = ast.literal_eval(input_str)
         print(message)
 
-        try:
-            print("pitu-->", message.keys(), message)
-            if "sensor_update" in message.keys():
-                print('hasta aca va')
-                mac_address = message["sensor_update"]["mac_address"]
 
-                if message["sensor_update"]["battery"] == 1:
-                    battery = True
-                else:
-                    battery = False
+        print("pitu-->", message.keys(), message)
+        if "sensor_update" in message.keys():
+            print('hasta aca va')
+            mac_address = message["sensor_update"]["mac_address"]
 
-                if message["sensor_update"]["battery_state"] == 0:
-                    battery_state = True
-                else:
-                    battery_state = False
-
-                if int(str(temp_prom).split('.')[1])>5:
-                    tem_prom= int(tem_prom+1)
-                else:
-                    temp_prom = int(temp_prom)
-                print('la temp state en el process input es de : ', temp_state)
-
-                new = True
-                for location in Current_sensors:
-                    if Current_sensors[location]["mac_address"] == mac_address:
-                        new = False
-                        Current_sensors[location]["battery"] = battery
-                        Current_sensors[location]["battery_state"] = battery_state
-                        Current_sensors[location]["temp_state"] = temp_state
-                        Current_sensors[location]["online"] = True
-                        Sensors_state[mac_address] = datetime.now()
-
-                        temp = get_temp_state()
-                        print('la temp promedio es: ',temp)
-                        print('temp in',temp,'location',location)
-                        if temp != None:
-                             
-                            socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
-                        else:
-                            socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
-                             
-
-                        if battery_state:
-                            low_baterry_not = True
-                            Low_baterry_array.append((location, mac_address))
-                            socketio.emit("low_bat_tobrowser",{"arrayToSendToBrowser": Low_baterry_array},namespace="/test")
-                            socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": True},namespace="/test")
-                        else:
-                            socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": False},namespace="/test")
-
-                print('deberia llegar aca')
-                if new and mac_address not in New_sensors.keys():
-                    print('deberia llegar aca 2')
-                    New_sensors[mac_address] = {
-                        "online": True,
-                        "battery": battery,
-                        "battery_state": battery_state,
-                        "temp_state": temp_state,
-                        "mac_address": mac_address,
-                    }
-                    flag = True
-                    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
-                    new_dev_mac_enabled = True
-                    print('no entiendo')
-                    socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
-                    print('kii')
-                message = " 5 " + str(1)
-                message = str(len(message) + 1) + message
-                send_socket(message)
-
-            elif "device_update" in message.keys():
-                print('deberia entrar aca')
-
-                mac_address = message["device_update"]["mac_address"]
-                if message["device_update"]["presence_state"] == 1:
-                    presence_state = True
-                else:
-                    presence_state = False
-
-                if message["device_update"]["dev_type"] == 1:
-                    dev_type = True
-                else:
-                    dev_type = False
-
-                if message["device_update"]["state"] == 1:
-                    state = True
-                else:
-                    state = False
-
-                if message["device_update"]["set_point"] == 1:
-                    set_point = True
-                else:
-                    set_point = False
-
-                new = True
-                for location in Current_state_dic_rooms:
-                    
-                    for str_id in Current_state_dic_rooms[location]:
-                        
-                        if (Current_state_dic_rooms[location][str_id]["mac_address"] == mac_address):
-                            
-                            new = False
-                            Current_state_dic_rooms[location][str_id]["presence_state"] = presence_state
-                            Current_state_dic_rooms[location][str_id]["State"] = state
-                            socketio.emit("device_update",{"location": location.replace(' ','_'),"presence_state":presence_state,"state": state,"str_id": str_id.replace(' ','_')}, namespace="/test")
-                            Current_state_dic_rooms[location][str_id]["set_point"] = set_point
-                            break
-
-                
-                if new and mac_address not in New_devices.keys():
-                    print(new, mac_address,New_devices)
-                    New_devices[mac_address] = {
-                        "presence_state": presence_state,
-                        "dev_type": dev_type,
-                        "State": state,
-                        "set_point": set_point,
-                        "online": True,
-                        "mac_address": mac_address,
-                    }
-
-                    flag = True
-                    new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
-                    new_dev_mac_enabled = True
-                    socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
-
-                    message = " 5 " + str(1)
-                    message = str(len(message) + 1) + message
-                    send_socket(message)
-
-            elif "tx_ok" in message.keys():
-                mac_address = message["tx_ok"]["mac_address"]
-                seq_number = message["tx_ok"]["seq_number"]
-                del Sent_messages[seq_number]
-
-                message = " 5 " + str(1)
-                message = str(len(message) + 1) + message
-                send_socket(message)
+            if message["sensor_update"]["battery"] == 1:
+                battery = True
             else:
-                print(message)
-                message = " 5 " + str(0)
-                message = str(len(message) + 1) + message
-                send_socket(message)
-                return str(input_str)
-        except:
-            message = " 5 " + str(0)
-            message = str(len(message) + 1) + message
-            send_socket(message)
+                battery = False
+
+            if message["sensor_update"]["battery_state"] == 0:
+                battery_state = True
+            else:
+                battery_state = False
+
+            if int(str(temp_prom).split('.')[1])>5:
+                tem_prom= int(tem_prom+1)
+            else:
+                temp_prom = int(temp_prom)
+            print('la temp state en el process input es de : ', temp_state)
+
+            new = True
+            for location in Current_sensors:
+                if Current_sensors[location]["mac_address"] == mac_address:
+                    new = False
+                    Current_sensors[location]["battery"] = battery
+                    Current_sensors[location]["battery_state"] = battery_state
+                    Current_sensors[location]["temp_state"] = temp_state
+                    Current_sensors[location]["online"] = True
+                    Sensors_state[mac_address] = datetime.now()
+
+                    temp = get_temp_state()
+                    print('la temp promedio es: ',temp)
+                    print('temp in',temp,'location',location)
+                    if temp != None:
+                         
+                        socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
+                    else:
+                        socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
+                         
+
+                    if battery_state:
+                        low_baterry_not = True
+                        Low_baterry_array.append((location, mac_address))
+                        socketio.emit("low_bat_tobrowser",{"arrayToSendToBrowser": Low_baterry_array},namespace="/test")
+                        socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": True},namespace="/test")
+                    else:
+                        socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": False},namespace="/test")
+
+            print('deberia llegar aca')
+            if new and mac_address not in New_sensors.keys():
+                print('deberia llegar aca 2')
+                New_sensors[mac_address] = {
+                    "online": True,
+                    "battery": battery,
+                    "battery_state": battery_state,
+                    "temp_state": temp_state,
+                    "mac_address": mac_address,
+                }
+                flag = True
+                new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+                new_dev_mac_enabled = True
+                print('no entiendo')
+                socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+                print('kii')
+
 
     except Exception as e:
         print(e)
-        message = " 6"
-        message = str(len(message) + 1) + message
-        send_socket(message)
-
-        print(input_str)
-        return str(0)
+        pass
 
 
 def remove_sens(user, mac_address):
@@ -1605,25 +1505,7 @@ def disable_new_dev_mac():
     return
 
 
-def send_socket(text):
-    global soc
 
-    try:
-        soc.sendall(text.encode("ascii", "ignore"))
-        if soc.recv(5120).decode("ascii", "ignore") == "ok":
-            print("recieved akn from server")  # null operation
-
-    except Exception as e:
-        soc = start_client()
-        if type(soc) != str:
-            start = time.perf_counter()
-            soc.sendall(text.encode("ascii", "ignore"))
-            print("time taken ", time.perf_counter() - start, " seconds")
-            if soc.recv(5120).decode("ascii", "ignore") == "ok":
-                print("recieved akn from server")  # null operation
-        else:
-            return soc
-    return None
 
 
 def take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id):
