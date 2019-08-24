@@ -135,45 +135,46 @@ def add_temp_mqtt(client, userdata, message):
 
     mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
 
-    device_to_add = Devices(
-            user_perm=True,
-            str_id="Temperature",
-            location="Temperature",
-            dev_type=False,
-            state=False,
-            set_point=15,
-            temp_device=True,
-            mac_address=fallback,
-            tactil_switch = False,
-            handles = "[]",
-        )
+    if mapping_macs[fallback] !=None:
+        device_to_add = Devices(
+                user_perm=True,
+                str_id="Temperature",
+                location="Temperature",
+                dev_type=False,
+                state=False,
+                set_point=15,
+                temp_device=True,
+                mac_address=fallback,
+                tactil_switch = False,
+                handles = "[]",
+            )
 
-    Current_state_dic_rooms["Temperature"] = {
-                "Temperature": {
-                    "dev_type": False,
-                    "State": False,
-                    "set_point": 15,
-                    "user_perm": True,
-                    "mac_address": fallback,
-                    "temp_dev": True,
-                    "online": True,
-                    "presence_state": False,
-                    "tactil_switch" : False,
-                    "handles" : "[]",
+        Current_state_dic_rooms["Temperature"] = {
+                    "Temperature": {
+                        "dev_type": False,
+                        "State": False,
+                        "set_point": 15,
+                        "user_perm": True,
+                        "mac_address": fallback,
+                        "temp_dev": True,
+                        "online": True,
+                        "presence_state": False,
+                        "tactil_switch" : False,
+                        "handles" : "[]",
+                    }
                 }
-            }
-    
-    description = "Thermostat added successfully"
-    log_entry = Log(
-        user='Default',
-        timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-        description=description,
-    )
-    db.session.add(log_entry)
+        
+        description = "Thermostat added successfully"
+        log_entry = Log(
+            user='Default',
+            timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+            description=description,
+        )
+        db.session.add(log_entry)
 
-    db.session.add(device_to_add)
-    db.session.commit()
-    socketio.emit("new_temp_success",{"arrayToSendToBrowser": True},namespace="/test")
+        db.session.add(device_to_add)
+        db.session.commit()
+        socketio.emit("new_temp_success",{"arrayToSendToBrowser": True},namespace="/test")
 
 def result_mqtt(client, userdata,message):
     print("message received " ,str(message.payload.decode("utf-8")))
@@ -534,7 +535,7 @@ def get_initial_values():
         Sensors_state[sensor.mac_address] = sensor.last_update
 
     # print(Current_state_dic_rooms)
-    print(Current_sensors)
+    #print(Current_sensors)
     return
 
 
@@ -1423,7 +1424,7 @@ def add_new_sensor_server(
     db.session.commit()
     Sensors_state[mac_address] = datetime.now()
     scheduler.add_job(
-        check_sensor_state, "interval", seconds=60, args=[mac_address], id=mac_address
+        check_sensor_state, "interval", seconds=300, args=[mac_address], id=mac_address
     )
     New_sensors.pop(mac_address)
 
