@@ -190,6 +190,12 @@ def touch_switch_mqtt(client,userdata,message):
     print(fallback,'--> TOGGLE')
     toggle_switch(fallback)
 
+def touch_temp_mqtt(client,userdata,message):
+
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
+    print(fallback,'--> TOGGLE')
+    toggle_switch(fallback)
+
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
@@ -199,6 +205,7 @@ client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
 client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
 client.message_callback_add("temp/NEW_TEMP",add_temp_mqtt )
+client.message_callback_add("temp/TOUCH",touch_temp_mqtt )
 client.message_callback_add("switch/TOUCH",touch_switch_mqtt )
 client.on_message=callback_mqtt #attach function to callback
 client.connect(host=broker_address,port=1883) #connect to broker
@@ -625,6 +632,10 @@ def toggle_switch(mac_address):
     take_action(mac_address, 'TOGGLE', 0,True,mapping_macs[mac_address]['handles'],mapping_macs[mac_address]['location'],mapping_macs[mac_address]['str_id'])
     return
 
+def toggle_temp(mac_address):
+    global Current_state_dic_rooms
+    set_temp2(not Current_state_dic_rooms['Temperature']['Temperature']['State'],Current_state_dic_rooms['Temperature']['Temperature']['set_point'],'Default')
+    return
 
 def get_temp_state():
     global Current_sensors
