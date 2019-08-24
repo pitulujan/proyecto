@@ -126,6 +126,46 @@ def add_switch_mqtt(client, userdata, message):
         print('no entiendo')
         socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
 
+def add_temp_mqtt(client, userdata, message):
+    global flag
+    global new_dev_mac
+    global new_dev_mac_enabled
+    global New_devices
+    global New_sensors
+    global Sensors_state
+    global Current_state_dic_rooms
+    print('kkkkkkkkkkkkkkkkkkkkkkkkkkk')
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
+    new=True
+    for location in Current_state_dic_rooms:
+    
+        for str_id in Current_state_dic_rooms[location]:
+            
+            if (Current_state_dic_rooms[location][str_id]["mac_address"] == fallback):
+                
+                new = False
+                break
+
+
+    if new and fallback not in New_devices.keys():
+        
+        New_devices[fallback] = {
+            "presence_state": False,
+            "dev_type": True,
+            "State": False,
+            "set_point": 0,
+            "online": True,
+            "tactil_switch": True,
+            "handles": str([]),
+            "mac_address" : fallback,
+        }
+
+        flag = True
+        new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
+        new_dev_mac_enabled = True
+        print('no entiendo')
+        socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+
 def result_mqtt(client, userdata,message):
     print("message received " ,str(message.payload.decode("utf-8")))
     print("message topic=",message.topic)
@@ -144,11 +184,12 @@ def touch_switch_mqtt(client,userdata,message):
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app") #create new instance
+client = mqtt.Client("web_app_pc") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
 client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
+client.message_callback_add("temp/NEW_TEMP",add_temp_mqtt )
 client.message_callback_add("switch/TOUCH",touch_switch_mqtt )
 client.on_message=callback_mqtt #attach function to callback
 client.connect(host=broker_address,port=1883) #connect to broker
@@ -485,27 +526,32 @@ def set_temp2(state,set_point,user):
     state = ast.literal_eval(state)
 
     if state:
-        Current_state_dic_rooms['Temperature']['Temperature']['set_point'] = set_point
+        Current_state_dic_rooms['Temperature']['Temperature']['Set_point'] = set_point
         query_temp = Devices.query.filter_by(temp_device=True).first()
-        query_devices.set_point = set_point
+        query_temp.set_point = set_point
         db.session.commit()
         controlling_temp()
+        print('aca prendi')
         return jsonify({"status": 200})
     else:
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
+        print('aca apague')
         return jsonify({"status": 200})
 
 
 def controlling_temp(**kwargs):
     temp=get_temp_state()
 
+    print(temp)
+
     if temp['Current_value'] != '-':
-        if temp['Current_value'] > temp['set_point']:
+        if temp['Current_value'] > temp['Set_Point']:
             print('la current es mas alta que el set')
-        elif temp['Current_value'] < temp['set_point']:
+        elif temp['Current_value'] < temp['Set_Point']:
             print('la current es mas baja que el set_point')
         else:
             print('el set_point y la current son iguales')
+    return
         
 
 def set_temp(
@@ -588,10 +634,10 @@ def get_temp_state():
 
         if active:
             tem_prom = float(aux_temp / count)
-            if int(str(temp_prom).split('.')[1])>5:
+            if int(str(tem_prom).split('.')[1])>5:
                 tem_prom= int(tem_prom+1)
             else:
-                temp_prom = int(temp_prom)
+                tem_prom = int(tem_prom)
         else:
             tem_prom = "-"
 
@@ -1347,7 +1393,7 @@ def add_new_sensor_server(
     db.session.commit()
     Sensors_state[mac_address] = datetime.now()
     scheduler.add_job(
-        check_sensor_state, "interval", seconds=300, args=[mac_address], id=mac_address
+        check_sensor_state, "interval", seconds=60, args=[mac_address], id=mac_address
     )
     New_sensors.pop(mac_address)
 
@@ -1376,7 +1422,7 @@ def check_sensor_state(mac_address):
             if (
                 round((datetime.now() - Sensors_state[mac_address]).total_seconds() / 60 ) < 2 ):
                 Current_sensors[sensor]["online"] = True
-                socketio.emit("sensor_online",{"sensor_loc": sensor,"sensor_state": True},namespace="/test")
+                #socketio.emit("sensor_online",{"sensor_loc": sensor,"sensor_state": True},namespace="/test")
             else:
                 Current_sensors[sensor]["online"] = False
                 socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")

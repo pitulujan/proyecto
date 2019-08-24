@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server,get_switches,toggle_switch
+from app.server import set_temp2, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server,get_switches,toggle_switch
 from flask_socketio import send, emit
 #import xmltodict, requests
 
@@ -98,12 +98,9 @@ def delete_user():
 @login_required
 def set_temperature():
     
-    if request.form['state']=='True':
         
-        ans=set_temp(True,request.form['set_point'],current_user.username)
+    ans=set_temp2(request.form['state'],request.form['set_point'],current_user.username)
                     
-    else:
-        ans=set_temp(False,request.form['set_point'],current_user.username)
 
     return ans
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
