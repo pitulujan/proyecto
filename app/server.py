@@ -194,7 +194,7 @@ def touch_temp_mqtt(client,userdata,message):
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     print(fallback,'--> TOGGLE')
-    toggle_temp (fallback)
+    toggle_temp(fallback)
 
 ########################################
 broker_address="192.168.2.20"
@@ -541,7 +541,11 @@ def get_initial_values():
 def set_temp2(state,set_point,user):
     global Current_state_dic_rooms
 
-    state = ast.literal_eval(state)
+    try:
+        state = ast.literal_eval(state)
+    except Exception as e:
+        pass
+    
 
     if state:
         Current_state_dic_rooms['Temperature']['Temperature']['Set_point'] = set_point
