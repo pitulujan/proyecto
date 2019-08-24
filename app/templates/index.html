@@ -290,6 +290,7 @@ socket.on('device_update', function(result) {
      // }
 
       if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
+      console.log($("#myonoffswitch"+result.location+result.str_id));
       $("#myonoffswitch"+result.location+result.str_id).click();;}
       
       //myonoffswitch
