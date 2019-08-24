@@ -546,7 +546,7 @@ def set_temp2(state,set_point,user):
         return jsonify({"status": 200})
     else:
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
-        sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'00',qos=2)
+        sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
         print('aca apague')
         return jsonify({"status": 200})
 
