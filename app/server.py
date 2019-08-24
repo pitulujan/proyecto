@@ -639,7 +639,7 @@ def toggle_switch(mac_address):
 def toggle_temp(mac_address):
     global Current_state_dic_rooms
 
-    socketio.emit("device_update",{"location": "","state": "OFF" if Current_state_dic_rooms['Temperature']['Temperature']['State'] else "ON" ,"str_id":""}, namespace="/test")
+    socketio.emit("device_update",{"location": "","state": "Off" if Current_state_dic_rooms['Temperature']['Temperature']['State'] else "On" ,"str_id":""}, namespace="/test")
     return
 
 def get_temp_state():
