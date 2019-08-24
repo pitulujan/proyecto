@@ -117,6 +117,7 @@ def add_switch_mqtt(client, userdata, message):
             "online": True,
             "tactil_switch": True,
             "handles": str([]),
+            "temp_device": False,
             "mac_address" : fallback,
         }
 
@@ -127,44 +128,52 @@ def add_switch_mqtt(client, userdata, message):
         socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
 
 def add_temp_mqtt(client, userdata, message):
-    global flag
-    global new_dev_mac
-    global new_dev_mac_enabled
-    global New_devices
-    global New_sensors
-    global Sensors_state
+
     global Current_state_dic_rooms
-    print('kkkkkkkkkkkkkkkkkkkkkkkkkkk')
+    global mapping_macs
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
-    new=True
-    for location in Current_state_dic_rooms:
+
+    mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
+
+    device_to_add = Devices(
+            user_perm=True,
+            str_id="Temperature",
+            location="Temperature",
+            dev_type=False,
+            state=False,
+            set_point=15,
+            temp_device=True,
+            mac_address=fallback,
+            tactil_switch = False,
+            handles = "[]",
+        )
+
+    Current_state_dic_rooms["Temperature"] = {
+                "Temperature": {
+                    "dev_type": False,
+                    "State": False,
+                    "set_point": 15,
+                    "user_perm": True,
+                    "mac_address": fallback,
+                    "temp_dev": True,
+                    "online": True,
+                    "presence_state": False,
+                    "tactil_switch" : False,
+                    "handles" : "[]",
+                }
+            }
     
-        for str_id in Current_state_dic_rooms[location]:
-            
-            if (Current_state_dic_rooms[location][str_id]["mac_address"] == fallback):
-                
-                new = False
-                break
+    description = "Thermostat added successfully"
+    log_entry = Log(
+        user='Default',
+        timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        description=description,
+    )
+    db.session.add(log_entry)
 
-
-    if new and fallback not in New_devices.keys():
-        
-        New_devices[fallback] = {
-            "presence_state": False,
-            "dev_type": True,
-            "State": False,
-            "set_point": 0,
-            "online": True,
-            "tactil_switch": True,
-            "handles": str([]),
-            "mac_address" : fallback,
-        }
-
-        flag = True
-        new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
-        new_dev_mac_enabled = True
-        print('no entiendo')
-        socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
+    db.session.add(device_to_add)
+    db.session.commit()
+    socketio.emit("new_temp_success",{"arrayToSendToBrowser": True},namespace="/test")
 
 def result_mqtt(client, userdata,message):
     print("message received " ,str(message.payload.decode("utf-8")))
@@ -195,6 +204,7 @@ client.on_message=callback_mqtt #attach function to callback
 client.connect(host=broker_address,port=1883) #connect to broker
 client.subscribe("+/sonoff/+",qos=2)
 client.subscribe("switch/+",qos=2)
+client.subscribe("temp/+",qos=2)
 
 
 
@@ -1453,12 +1463,13 @@ def get_current_sensors():
     return Current_sensors
 
 
-def generate_dummy_device_test(dev_type, presence_state, online,switch):
+def generate_dummy_device_test(dev_type, presence_state, online,switch,temp_dev):
 
     dev_type = ast.literal_eval(dev_type)
     presence_state = ast.literal_eval(presence_state)
     online = ast.literal_eval(online)
     switch = ast.literal_eval(switch)
+    temp_dev = ast.literal_eval(temp_dev)
     ## Agrego un dispositivo al diccionario simplemente para probar el metodo 'Add device' simulando un nuevo dispositivo que se incorpora al sistema
     global flag
     global new_dev_mac
@@ -1475,6 +1486,7 @@ def generate_dummy_device_test(dev_type, presence_state, online,switch):
             "online": online,
             "new_device": True,
             "tactil_switch" : switch,
+            "temp_dev" : temp_dev,
             "handles": '[]',
             "mac_address": "08:00:27:60:03:90",
         }
@@ -1489,6 +1501,7 @@ def generate_dummy_device_test(dev_type, presence_state, online,switch):
             "online": online,
             "new_device": True,
             "tactil_switch" : switch,
+            "temp_dev" : temp_dev,
             "handles" : '[]',
             "mac_address": "08:00:27:60:03:9" + str(len(New_devices.keys())),
         }

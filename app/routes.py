@@ -211,10 +211,7 @@ def add_device():
         print(answer)
         return jsonify(answer)
 
-    if temp_device == None:
-        return render_template('add_device_switch.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
-    else:
-        return render_template('add_device_w_temp.html', title='Add New Device',enumerate=enumerate,rooms_devices=devices,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors())
+    return render_template('add_device_switch.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
 
 
 @app.route('/add_sensor', methods=['POST'])
@@ -265,7 +262,7 @@ def generate_dummy_device():
 
     if request.method == 'POST':
 
-        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'),request.form.get('switch'))
+        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'),request.form.get('switch'),request.form.get('temp_dev'))
         return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
