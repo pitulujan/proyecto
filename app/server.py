@@ -259,6 +259,8 @@ def process_input(input_str):
             else:
                 battery_state = False
 
+            temp_state = message['sensor_update']['temp_state']
+
             if int(str(temp_prom).split('.')[1])>5:
                 tem_prom= int(tem_prom+1)
             else:
