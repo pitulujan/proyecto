@@ -558,11 +558,11 @@ def controlling_temp(**kwargs):
 
     if temp['Current_value'] != '-':
         if temp['Current_value'] > temp['Set_Point']:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'10',qos=2)
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'10',qos=2)
         elif temp['Current_value'] < temp['Set_Point']:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'11',qos=2)
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'11',qos=2)
         else:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'00',qos=2)
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
     return
         
 
