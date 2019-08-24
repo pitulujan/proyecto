@@ -638,7 +638,8 @@ def toggle_switch(mac_address):
 
 def toggle_temp(mac_address):
     global Current_state_dic_rooms
-    set_temp2(not Current_state_dic_rooms['Temperature']['Temperature']['State'],Current_state_dic_rooms['Temperature']['Temperature']['set_point'],'Default')
+
+    socketio.emit("device_update",{"location": "Temperature","state": not Current_state_dic_rooms['Temperature']['Temperature']['State'],"str_id":"Temperature"}, namespace="/test")
     return
 
 def get_temp_state():
