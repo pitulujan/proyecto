@@ -194,7 +194,7 @@ def touch_temp_mqtt(client,userdata,message):
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     print(fallback,'--> TOGGLE')
-    toggle_switch(fallback)
+    toggle_temp (fallback)
 
 ########################################
 broker_address="192.168.2.20"
