@@ -548,6 +548,7 @@ def set_temp2(state,set_point,user):
     
 
     if state:
+        Current_state_dic_rooms['Temperature']['Temperature']['State'] = True
         Current_state_dic_rooms['Temperature']['Temperature']['Set_point'] = set_point
         query_temp = Devices.query.filter_by(temp_device=True).first()
         query_temp.set_point = set_point
