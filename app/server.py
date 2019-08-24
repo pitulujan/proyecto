@@ -197,6 +197,18 @@ def touch_temp_mqtt(client,userdata,message):
     print(fallback,'--> TOGGLE')
     toggle_temp(fallback)
 
+def pir_mqtt(client,userdata,message):
+    global mapping_macs
+    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
+    presence_state = ast.literal_eval(str(message.payload.decode("utf-8")))['presence_state']
+    if presence_state == 1:
+        presence_state = True
+    else:
+        presence_state = False
+    
+    take_action(fallback, presence_state, 0,True,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
+
+
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
@@ -208,6 +220,7 @@ client.message_callback_add("switch/NEW_SWITCH",add_switch_mqtt )
 client.message_callback_add("temp/NEW_TEMP",add_temp_mqtt )
 client.message_callback_add("temp/TOUCH",touch_temp_mqtt )
 client.message_callback_add("switch/TOUCH",touch_switch_mqtt )
+client.message_callback_add("switch/PIR",pir_mqtt )
 client.on_message=callback_mqtt #attach function to callback
 client.connect(host=broker_address,port=1883) #connect to broker
 client.subscribe("+/sonoff/+",qos=2)
