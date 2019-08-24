@@ -1286,8 +1286,8 @@ def add_new_device_server(
     global Current_rooms
     global New_sensors
     global mapping_macs
-    location = location.replace('_',' ')
-    str_id = str_id.replace('_',' ')
+    location = location.replace('_',' ').replace('-',' ')
+    str_id = str_id.replace('_',' ').replace('-',' ')
 
     print('should have made it to this point',location,str_id,handles)
 
@@ -1397,7 +1397,7 @@ def add_new_sensor_server(
     battery = ast.literal_eval(battery)
     active_average = ast.literal_eval(active_average)
     battery_state = ast.literal_eval(battery_state)
-    location = location.replace('_',' ')
+    location = location.replace('_',' ').replace('-',' ')
 
     print('la temp cuando agrego es : ',str(int(temp_state)))
     global flag
