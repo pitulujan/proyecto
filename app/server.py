@@ -327,6 +327,7 @@ def process_input(input_str):
                     Current_sensors[location]["temp_state"] = temp_state
                     Current_sensors[location]["online"] = True
                     Sensors_state[mac_address] = datetime.now()
+                    print('Current sensor', Sensors_state)
 
                     temp = get_temp_state()
                     print('la temp promedio es: ',temp)
@@ -362,7 +363,7 @@ def process_input(input_str):
                 print('no entiendo')
                 socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
                 print('kii')
-
+        return
 
     except Exception as e:
         print(e)
@@ -1428,12 +1429,14 @@ def check_sensor_state(mac_address):
 
     # print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
     for sensor in Current_sensors:
+        print('sensor in check_sensor',sensor)
         if mac_address == Current_sensors[sensor]["mac_address"]:
             if (
                 round((datetime.now() - Sensors_state[mac_address]).total_seconds() / 60 ) < 2 ):
                 Current_sensors[sensor]["online"] = True
                 #socketio.emit("sensor_online",{"sensor_loc": sensor,"sensor_state": True},namespace="/test")
             else:
+
                 Current_sensors[sensor]["online"] = False
                 socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")
 
