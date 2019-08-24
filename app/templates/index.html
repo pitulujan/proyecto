@@ -180,7 +180,7 @@
 {%for key in current_sensors.keys():%}
 {%if key not in devices.keys()%}
 
-<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa thermometer-half" style="color: grey"></span>{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span id="battery_{{key}}" class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span id="battery_{{key}}" class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa thermometer-half" style="color: grey"></span>{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
                  <div class="dropdown-container-pitu collapse " >
 
@@ -191,7 +191,7 @@
                                         
                         </div>
                         
-                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{key}}" style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{key.replace(' ','_')}}" style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
                         </div>
             </div>
         
