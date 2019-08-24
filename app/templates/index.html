@@ -101,7 +101,7 @@
                                         
                         </div>
 
-                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{k}}" style="margin-top: 5px;padding-right: 16px;"> {%if not current_sensors[k]['online'] %} - {%else%}{{current_sensors[k]['temp_state']}}°C{%endif%}</h3>
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{k.replace(' ','_')}}" style="margin-top: 5px;padding-right: 16px;"> {%if not current_sensors[k]['online'] %} - {%else%}{{current_sensors[k]['temp_state']}}°C{%endif%}</h3>
                         </div>
             </div>
 
