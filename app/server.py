@@ -546,6 +546,7 @@ def set_temp2(state,set_point,user):
         return jsonify({"status": 200})
     else:
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
+        sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'00',qos=2)
         print('aca apague')
         return jsonify({"status": 200})
 
@@ -557,11 +558,11 @@ def controlling_temp(**kwargs):
 
     if temp['Current_value'] != '-':
         if temp['Current_value'] > temp['Set_Point']:
-            print('la current es mas alta que el set')
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'10',qos=2)
         elif temp['Current_value'] < temp['Set_Point']:
-            print('la current es mas baja que el set_point')
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'11',qos=2)
         else:
-            print('el set_point y la current son iguales')
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address'],'00',qos=2)
     return
         
 
