@@ -261,10 +261,10 @@ def process_input(input_str):
 
             temp_state = message['sensor_update']['temp_state']
 
-            if int(str(temp_prom).split('.')[1])>5:
-                tem_prom= int(tem_prom+1)
+            if int(str(temp_state).split('.')[1])>5:
+                temp_state= int(temp_state+1)
             else:
-                temp_prom = int(temp_prom)
+                temp_state = int(temp_state)
             print('la temp state en el process input es de : ', temp_state)
 
             new = True
