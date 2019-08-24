@@ -274,7 +274,10 @@ def process_input(input_str):
                 else:
                     battery_state = False
 
-                temp_state = int(message["sensor_update"]["temp_state"])
+                if int(str(temp_prom).split('.')[1])>5:
+                    tem_prom= int(tem_prom+1)
+                else:
+                    temp_prom = int(temp_prom)
                 print('la temp state en el process input es de : ', temp_state)
 
                 new = True
@@ -603,8 +606,6 @@ def controlling_temp(**kwargs):
             print('el set_point y la current son iguales')
         
 
-
-
 def set_temp(
     state, set_point, user
 ):  # Aca no tengo en cuenta si hay mas de un sector en las temperaturas, si los hay en el futuro hay que tocar esto
@@ -684,7 +685,11 @@ def get_temp_state():
                 count += 1
 
         if active:
-            tem_prom = int(aux_temp / count)
+            tem_prom = float(aux_temp / count)
+            if int(str(temp_prom).split('.')[1])>5:
+                tem_prom= int(tem_prom+1)
+            else:
+                temp_prom = int(temp_prom)
         else:
             tem_prom = "-"
 
@@ -1567,7 +1572,7 @@ def generate_dummy_sensor_test(online, battery, battery_state, temp_state):
             "online": online,
             "battery": battery,
             "battery_state": battery_state,
-            "temp_state": int(temp_state),
+            "temp_state": int(float(temp_state)),
             "mac_address": "08:00:27:60:04:00",
         }
     else:
@@ -1576,7 +1581,7 @@ def generate_dummy_sensor_test(online, battery, battery_state, temp_state):
             "online": online,
             "battery": battery,
             "battery_state": battery_state,
-            "temp_state": temp_state,
+            "temp_state": int(float(temp_state)),
             "mac_address": "08:00:27:60:04:0" + str(len(New_sensors.keys())),
         }
 
