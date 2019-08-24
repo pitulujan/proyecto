@@ -253,10 +253,7 @@ socket.on('device_update', function(result) {
      // } else {
      //   document.getElementById(result.location).style.color = "black";
      // }
-     console.log(result.str_id);
-     console.log(result.location);
-     console.log(result.state);
-     console.log()
+
       if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
       $("#myonoffswitch"+result.location+result.str_id).click();;}
       
@@ -269,15 +266,15 @@ socket.on('device_update', function(result) {
 
 socket.on('low_bat_index', function(result) {
 
-  console.log('1');
+
 
   if (result.low_bat) {
-console.log('2');
+
   $("#battery_"+result.location).attr("class","fa fa-battery-empty");
   $("#battery_"+result.location).attr("style","color: red;font-size:25px;");
 
   } else {
-console.log('3');
+
   $("#battery_"+result.location).attr("class","fa fa-battery-full");
   $("#battery_"+result.location).attr("style","color: black;font-size:25px;");
   }

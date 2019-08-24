@@ -140,8 +140,6 @@ def touch_switch_mqtt(client,userdata,message):
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     print(fallback,'--> TOGGLE')
     toggle_switch(fallback)
-    
-
 
 ########################################
 broker_address="192.168.2.20"
@@ -303,9 +301,9 @@ def process_input(input_str):
                             low_baterry_not = True
                             Low_baterry_array.append((location, mac_address))
                             socketio.emit("low_bat_tobrowser",{"arrayToSendToBrowser": Low_baterry_array},namespace="/test")
-                            socketio.emit("low_bat_index",{"location": location, "low_bat": True},namespace="/test")
+                            socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": True},namespace="/test")
                         else:
-                            socketio.emit("low_bat_index",{"location": location, "low_bat": False},namespace="/test")
+                            socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": False},namespace="/test")
 
                 print('deberia llegar aca')
                 if new and mac_address not in New_sensors.keys():
@@ -511,7 +509,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 def get_activity_log():
@@ -574,6 +572,37 @@ def get_initial_values():
     # print(Current_state_dic_rooms)
     print(Current_sensors)
     return
+
+
+def set_temp2(state,set_point,user):
+    global Current_state_dic_rooms
+
+    state = ast.literal_eval(state)
+
+    if state:
+        Current_state_dic_rooms['Temperature']['Temperature']['set_point'] = set_point
+        query_temp = Devices.query.filter_by(temp_device=True).first()
+        query_devices.set_point = set_point
+        db.session.commit()
+        controlling_temp()
+        return jsonify({"status": 200})
+    else:
+        Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
+        return jsonify({"status": 200})
+
+
+def controlling_temp(**kwargs):
+    temp=get_temp_state()
+
+    if temp['Current_value'] != '-':
+        if temp['Current_value'] > temp['set_point']:
+            print('la current es mas alta que el set')
+        elif temp['Current_value'] < temp['set_point']:
+            print('la current es mas baja que el set_point')
+        else:
+            print('el set_point y la current son iguales')
+        
+
 
 
 def set_temp(
@@ -1446,9 +1475,6 @@ def check_sensor_state(mac_address):
                 socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")
 
     return
-
-
-def controlling_temp():
 
 def get_new_devices():
 
