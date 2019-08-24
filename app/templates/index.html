@@ -416,7 +416,7 @@ socket.on('sensor_online', function(result) {
 {%endif%}
 
     {% for k,v in devices.items()|sort: %}
-    {%if k != 'default' %}
+    {%if k != 'Temperature' %}
     {% for kk,vv in v.items()|sort: %}
     {% if vv['dev_type'] == False: %}
 
