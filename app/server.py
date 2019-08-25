@@ -38,13 +38,13 @@ seq_num = (
 
 def callback_mqtt(client, userdata, message):
     global flag
-    print("message received " ,str(message.payload.decode("utf-8")))
-    print("message topic=",message.topic)
-    print("message qos=",message.qos)
-    print("message retain flag=",message.retain)
-    print("message info=",message.info)
-    print("message state=",message.state)
-    #print(dir(message))
+    #print("message received " ,str(message.payload.decode("utf-8")))
+    #print("message topic=",message.topic)
+    #print("message qos=",message.qos)
+    #print("message retain flag=",message.retain)
+    #print("message info=",message.info)
+    #print("message state=",message.state)
+    ##print(dir(message))
 
 def info1_mqtt(client, userdata, message):
     global flag
@@ -55,7 +55,7 @@ def info1_mqtt(client, userdata, message):
     global Current_state_dic_rooms
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
-    print(fallback)
+    #print(fallback)
     new=True
     for location in Current_state_dic_rooms:
     
@@ -83,7 +83,7 @@ def info1_mqtt(client, userdata, message):
         flag = True
         new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
         new_dev_mac_enabled = True
-        print('no entiendo')
+        #print('no entiendo')
         socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
 
 def add_switch_mqtt(client, userdata, message):
@@ -94,7 +94,7 @@ def add_switch_mqtt(client, userdata, message):
     global New_sensors
     global Sensors_state
     global Current_state_dic_rooms
-    print('kkkkkkkkkkkkkkkkkkkkkkkkkkk')
+    #print('kkkkkkkkkkkkkkkkkkkkkkkkkkk')
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
     new=True
     for location in Current_state_dic_rooms:
@@ -124,7 +124,7 @@ def add_switch_mqtt(client, userdata, message):
         flag = True
         new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
         new_dev_mac_enabled = True
-        print('no entiendo')
+        #print('no entiendo')
         socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
 
 def add_temp_mqtt(client, userdata, message):
@@ -134,6 +134,8 @@ def add_temp_mqtt(client, userdata, message):
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
 
     mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
+
+    scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id='temp_for_'+str(fallback))
 
     if mapping_macs[fallback] !=None:
         device_to_add = Devices(
@@ -177,24 +179,24 @@ def add_temp_mqtt(client, userdata, message):
         socketio.emit("new_temp_success",{"arrayToSendToBrowser": True},namespace="/test")
 
 def result_mqtt(client, userdata,message):
-    print("message received " ,str(message.payload.decode("utf-8")))
-    print("message topic=",message.topic)
-    print("message qos=",message.qos)
-    print("message retain flag=",message.retain)
-    print("message info=",message.info)
-    print("message state=",message.state)
-    print('tuviejakkk')
+    #print("message received " ,str(message.payload.decode("utf-8")))
+    #print("message topic=",message.topic)
+    #print("message qos=",message.qos)
+    #print("message retain flag=",message.retain)
+    #print("message info=",message.info)
+    #print("message state=",message.state)
+    #print('tuviejakkk')
 
 def touch_switch_mqtt(client,userdata,message):
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
-    print(fallback,'--> TOGGLE')
+    #print(fallback,'--> TOGGLE')
     toggle_switch(fallback)
 
 def touch_temp_mqtt(client,userdata,message):
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
-    print(fallback,'--> TOGGLE')
+    #print(fallback,'--> TOGGLE')
     toggle_temp(fallback)
 
 def pir_mqtt(client,userdata,message):
@@ -230,7 +232,7 @@ client.subscribe("temp/+",qos=2)
 
 
 def server_mqtt():
-    print('starting mqtt server')
+    #print('starting mqtt server')
 
     client.loop_start() #start the loop
 
@@ -243,29 +245,29 @@ def start_server():
     soc.setsockopt(
         socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
     )  # SO_REUSEADDR flag tells the kernel to reuse a local socket in TIME_WAIT state, without waiting for its natural timeout to expire
-    print("Socket created")
+    #print("Socket created")
 
     try:
         soc.bind((host, port))
     except:
-        print("Bind failed. Error : " + str(sys.exc_info()))
+        #print("Bind failed. Error : " + str(sys.exc_info()))
         sys.exit()
 
     soc.listen(1)  # queue up to 5 requests
-    print("Socket now listening")
+    #print("Socket now listening")
 
     # infinite loop- do not reset for every requests
     while True:
         connection, address = soc.accept()
         ip, port = str(address[0]), str(address[1])
-        print("Connected with " + ip + ":" + port)
+        #print("Connected with " + ip + ":" + port)
 
         try:
             Thread(target=client_thread, args=(connection, ip, port)).start()
 
         except:
-            print("Thread did not start.")
-            traceback.print_exc()
+            #print("Thread did not start.")
+            traceback.#print_exc()
 
     soc.close()
 
@@ -276,7 +278,7 @@ def client_thread(connection, ip, port, max_buffer_size=5120):
     while is_active:
         client_input = receive_input(connection, max_buffer_size)
 
-        print("Processed result: {}".format(client_input))
+        #print("Processed result: {}".format(client_input))
         connection.sendall("ok".encode("ascii", "ignore"))
 
 
@@ -286,7 +288,7 @@ def receive_input(connection, max_buffer_size):
     client_input_size = sys.getsizeof(client_input)
 
     if client_input_size > max_buffer_size:
-        print("The input size is greater than expected {}".format(client_input_size))
+        #print("The input size is greater than expected {}".format(client_input_size))
 
     decoded_input = client_input.decode(
         "ascii", "ignore"
@@ -307,18 +309,18 @@ def process_input(input_str):
     global low_baterry_not
     global Low_baterry_array
     global Current_state_dic_rooms
-    print("Processing the input received from client")
+    #print("Processing the input received from client")
     input_str = str(input_str).replace(chr(0), "")
 
     try:
         
         message = ast.literal_eval(input_str)
-        print(message)
+        #print(message)
 
 
-        print("pitu-->", message.keys(), message)
+        #print("pitu-->", message.keys(), message)
         if "sensor_update" in message.keys():
-            print('hasta aca va')
+            #print('hasta aca va')
             mac_address = message["sensor_update"]["mac_address"]
 
             if message["sensor_update"]["battery"] == 1:
@@ -337,7 +339,7 @@ def process_input(input_str):
                 temp_state= int(temp_state+1)
             else:
                 temp_state = int(temp_state)
-            print('la temp state en el process input es de : ', temp_state)
+            #print('la temp state en el process input es de : ', temp_state)
 
             new = True
             for location in Current_sensors:
@@ -348,11 +350,11 @@ def process_input(input_str):
                     Current_sensors[location]["temp_state"] = temp_state
                     Current_sensors[location]["online"] = True
                     Sensors_state[mac_address] = datetime.now()
-                    print('Current sensor', Sensors_state)
+                    #print('Current sensor', Sensors_state)
 
                     temp = get_temp_state()
-                    print('la temp promedio es: ',temp)
-                    print('temp in',temp,'location',location)
+                    #print('la temp promedio es: ',temp)
+                    #print('temp in',temp,'location',location)
                     if temp != None:
                          
                         socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
@@ -368,9 +370,9 @@ def process_input(input_str):
                     else:
                         socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": False},namespace="/test")
 
-            print('deberia llegar aca')
+            #print('deberia llegar aca')
             if new and mac_address not in New_sensors.keys():
-                print('deberia llegar aca 2')
+                #print('deberia llegar aca 2')
                 New_sensors[mac_address] = {
                     "online": True,
                     "battery": battery,
@@ -381,13 +383,13 @@ def process_input(input_str):
                 flag = True
                 new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
                 new_dev_mac_enabled = True
-                print('no entiendo')
+                #print('no entiendo')
                 socketio.emit("new_dev_tobrowser",{"arrayToSendToBrowser": new_dev_mac},namespace="/test")
-                print('kii')
+                #print('kii')
         return
 
     except Exception as e:
-        print(e)
+        #print(e)
         pass
 
 
@@ -422,18 +424,18 @@ def remove_dev(user, location_str_id):
     device_to_remove = Devices.query.filter_by(location=location, str_id=str_id).first()
 
     gettin_possible_switch = Devices.query.filter_by(location=location,tactil_switch=True)
-    print(gettin_possible_switch)
+    #print(gettin_possible_switch)
 
     if gettin_possible_switch !=None:
 
         for switches in gettin_possible_switch:
             handles = switches.handles
             handles = ast.literal_eval(handles)
-            print('handles del switch antes',handles, 'str_id del dev a eliminar', str_id)
+            #print('handles del switch antes',handles, 'str_id del dev a eliminar', str_id)
             for idx, dev in enumerate(handles):
                 if dev == str_id.replace(' ','_'):
                     handles.pop(idx)
-                    print('handles del switch desp',handles)
+                    #print('handles del switch desp',handles)
                     switches.handles = str(handles)
                     Current_state_dic_rooms[location][switches.str_id]['handles']=str(handles)
                     mapping_macs[switches.mac_address]['handles']=str(handles)
@@ -479,7 +481,7 @@ def tick():
 
     # socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
     #socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
-    print("Tick! The time is: %s" % datetime.now())
+    #print("Tick! The time is: %s" % datetime.now())
 
 
 scheduler = config_scheduler()
@@ -547,8 +549,8 @@ def get_initial_values():
         }
         Sensors_state[sensor.mac_address] = sensor.last_update
 
-    # print(Current_state_dic_rooms)
-    #print(Current_sensors)
+    # #print(Current_state_dic_rooms)
+    ##print(Current_sensors)
     return
 
 
@@ -568,19 +570,19 @@ def set_temp2(state,set_point,user):
         query_temp.set_point = set_point
         db.session.commit()
         controlling_temp()
-        print('aca prendi')
+        #print('aca prendi')
         return jsonify({"status": 200})
     else:
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
         sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
-        print('aca apague')
+        #print('aca apague')
         return jsonify({"status": 200})
 
 
 def controlling_temp(**kwargs):
     temp=get_temp_state()
 
-    print(temp)
+    #print(temp)
 
     if temp['Current_value'] != '-':
         if temp['Current_value'] > temp['Set_Point']:
@@ -618,7 +620,7 @@ def set_temp(
         db.session.commit()
         return jsonify({"status": 200})
     else:
-        print("la rompi devolviendo")
+        #print("la rompi devolviendo")
         return jsonify(
             {"status": 400, "str_id": "Temperature", "location": "Temperature"}
         )
@@ -642,7 +644,7 @@ def set_device(location, str_id, state, set_point):
     if True:
         return jsonify({"status": 200})
     else:
-        print("la rompi devolviendo")
+        #print("la rompi devolviendo")
         return jsonify({"status": 400, "str_id": str_id, "location": location})
 
 def toggle_switch(mac_address):
@@ -653,7 +655,7 @@ def toggle_switch(mac_address):
 
 def toggle_temp(mac_address):
     global Current_state_dic_rooms
-    print('aca va ',Current_state_dic_rooms['Temperature']['Temperature']['State'])
+    #print('aca va ',Current_state_dic_rooms['Temperature']['Temperature']['State'])
 
     socketio.emit("device_update",{"location": "","state": False if Current_state_dic_rooms['Temperature']['Temperature']['State'] else True ,"str_id":""}, namespace="/test")
     return
@@ -716,7 +718,7 @@ def get_devices():
         online = False
         tactil_switch = False
         for k, v in value.items():
-            print(k,v)
+            #print(k,v)
             
             if v["tactil_switch"]:
                 tactil_switch = True
@@ -742,9 +744,9 @@ def get_scheduled_events(*args):
 
 
 def alarm(state, set_point, event_type, id_job, mac_address, user,str_id,tactil_switch,handles,location):
-    print(event_type)
+    #print(event_type)
     if event_type == "date":
-        print("que onda")
+        #print("que onda")
         delete_scheduled_event(user, id_job)
 
         # aca falta llamar al cliente para que mande el mensaje al programa en C
@@ -768,7 +770,7 @@ def alarm(state, set_point, event_type, id_job, mac_address, user,str_id,tactil_
     message = " 1 " + mac_address + " " + str(state) + " " + str(set_point)
     message = str(len(message) + 1) + message
     send_socket(message)
-    print(state, set_point, event_type, id_job)
+    #print(state, set_point, event_type, id_job)
     '''
 
 def schedule_event(
@@ -793,7 +795,7 @@ def schedule_event(
 
         return jsonify(ans)
 
-    # print(pidd)
+    # #print(pidd)
     check_date = check_days(date_date, day_of_week, str_id, location, pidd)
     reschedule = False
 
@@ -1058,14 +1060,14 @@ def check_days(date, day_of_week, str_id, location, pidd):
 
                 array_dates = next_weekday(d, weekday)
 
-                # print(array_dates)
+                # #print(array_dates)
 
                 for datee in array_dates:
                     aux_date = datee
                     while aux_date <= dia_que_quiero:
                         if aux_date == dia_que_quiero:
                             if pidd != scheduled_event.pid:
-                                # print('hijo de mill',aux_date)
+                                # #print('hijo de mill',aux_date)
                                 flag = True
                                 break
                         else:
@@ -1161,7 +1163,7 @@ def edit_device_server(
     new_str_id = new_str_id.replace('_',' ')
     new_location = new_location.replace('_',' ')
 
-    print(old_location,old_str_id,new_location,new_str_id)
+    #print(old_location,old_str_id,new_location,new_str_id)
     device_to_edit = Devices.query.filter_by(mac_address=mac_address).first()
     trying_to_change = Devices.query.filter_by(
         location=new_location, str_id=new_str_id
@@ -1178,7 +1180,7 @@ def edit_device_server(
         device_to_edit.location = new_location
         device_to_edit.str_id = new_str_id
         device_to_edit.handles = str(handles)
-        print('seteando el nuevo handles a ->',str(handles))
+        #print('seteando el nuevo handles a ->',str(handles))
         Current_state_dic_rooms[old_location][old_str_id]['handles'] = str(handles)
         mapping_macs[mac_address]['handles']=str(handles)
 
@@ -1191,7 +1193,7 @@ def edit_device_server(
             }
             # Current_rooms[new_location]=True
         else:
-            print('aca deberia entrar porque existe todo')
+            #print('aca deberia entrar porque existe todo')
             Current_state_dic_rooms[new_location][new_str_id] =  Current_state_dic_rooms[old_location][old_str_id]
 
 
@@ -1290,7 +1292,7 @@ def add_new_device_server(
     location = location.replace('_',' ').replace('-',' ')
     str_id = str_id.replace('_',' ').replace('-',' ')
 
-    print('should have made it to this point',location,str_id,handles)
+    #print('should have made it to this point',location,str_id,handles)
 
     trying_to_add = Devices.query.filter_by(location=location, str_id=str_id).first()
 
@@ -1305,15 +1307,13 @@ def add_new_device_server(
 
         temp_dev= ast.literal_eval(temp_dev)
 
-        if temp_dev:
-            print('soy temp dev y me schedualice')
-            scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id='temp_for_'+str(mac_address))
+
         presence_state = ast.literal_eval(presence_state)
         online = ast.literal_eval(online)
         tactil_switch = ast.literal_eval(tactil_switch)
         handles=str(handles)
 
-        print('cuando agrego el switch el tacti es: ',tactil_switch)
+        #print('cuando agrego el switch el tacti es: ',tactil_switch)
         mapping_macs[mac_address]={'location': location,'str_id':str_id,'handles':handles}
 
         device_to_add = Devices(
@@ -1372,7 +1372,7 @@ def add_new_device_server(
         New_devices.pop(mac_address)
         new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
         if len(new_dev_mac) == 0:
-            # print('flag server entro bien ')
+            # #print('flag server entro bien ')
             flag = False
         return {
             "status": 200,
@@ -1401,7 +1401,7 @@ def add_new_sensor_server(
     battery_state = ast.literal_eval(battery_state)
     location = location.replace('_',' ').replace('-',' ')
 
-    print('la temp cuando agrego es : ',str(int(temp_state)))
+    #print('la temp cuando agrego es : ',str(int(temp_state)))
     global flag
     global new_dev_mac
     global New_sensors
@@ -1449,10 +1449,10 @@ def add_new_sensor_server(
     if battery_state:
         low_baterry_not = True
         Low_baterry_array.append((location, mac_address))
-        print("pituuuu")
+        #print("pituuuu")
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     if len(new_dev_mac) == 0:
-        # print('flag server entro bien ')
+        # #print('flag server entro bien ')
         flag = False
     return {
         "status": 200,
@@ -1465,9 +1465,9 @@ def check_sensor_state(mac_address):
     global Current_sensors
     global Sensors_state
 
-    # print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
+    # #print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
     for sensor in Current_sensors:
-        print('sensor in check_sensor',sensor)
+        #print('sensor in check_sensor',sensor)
         if mac_address == Current_sensors[sensor]["mac_address"]:
             if (
                 round((datetime.now() - Sensors_state[mac_address]).total_seconds() / 60 ) < 2 ):
@@ -1547,7 +1547,7 @@ def generate_dummy_device_test(dev_type, presence_state, online,switch,temp_dev)
             "mac_address": "08:00:27:60:03:9" + str(len(New_devices.keys())),
         }
 
-    # print(New_devices)
+    # #print(New_devices)
 
     flag = True
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
@@ -1587,7 +1587,7 @@ def generate_dummy_sensor_test(online, battery, battery_state, temp_state):
             "mac_address": "08:00:27:60:04:0" + str(len(New_sensors.keys())),
         }
 
-    # print(New_devices)
+    # #print(New_devices)
     flag = True
     new_dev_mac = list(New_devices.keys()) + list(New_sensors.keys())
     new_dev_mac_enabled = True
@@ -1622,18 +1622,18 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
 
    
     if tactil_switch:
-        print (handles)
+        #print (handles)
 
         handles = ast.literal_eval(handles)
 
         reset = False
         aux_state=Current_state_dic_rooms[location][handles[0].replace('_',' ')]['State']
-        print(location,handles[0],aux_state,state)
+        #print(location,handles[0],aux_state,state)
         aux_mac_addresses=[]
         mac_loc_mapping = {}
         
         for dev in handles:
-            #print(dev,Current_state_dic_rooms[location][dev]['State'])
+            ##print(dev,Current_state_dic_rooms[location][dev]['State'])
             if Current_state_dic_rooms[location][dev.replace('_',' ')]['State'] != aux_state:
                 reset = True
             mac=Current_state_dic_rooms[location][dev.replace('_',' ')]['mac_address']
@@ -1643,7 +1643,7 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
         if reset:
             Current_state_dic_rooms[location][str_id]['State']= False if state=='ON' else True
 
-        print('reset',reset)
+        #print('reset',reset)
         for dev_mac in aux_mac_addresses:
             if reset:
                 #client.publish("cmnd/"+dev_mac+"/POWER",'OFF',qos=2)
@@ -1655,7 +1655,7 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
                 #client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
                 #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = not Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State']
                 if aux_state and state == 'ON':
-                    print('porque verga no swtcheas')
+                    #print('porque verga no swtcheas')
                     #socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                     Current_state_dic_rooms[location][str_id]['State']= True
                 if not aux_state and state == 'OFF':
@@ -1670,14 +1670,14 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
         return seq_number,reset
     else:
 
-        #print("single",mac_address,state,location,str_id)
-        #print('++++++++++++++++++++++++++++++')
+        ##print("single",mac_address,state,location,str_id)
+        ##print('++++++++++++++++++++++++++++++')
         sent=client.publish("cmnd/"+mac_address+"/POWER",state,qos=2)
         socketio.emit("device_update",{"location": location.replace(' ','-'),"state": True if state=='ON' else False ,"str_id": str_id.replace(' ','_')}, namespace="/test")
-        #print(Current_state_dic_rooms[location][str_id]['State'])
+        ##print(Current_state_dic_rooms[location][str_id]['State'])
         Current_state_dic_rooms[location][str_id]['State']= True if state=='ON' else False
-        #print(Current_state_dic_rooms[location][str_id]['State'])
-        #print(sent.is_published())
+        ##print(Current_state_dic_rooms[location][str_id]['State'])
+        ##print(sent.is_published())
         seq_number = random.randint(0, 256)
         return seq_number,False
 
@@ -1691,10 +1691,10 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
     message = str(len(message) + 1) + message
 
     ans = send_socket(message)
-    print("y aca?", ans)
+    #print("y aca?", ans)
     if ans == None:
         # Sent_messages[str(seq_number)]={'mac_address': mac_address, 'state': state,'set_point':set_point}
-        print(Sent_messages)
+        #print(Sent_messages)
         return seq_number
     else:
         return ans
