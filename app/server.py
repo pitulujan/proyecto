@@ -179,11 +179,11 @@ def add_temp_mqtt(client, userdata, message):
         socketio.emit("new_temp_success",{"arrayToSendToBrowser": True},namespace="/test")
 
 def result_mqtt(client, userdata,message):
-    #print("message received " ,str(message.payload.decode("utf-8")))
-    #print("message topic=",message.topic)
+    print("message received " ,str(message.payload.decode("utf-8")))
+    print("message topic=",message.topic)
     #print("message qos=",message.qos)
     #print("message retain flag=",message.retain)
-    #print("message info=",message.info)
+    print("message info=",message.info)
     #print("message state=",message.state)
     #print('tuviejakkk')
 
