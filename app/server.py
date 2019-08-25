@@ -210,8 +210,8 @@ def pir_mqtt(client,userdata,message):
 
 
 ########################################
-broker_address="192.168.2.20"
-#broker_address="127.0.0.1"
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)

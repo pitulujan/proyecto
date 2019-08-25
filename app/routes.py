@@ -211,7 +211,7 @@ def add_device():
         print(answer)
         return jsonify(answer)
 
-    return render_template('add_device_switch.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
+    return render_template('add_device_w_temp.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
 
 
 @app.route('/add_sensor', methods=['POST'])
