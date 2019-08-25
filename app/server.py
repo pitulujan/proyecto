@@ -586,14 +586,14 @@ def controlling_temp(**kwargs):
 
     if temp_hist['state'] == 'off':
 
-        set_point = temp['Set_point']
+        set_point = temp['Set_Point']
 
     elif temp_hist['state'] == "heat":
 
-        set_point = temp['Set_point'] + 1 
+        set_point = temp['Set_Point'] + 1 
 
     else:
-        set_point = temp['Set_point'] -1 
+        set_point = temp['Set_Point'] -1 
 
 
 
