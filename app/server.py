@@ -214,7 +214,7 @@ def pir_mqtt(client,userdata,message):
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app") #create new instance
+client = mqtt.Client("web_app_pc") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -288,7 +288,7 @@ def receive_input(connection, max_buffer_size):
     client_input_size = sys.getsizeof(client_input)
 
     if client_input_size > max_buffer_size:
-        #print("The input size is greater than expected {}".format(client_input_size))
+        print("The input size is greater than expected {}".format(client_input_size))
 
     decoded_input = client_input.decode(
         "ascii", "ignore"
@@ -481,7 +481,7 @@ def tick():
 
     # socketio.emit('new_dev_tobrowser', {'arrayToSendToBrowser' : new_dev_mac}, namespace='/test')
     #socketio.emit('low_bat_tobrowser', {'arrayToSendToBrowser' : Low_baterry_array}, namespace='/test')
-    #print("Tick! The time is: %s" % datetime.now())
+    print("Tick! The time is: %s" % datetime.now())
 
 
 scheduler = config_scheduler()
