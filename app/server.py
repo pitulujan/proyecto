@@ -29,6 +29,7 @@ new_dev_mac = ""
 new_dev_mac_enabled = False
 low_baterry_not = False
 Low_baterry_array = []
+temp_hist={'state': 'off'}
 
 seq_num = (
     0
@@ -214,7 +215,7 @@ def pir_mqtt(client,userdata,message):
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app_pc") #create new instance
+client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -580,17 +581,34 @@ def set_temp2(state,set_point,user):
 
 
 def controlling_temp(**kwargs):
+    global temp_hist
     temp=get_temp_state()
+
+    if temp_hist['state'] == 'off':
+
+        set_point = temp['Set_point']
+
+    elif temp_hist['state'] == "heat":
+
+        set_point = temp['Set_point'] + 1 
+
+    else:
+        set_point = temp['Set_point'] -1 
+
+
 
     #print(temp)
 
     if temp['Current_value'] != '-':
-        if temp['Current_value'] > temp['Set_Point']:
+        if temp['Current_value'] > set_point:
             sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'10',qos=2)
-        elif temp['Current_value'] < temp['Set_Point']:
+            temp_hist['state'] = 'ac'
+        elif temp['Current_value'] < set_point:
             sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'11',qos=2)
+            temp_hist['state'] = 'heat'
         else:
             sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
+            temp_hist['state'] = 'off'
     return
         
 
