@@ -1166,7 +1166,7 @@ def edit_device_server(
     trying_to_change = Devices.query.filter_by(
         location=new_location, str_id=new_str_id
     ).first()
-    print(handles,trying_to_change.handles)
+
     if trying_to_change != None and trying_to_change.handles == handles:
         message = (
             "There's already a device called " + new_str_id + " in " + new_location
@@ -1194,10 +1194,10 @@ def edit_device_server(
             print('aca deberia entrar porque existe todo')
             Current_state_dic_rooms[new_location][new_str_id] =  Current_state_dic_rooms[old_location][old_str_id]
 
-        if new_str_id != old_str_id:
-            Current_state_dic_rooms[old_location].pop(old_str_id)
-            if len(Current_state_dic_rooms[old_location]) == 0:
-                Current_state_dic_rooms.pop(old_location)
+
+        Current_state_dic_rooms[old_location].pop(old_str_id)
+        if len(Current_state_dic_rooms[old_location]) == 0:
+            Current_state_dic_rooms.pop(old_location)
 
         # db.session.delete(device_to_edit)
         db.session.commit()
@@ -1215,6 +1215,10 @@ def edit_device_server(
 
 def edit_sensor_server(old_location, new_location, mac_address, active_average):
     global Current_sensors
+
+
+    old_location = old_location.replace('_',' ')
+    new_location = new_location.replace('_',' ')
 
     if active_average == "True":
         active_average = True

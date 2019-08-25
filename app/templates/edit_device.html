@@ -55,7 +55,7 @@
             </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{k}}" data-mac_address="{{current_sensors[k]['mac_address']}}" data-active_average="{{current_sensors[k]['active_average']}}"  ></span>
+              <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{k.replace(' ','_')}}" data-mac_address="{{current_sensors[k]['mac_address']}}" data-active_average="{{current_sensors[k]['active_average']}}"  ></span>
            </div>
       </div>
 
@@ -78,7 +78,7 @@
                     </div>
                     <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
 
-                      <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{key}}" data-mac_address="{{current_sensors[key]['mac_address']}}" data-active_average="{{current_sensors[key]['active_average']}}" ></span>
+                      <span class="glyphicon glyphicon-menu-right editsensor" onclick='' data-old_location="{{key.replace(' ','_')}}" data-mac_address="{{current_sensors[key]['mac_address']}}" data-active_average="{{current_sensors[key]['active_average']}}" ></span>
                    </div>
               </div>
 </div>
@@ -319,7 +319,9 @@
 
       $(document).on("click","span.editsensor",function(){
 
-                                                        var old_location = $(this).data('old_location');
+                                                        console.log($(this).data('old_location'));
+                                                        console.log($(this).data('old_location').replace('_',' '));
+                                                        var old_location = $(this).data('old_location').replace('_',' ');
                                                         var mac_address = $(this).data('mac_address');
                                                         var active_average = $(this).data('active_average');
 
@@ -333,7 +335,7 @@
                                                         $("#new_sensor_location").val(old_location);
                                                         $("#new_sensor_location").attr('onfocus',"if (this.value=='"+old_location+"') this.value='';");
 
-                                                        $("#dataplacereditsensor").attr('data-old_location',old_location);
+                                                        $("#dataplacereditsensor").attr('data-old_location',old_location.replace(' ','_'));
                                                         $("#dataplacereditsensor").attr('data-mac_address',mac_address);
                                                         $('#modaleditsensor').modal('show');
 
