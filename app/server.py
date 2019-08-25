@@ -1306,7 +1306,8 @@ def add_new_device_server(
         temp_dev= ast.literal_eval(temp_dev)
 
         if temp_dev:
-            scheduler.add_job(controlling_temp, "interval", seconds=30 args=[], id='temp_for_'+str(mac_address))
+            print('soy temp dev y me schedualice')
+            scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id='temp_for_'+str(mac_address))
         presence_state = ast.literal_eval(presence_state)
         online = ast.literal_eval(online)
         tactil_switch = ast.literal_eval(tactil_switch)
