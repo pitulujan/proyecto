@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp2, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server,get_switches,toggle_switch
+from app.server import set_temp2, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server,get_switches,toggle_switch,enable_pir_server
 from flask_socketio import send, emit
 #import xmltodict, requests
 
@@ -120,6 +120,12 @@ def toggle_switch_routes():
 
     return 'ok'
 
+@app.route('/pir_enable', methods=['POST'])
+@login_required
+def pir_enable():
+    enable_pir_server(request.form['mac_address'])
+
+    return 'ok'
 
 
 @app.route('/remove_device', methods=['GET','POST'])

@@ -202,7 +202,6 @@ def touch_temp_mqtt(client,userdata,message):
 
 def pir_mqtt(client,userdata,message):
     global mapping_macs
-    print('pitu?')
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     presence_state = ast.literal_eval(str(message.payload.decode("utf-8")))['presence_state']
     if presence_state == 1:
@@ -213,8 +212,8 @@ def pir_mqtt(client,userdata,message):
     take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
-broker_address="192.168.2.20"
-#broker_address="127.0.0.1"
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -473,6 +472,22 @@ def remove_dev(user, location_str_id):
         del Current_state_dic_rooms[location]
     db.session.commit()
     return "Device " + str_id + " was successfully removed from " + location
+
+def enable_pir_server(mac_address):
+    global mapping_macs
+    global Current_state_dic_rooms
+    location =  mapping_macs[mac_address]['location']
+    str_id = mapping_macs[mac_address]['str_id']
+
+    if Current_state_dic_rooms[location][str_id]['pir_enabled']:
+
+        socketio.emit("pir_enable",{"mac_address" : mac_address.replace(':','_'),"state": False }, namespace="/test")
+        Current_state_dic_rooms[location][str_id]['pir_enabled'] = False
+
+    else:
+        socketio.emit("pir_enable",{"mac_address" : mac_address.replace(':','_'),"state": True }, namespace="/test")
+        Current_state_dic_rooms[location][str_id]['pir_enabled'] = True
+    return
 
 
 def tick():
