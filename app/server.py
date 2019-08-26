@@ -202,6 +202,7 @@ def touch_temp_mqtt(client,userdata,message):
 
 def pir_mqtt(client,userdata,message):
     global mapping_macs
+    print('pitu?')
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     presence_state = ast.literal_eval(str(message.payload.decode("utf-8")))['presence_state']
     if presence_state == 1:
@@ -209,13 +210,12 @@ def pir_mqtt(client,userdata,message):
     else:
         presence_state = False
     
-    take_action(fallback, presence_state, 0,True,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
-
+    take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
-broker_address="192.168.2.20"
-#broker_address="127.0.0.1"
-client = mqtt.Client("web_app") #create new instance
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
+client = mqtt.Client("web_app_pc") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -517,6 +517,7 @@ def get_initial_values():
                 "handles" : location.handles,
                 "online": True,
                 "presence_state": False,
+                "pir_enabled" : True,
             }
         else:
             Current_state_dic_rooms[location.location] = {
@@ -531,6 +532,7 @@ def get_initial_values():
                     "handles" : location.handles,
                     "online": True,
                     "presence_state": False,
+                    "pir_enabled" : True,
                 }
             }
     # query_temp=Temperature.query.first()
@@ -1360,6 +1362,7 @@ def add_new_device_server(
                     "presence_state": presence_state,
                     "tactil_switch" : tactil_switch,
                     "handles" : str(handles),
+                    "pir_enabled": True,
                 }
             }
         # Current_rooms[location]=False
@@ -1376,6 +1379,7 @@ def add_new_device_server(
                     "presence_state": presence_state,
                     "tactil_switch": tactil_switch,
                     "handles":str(handles),
+                    "pir_enabled": True,
                 }
         description = "New device " + str_id + " has been added to " + location
         log_entry = Log(
@@ -1625,9 +1629,6 @@ def disable_new_dev_mac():
     return
 
 
-
-
-
 def take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id):
     global Sent_messages
     global Current_state_dic_rooms
@@ -1673,7 +1674,6 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
                 #client.publish("cmnd/"+dev_mac+"/POWER",'TOGGLE',qos=2)
                 #Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State'] = not Current_state_dic_rooms[mac_loc_mapping[dev_mac]['location']][mac_loc_mapping[dev_mac]['str_id']]['State']
                 if aux_state and state == 'ON':
-                    #print('porque verga no swtcheas')
                     #socketio.emit("device_update",{"location": location.replace(' ','-'),"state": False ,"str_id":str_id.replace(' ','_')}, namespace="/test")
                     Current_state_dic_rooms[location][str_id]['State']= True
                 if not aux_state and state == 'OFF':
@@ -1699,21 +1699,19 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
         seq_number = random.randint(0, 256)
         return seq_number,False
 
+def take_action_pir(mac_address, state,handles,location,str_id):
+
+    global Current_state_dic_rooms
+    print('Estados->',state,handles,location,str_id)
+    print('pir enabled-->',Current_state_dic_rooms[location][str_id]['pir_enabled'])
+
+    if Current_state_dic_rooms[location][str_id]['pir_enabled']:
 
 
+        handles = ast.literal_eval(handles)
 
-'''
-    seq_number = random.randint(0, 256)
+        for dev in handles:
+            print('esto mande->',location.replace(' ','-'),dev.replace(' ','_'))
+            socketio.emit("device_update",{"location": location.replace(' ','-'),"state": state ,"str_id": dev.replace(' ','_')}, namespace="/test")
+            Current_state_dic_rooms[location][dev.replace('_',' ')]['State'] = state
 
-    message = " 1 " + mac_address + " " + str(state) + " " + str(set_point)
-    message = str(len(message) + 1) + message
-
-    ans = send_socket(message)
-    #print("y aca?", ans)
-    if ans == None:
-        # Sent_messages[str(seq_number)]={'mac_address': mac_address, 'state': state,'set_point':set_point}
-        #print(Sent_messages)
-        return seq_number
-    else:
-        return ans
-'''
