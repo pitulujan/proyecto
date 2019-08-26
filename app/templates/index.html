@@ -286,16 +286,9 @@
   <script>
 
 socket.on('device_update', function(result) {
-  console.log(result)
 
-     // if (result.presence_state) {
-     //   document.getElementById(result.location).style.color = "green";
-     // } else {
-     //   document.getElementById(result.location).style.color = "black";
-     // }
 
       if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
-      console.log($("#myonoffswitch"+result.location+result.str_id));
       $("#myonoffswitch"+result.location+result.str_id).click();;}
       
       //myonoffswitch
@@ -315,11 +308,33 @@ $('#thermostataddedsucces').modal('show');
 
   });
 
+
+socket.on('update_presence', function(result) {
+  console.log(result);
+  console.log(result.presence_state);
+
+  if (result.presence_state) {
+
+
+$('#'+result.location).attr("style","color: green;");}
+
+else {
+  $('#'+result.location).attr("style","color: black;");
+
+
+}
+
+ 
+    return false
+
+
+  });
+
 socket.on('pir_enable', function(result) {
 
   if (result.state) {
 
-    $('#pir_enable'+result.mac_address.replace(':','_')).attr("style","color: black;");
+    $('#pir_enable'+result.mac_address.replace(':','_')).attr("style","");
     
 
   }

@@ -212,8 +212,8 @@ def pir_mqtt(client,userdata,message):
     take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
-#broker_address="192.168.2.20"
-broker_address="127.0.0.1"
+broker_address="192.168.2.20"
+#broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -1717,8 +1717,11 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
 def take_action_pir(mac_address, state,handles,location,str_id):
 
     global Current_state_dic_rooms
-    print('Estados->',state,handles,location,str_id)
-    print('pir enabled-->',Current_state_dic_rooms[location][str_id]['pir_enabled'])
+    global mapping_macs
+
+    socketio.emit("update_presence",{"location": location.replace(' ','-'),"presence_state": state }, namespace="/test")
+
+
 
     if Current_state_dic_rooms[location][str_id]['pir_enabled']:
 
@@ -1726,7 +1729,6 @@ def take_action_pir(mac_address, state,handles,location,str_id):
         handles = ast.literal_eval(handles)
 
         for dev in handles:
-            print('esto mande->',location.replace(' ','-'),dev.replace(' ','_'))
             socketio.emit("device_update",{"location": location.replace(' ','-'),"state": state ,"str_id": dev.replace(' ','_')}, namespace="/test")
             Current_state_dic_rooms[location][dev.replace('_',' ')]['State'] = state
 
