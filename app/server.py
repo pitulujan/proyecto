@@ -137,7 +137,7 @@ def add_temp_mqtt(client, userdata, message):
     
 
     temp_dev = Devices.query.filter_by(temp_device=True).first()
-    if temp_dev != None:
+    if temp_dev == None:
         fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
         mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
 
@@ -169,7 +169,6 @@ def add_temp_mqtt(client, userdata, message):
                         "presence_state": False,
                         "tactil_switch" : False,
                         "handles" : "[]",
-                        "clim" : False,
                     }
                 }
         
@@ -218,8 +217,8 @@ def pir_mqtt(client,userdata,message):
     take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
-broker_address="192.168.2.20"
-#broker_address="127.0.0.1"
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -526,24 +525,7 @@ def get_initial_values():
     query_devices = Devices.query.all()
     for location in query_devices:
         mapping_macs[location.mac_address]={'location': location.location,'str_id':location.str_id,'handles':location.handles}
-        if location.location == 'Temperature':
-            Current_state_dic_rooms[location.location] = {
-                location.str_id: {
-                    "dev_type": location.dev_type,
-                    "State": location.state,
-                    "set_point": location.set_point,
-                    "user_perm": location.user_perm,
-                    "mac_address": location.mac_address,
-                    "temp_dev": location.temp_device,
-                    "tactil_switch" : location.tactil_switch,
-                    "handles" : location.handles,
-                    "online": True,
-                    "presence_state": False,
-                    "pir_enabled" : True,
-                    "clim" : False,
-                }
-            }
-        elif location.location in Current_state_dic_rooms.keys():
+        if location.location in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[location.location][location.str_id] = {
                 "dev_type": location.dev_type,
                 "State": location.state,
@@ -606,7 +588,6 @@ def set_temp2(state,set_point,user):
     
 
     if state:
-        Current_state_dic_rooms['Temperature']['Temperature']['clim'] = True
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = True
         Current_state_dic_rooms['Temperature']['Temperature']['Set_point'] = set_point
         query_temp = Devices.query.filter_by(temp_device=True).first()
@@ -616,7 +597,6 @@ def set_temp2(state,set_point,user):
         #print('aca prendi')
         return jsonify({"status": 200})
     else:
-        Current_state_dic_rooms['Temperature']['Temperature']['clim'] = False
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
         sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
         #print('aca apague')
@@ -718,7 +698,7 @@ def toggle_temp(mac_address):
     global Current_state_dic_rooms
     #print('aca va ',Current_state_dic_rooms['Temperature']['Temperature']['State'])
 
-    socketio.emit("device_update",{"location": "","state": False if Current_state_dic_rooms['Temperature']['Temperature']['clim'] else True ,"str_id":""}, namespace="/test")
+    socketio.emit("device_update",{"location": "","state": False if Current_state_dic_rooms['Temperature']['Temperature']['State'] else True ,"str_id":""}, namespace="/test")
     return
 
 def get_temp_state():
@@ -753,7 +733,6 @@ def get_temp_state():
             "Set_Point": temp_dev.set_point,
             "Current_value": tem_prom,
             "online": Current_state_dic_rooms["Temperature"]["Temperature"]["online"],
-            "clim": Current_state_dic_rooms["Temperature"]["Temperature"]["clim"],
         }
     else:
         return None
