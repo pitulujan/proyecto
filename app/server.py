@@ -608,7 +608,7 @@ def controlling_temp(**kwargs):
     global Current_state_dic_rooms
     temp=get_temp_state()
 
-    if Current_state_dic_rooms['Temperature']['Temperature']['State']
+    if Current_state_dic_rooms['Temperature']['Temperature']['State']:
 
         if temp_hist['state'] == 'off':
 
