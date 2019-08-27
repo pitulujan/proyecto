@@ -164,6 +164,7 @@ def add_temp_mqtt(client, userdata, message):
                         "presence_state": False,
                         "tactil_switch" : False,
                         "handles" : "[]",
+                        "clim" : False,
                     }
                 }
         
@@ -520,7 +521,24 @@ def get_initial_values():
     query_devices = Devices.query.all()
     for location in query_devices:
         mapping_macs[location.mac_address]={'location': location.location,'str_id':location.str_id,'handles':location.handles}
-        if location.location in Current_state_dic_rooms.keys():
+        if location == 'Temperature':
+            Current_state_dic_rooms[location.location] = {
+                location.str_id: {
+                    "dev_type": location.dev_type,
+                    "State": location.state,
+                    "set_point": location.set_point,
+                    "user_perm": location.user_perm,
+                    "mac_address": location.mac_address,
+                    "temp_dev": location.temp_device,
+                    "tactil_switch" : location.tactil_switch,
+                    "handles" : location.handles,
+                    "online": True,
+                    "presence_state": False,
+                    "pir_enabled" : True,
+                    "clim" : False,
+                }
+            }
+        elif location.location in Current_state_dic_rooms.keys():
             Current_state_dic_rooms[location.location][location.str_id] = {
                 "dev_type": location.dev_type,
                 "State": location.state,
@@ -550,6 +568,7 @@ def get_initial_values():
                     "pir_enabled" : True,
                 }
             }
+    print(Current_state_dic_rooms)
     # query_temp=Temperature.query.first()
     # Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
@@ -582,6 +601,7 @@ def set_temp2(state,set_point,user):
     
 
     if state:
+        Current_state_dic_rooms['Temperature']['Temperature']['clim'] = True
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = True
         Current_state_dic_rooms['Temperature']['Temperature']['Set_point'] = set_point
         query_temp = Devices.query.filter_by(temp_device=True).first()
@@ -591,6 +611,7 @@ def set_temp2(state,set_point,user):
         #print('aca prendi')
         return jsonify({"status": 200})
     else:
+        Current_state_dic_rooms['Temperature']['Temperature']['clim'] = False
         Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
         sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
         #print('aca apague')
@@ -692,7 +713,7 @@ def toggle_temp(mac_address):
     global Current_state_dic_rooms
     #print('aca va ',Current_state_dic_rooms['Temperature']['Temperature']['State'])
 
-    socketio.emit("device_update",{"location": "","state": False if Current_state_dic_rooms['Temperature']['Temperature']['State'] else True ,"str_id":""}, namespace="/test")
+    socketio.emit("device_update",{"location": "","state": False if Current_state_dic_rooms['Temperature']['Temperature']['clim'] else True ,"str_id":""}, namespace="/test")
     return
 
 def get_temp_state():
@@ -727,6 +748,7 @@ def get_temp_state():
             "Set_Point": temp_dev.set_point,
             "Current_value": tem_prom,
             "online": Current_state_dic_rooms["Temperature"]["Temperature"]["online"],
+            "clim": Current_state_dic_rooms["Temperature"]["Temperature"]["clim"],
         }
     else:
         return None
@@ -1215,8 +1237,10 @@ def edit_device_server(
         device_to_edit.location = new_location
         device_to_edit.str_id = new_str_id
         device_to_edit.handles = str(handles)
-        #print('seteando el nuevo handles a ->',str(handles))
+        print('seteando el nuevo handles a ->',str(handles))
         Current_state_dic_rooms[old_location][old_str_id]['handles'] = str(handles)
+        mapping_macs[mac_address]['location'] = new_location
+        mapping_macs[mac_address]['str_id'] = new_str_id
         mapping_macs[mac_address]['handles']=str(handles)
 
 
@@ -1647,6 +1671,7 @@ def disable_new_dev_mac():
 def take_action(mac_address, state, set_point,tactil_switch,handles,location,str_id):
     global Sent_messages
     global Current_state_dic_rooms
+    print(Current_state_dic_rooms)
     if state == True:
         state = 'ON'
     elif state == False:
@@ -1675,6 +1700,7 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
             mac_loc_mapping[mac]={'location':location,'str_id':dev.replace('_',' ')}
 
         if reset:
+
             Current_state_dic_rooms[location][str_id]['State']= False if state=='ON' else True
 
         #print('reset',reset)
