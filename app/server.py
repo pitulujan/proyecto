@@ -605,34 +605,39 @@ def set_temp2(state,set_point,user):
 
 def controlling_temp(**kwargs):
     global temp_hist
+    global Current_state_dic_rooms
     temp=get_temp_state()
 
-    if temp_hist['state'] == 'off':
+    if Current_state_dic_rooms['Temperature']['Temperature']['State']
 
-        set_point = temp['Set_Point']
+        if temp_hist['state'] == 'off':
 
-    elif temp_hist['state'] == "heat":
+            set_point = temp['Set_Point']
 
-        set_point = temp['Set_Point'] + 1 
+        elif temp_hist['state'] == "heat":
 
-    else:
-        set_point = temp['Set_Point'] -1 
+            set_point = temp['Set_Point'] + 1 
 
-
-
-    #print(temp)
-
-    if temp['Current_value'] != '-':
-        if temp['Current_value'] > set_point:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'10',qos=2)
-            temp_hist['state'] = 'ac'
-        elif temp['Current_value'] < set_point:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'11',qos=2)
-            temp_hist['state'] = 'heat'
         else:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
-            temp_hist['state'] = 'off'
-    return
+            set_point = temp['Set_Point'] -1 
+
+
+
+        #print(temp)
+
+        if temp['Current_value'] != '-':
+            if temp['Current_value'] > set_point:
+                sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'10',qos=2)
+                temp_hist['state'] = 'ac'
+            elif temp['Current_value'] < set_point:
+                sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'11',qos=2)
+                temp_hist['state'] = 'heat'
+            else:
+                sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
+                temp_hist['state'] = 'off'
+        return
+    else:
+        return
         
 
 def set_temp(
