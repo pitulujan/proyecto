@@ -526,7 +526,7 @@ def get_initial_values():
     query_devices = Devices.query.all()
     for location in query_devices:
         mapping_macs[location.mac_address]={'location': location.location,'str_id':location.str_id,'handles':location.handles}
-        if location == 'Temperature':
+        if location.location == 'Temperature':
             Current_state_dic_rooms[location.location] = {
                 location.str_id: {
                     "dev_type": location.dev_type,
