@@ -141,7 +141,7 @@ def add_temp_mqtt(client, userdata, message):
         fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
         mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
 
-        scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id='temp_for_'+str(fallback))
+        scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id=str(fallback))
 
      
         device_to_add = Devices(
@@ -197,13 +197,15 @@ def touch_switch_mqtt(client,userdata,message):
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     #print(fallback,'--> TOGGLE')
-    toggle_switch(fallback)
+    if fallback in mapping_macs.keys():
+        toggle_switch(fallback)
 
 def touch_temp_mqtt(client,userdata,message):
 
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     #print(fallback,'--> TOGGLE')
-    toggle_temp(fallback)
+    if fallback in mapping_macs.keys():
+     toggle_temp(fallback)
 
 def pir_mqtt(client,userdata,message):
     global mapping_macs
@@ -213,8 +215,8 @@ def pir_mqtt(client,userdata,message):
         presence_state = True
     else:
         presence_state = False
-    
-    take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
+    if fallback in mapping_macs.keys():
+        take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
 broker_address="192.168.2.20"
@@ -420,6 +422,7 @@ def remove_sens(user, mac_address):
 
 
 def remove_dev(user, location_str_id):
+    print(location_str_id)
 
     location = " ".join(location_str_id.split("/")[0].split("-"))
     str_id = " ".join(location_str_id.split("/")[1].split("."))
@@ -448,6 +451,8 @@ def remove_dev(user, location_str_id):
         db.session.commit()
 
 
+    if location == 'Temperature':
+        scheduler.remove_job(device_to_remove.mac_address)
 
 
 
@@ -510,7 +515,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 def get_activity_log():
