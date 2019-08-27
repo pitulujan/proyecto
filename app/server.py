@@ -734,7 +734,7 @@ def get_temp_state():
             tem_prom = "-"
 
         return {
-            "State": temp_dev.state,
+            "State": Current_state_dic_rooms["Temperature"]["Temperature"]['State'],
             "Set_Point": temp_dev.set_point,
             "Current_value": tem_prom,
             "online": Current_state_dic_rooms["Temperature"]["Temperature"]["online"],
@@ -1245,7 +1245,8 @@ def edit_device_server(
             Current_state_dic_rooms[new_location][new_str_id] =  Current_state_dic_rooms[old_location][old_str_id]
 
 
-        Current_state_dic_rooms[old_location].pop(old_str_id)
+        if new_location != old_location or new_str_id != old_str_id:
+            Current_state_dic_rooms[old_location].pop(old_str_id)
         if len(Current_state_dic_rooms[old_location]) == 0:
             Current_state_dic_rooms.pop(old_location)
 
