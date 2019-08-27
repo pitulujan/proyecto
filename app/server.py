@@ -132,13 +132,18 @@ def add_temp_mqtt(client, userdata, message):
 
     global Current_state_dic_rooms
     global mapping_macs
-    fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
 
-    mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
 
-    scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id='temp_for_'+str(fallback))
+    
 
-    if mapping_macs[fallback] !=None:
+    temp_dev = Devices.query.filter_by(temp_device=True).first()
+    if temp_dev != None:
+        fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic'].split('/')[1]
+        mapping_macs[fallback]={'location': "Temperature",'str_id':"Temperature",'handles':"[]"}
+
+        scheduler.add_job(controlling_temp, "interval", seconds=30, args=[], id='temp_for_'+str(fallback))
+
+     
         device_to_add = Devices(
                 user_perm=True,
                 str_id="Temperature",
