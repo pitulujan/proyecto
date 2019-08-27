@@ -3,8 +3,6 @@
 {% block app_content %}
 
 <link rel="stylesheet" href="/static/style_slider.css">
- <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- arregla el tema del zoom en el modal, la romi toda -->
-
 <style type="text/css">
 .modal-body .form-horizontal .col-sm-2,
 .modal-body .form-horizontal .col-sm-10 {
@@ -53,7 +51,7 @@
                 
          </div>
 
-         <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;"> 
+         <div class="navbar-header col-md-2 col-xs-2" style="display: flex;justify-content: flex-end;"> 
                 
                     <a class="navbar-brand addevent"  href="#"  style="font-size: 20px;padding-right: 0px;"><i class="fa fa-calendar-plus-o"></i></a>
                 
@@ -214,7 +212,7 @@
                         {%for location in rooms_devices.keys()|sort:%}
                         {%if location != 'default'%}
                           <option value="{{'_'.join(location.split(' '))}}">{{location}}</option>
-                        }
+                        
                         {% endif %}
                         {% endfor %}
                       </select>
@@ -223,7 +221,9 @@
                         {%for number,key in enumerate(rooms_devices.keys()|sort):%}
                           {%if number == 0:%}
                             {%for devices in rooms_devices[key]:%}
+                            {%if not rooms_devices[key][devices]['tactil_switch']:%}
                                <option value="{{'_'.join(devices.split(' '))}}">{{devices}}</option>
+                            {%endif%}
                             {%endfor%}
                           {%endif%}
                         {%endfor%}
@@ -265,19 +265,18 @@
                         </form>
     
             </div>
+          </form>
                         <row style="display: flex;justify-content: flex-end;">
                 <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel"> Cancel </button>
                 <button type="button" class="btn btn-primary" id="submit_event"> Save changes </button>
             </row>
             </div>
             <!-- Modal Footer -->
-
-        </div>
-        </form>
+      
     </div>
 </div>
 </div>
-</div>
+
 
 
  
@@ -331,9 +330,12 @@
   $('#locationid').change(function () {
                                         $('#deviceid').html('');
                                             {%for location,devices in rooms_devices.items()|sort:%}
-                                        if($('#locationid').val()=='{{location}}'){
+                                            console.log($('#locationid').val());
+                                        if($('#locationid').val()=='{{location.replace(' ','_')}}'){
                                             {%for device,item in devices.items():%} 
-                                        $('#deviceid').append('<option value="{{'_'.join(device.split(' '))}}">{{device}}</option>');
+                                            {%if not item['tactil_switch']:%}
+                                        $('#deviceid').append('<option value="{{device.replace(' ','_')}}">{{device}}</option>');
+                                        {%endif%}
                                             {% endfor %}
                                         }
                                                             
@@ -400,7 +402,7 @@
                                                         }};
 
                                                         if (param_state == 'True' || param_state == true){
-                                                          console.log('deberia');
+                                                          
                                                           if ($("#myonoffswitch").val()=='Off'){
                                                           $("#myonoffswitch").click();}
                                                           if (dic[location.split(' ').join('_')+str_id.split(' ').join('_')]=="True") {$("#prendeapaga").attr("style","display:none;padding-left: 20px;");} else {

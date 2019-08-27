@@ -10,6 +10,10 @@
 }
 </style>
 
+<div class="row" style="display: flex;justify-content: center;">
+    <h1><span class="glyphicon glyphicon-trash"></span> {{ title}}</h1>
+</div>
+
 {% for k,v in devices.items()|sort: %}
    <button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{k}}"> {{k}} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
    <div class="dropdown-container-pitu collapse " >
@@ -40,7 +44,7 @@
           <div class="row" id="perro">
             <div class="col-xs-10 " style="display: flex;justify-content: flex-start;padding-left: 15px;">
                             
-                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Sensors</h3>
+                            <h3 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;">Temp Sensor</h3>
                             
             </div>
             <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -156,9 +160,17 @@
     </div>
 </div>
 
+<div class="row" id="no_scheduled_events">
+ <center><h2>No devices to remove <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+</div>
+
     <script type="text/javascript">
+            var dev_btn = $( ".deleteButton" ).length;
+      var sens_btn = $( ".deleteButtonsensor" ).length;
+      if (dev_btn == 0 && sens_btn ==0) { $("#no_scheduled_events").show();} else {$("#no_scheduled_events").hide();}
       
       $(document).ready(function(){
+
       $(".deleteButton").click(function(){
       var location = $(this).data('location');
       var str_id = $(this).data('str_id');
@@ -177,6 +189,7 @@
 
       });
 
+      
 
         });
     </script>

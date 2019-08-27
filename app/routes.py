@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, request, url_for,jsonify,g
-from app import app, db
+from app import app, db, socketio
 import json
 from app.forms import LoginForm, RegistrationForm, ChangePassword
 from app.manage_users import *
@@ -7,8 +7,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
-from app.server import set_temp, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,send_socket,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server
-
+from app.server import set_temp2, get_temp_state, get_initial_values, get_devices, set_device,get_scheduled_events,delete_scheduled_event,remove_dev,schedule_event,get_new_devices,edit_device_server,generate_dummy_device_test,get_new_device,add_new_device_server,disable_new_dev_mac,get_current_sensors,get_new_sensors,generate_dummy_sensor_test,add_new_sensor_server,remove_sens,edit_sensor_server,get_activity_log,get_temp_device,get_new_notifications,disable_low_battery_notifications_server,get_switches,toggle_switch,enable_pir_server
+from flask_socketio import send, emit
 #import xmltodict, requests
 
 get_initial_values()
@@ -17,9 +17,9 @@ get_initial_values()
 @login_required
 def index():
     temp=get_temp_state()
-    #print(temp)
+    ##print(temp)
     devices,state = get_devices()
-    return render_template('index.html', title='Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
+    return render_template('index.html', title=' Home', devices=devices,state=state,temp=get_temp_state(),current_sensors=get_current_sensors(),list=list)
    
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -87,7 +87,7 @@ def delete_user():
 
     if request.method == 'POST':
         post_id = request.form['user_to_del']
-        #print(post_id)
+        ##print(post_id)
         ans=delete_user_full(post_id,current_user.username)
         
         return jsonify({'ans':ans})
@@ -98,12 +98,9 @@ def delete_user():
 @login_required
 def set_temperature():
     
-    if request.form['state']=='True':
         
-        ans=set_temp(True,request.form['set_point'],current_user.username)
+    ans=set_temp2(request.form['state'],request.form['set_point'],current_user.username)
                     
-    else:
-        ans=set_temp(False,request.form['set_point'],current_user.username)
 
     return ans
 #Lo logreeeee lo quiero compartir con mi familia que los amooooo
@@ -112,9 +109,23 @@ def set_temperature():
 @login_required
 def set_dev():
     if request.form['state']=='True':
-        return set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],True,request.form['set_point'])
+        return set_device(request.form['location'].split('.')[0].replace('-',' '), request.form['location'].split('.')[1],True,request.form['set_point'])
     else:
-        return set_device(request.form['location'].split('.')[0], request.form['location'].split('.')[1],False,request.form['set_point'])
+        return set_device(request.form['location'].split('.')[0].replace('-',' '), request.form['location'].split('.')[1],False,request.form['set_point'])
+
+@app.route('/toggle_switch_routes', methods=['POST'])
+@login_required
+def toggle_switch_routes():
+    toggle_switch(request.form['mac_address'])
+
+    return 'ok'
+
+@app.route('/pir_enable', methods=['POST'])
+@login_required
+def pir_enable():
+    enable_pir_server(request.form['mac_address'])
+
+    return 'ok'
 
 
 @app.route('/remove_device', methods=['GET','POST'])
@@ -123,7 +134,7 @@ def remove_device():
 
     devices,state=get_devices()
     if request.method == 'POST':
-        #print(request.form.get('delete'))
+        ##print(request.form.get('delete'))
         ans=remove_dev(current_user.username,request.form.get('delete'))
         flash(ans)
         return render_template('remove_device.html', title='Remove Device', devices=devices,state=state,current_sensors=get_current_sensors(),list=list)
@@ -136,7 +147,7 @@ def remove_device():
 def remove_sensor():
 
     if request.method == 'POST':
-        #print(request.form.get('delete'))
+        ##print(request.form.get('delete'))
         ans=remove_sens(current_user.username,request.form.get('delete_sensor'))
         flash(ans)
         devices,state=get_devices()
@@ -148,20 +159,20 @@ def remove_sensor():
 def edit_device():
     devices,state=get_devices()
     if request.method == 'POST':
-        ##print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
-        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        ###print(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'])
+        answer=edit_device_server(request.form['old_location'],request.form['new_location'],request.form['old_str_id'],request.form['new_str_id'],request.form['mac_address'],request.form.getlist('handles[]'))
         flash(answer['message'])
         return jsonify(answer)
 
 
-    return render_template('edit_device.html',title='Edit Device', devices=devices,current_sensors=get_current_sensors(),list=list)
+    return render_template('edit_device.html',title='Edit Device', devices=devices,current_sensors=get_current_sensors(),list=list,enumerate=enumerate)
 
 @app.route('/edit_sensor', methods=['POST'])
 @login_required
 def edit_sensor():
 
     if request.method == 'POST':
-        #print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
+        ##print(request.form['old_location'],request.form['new_location'],request.form['mac_address'])
         answer=edit_sensor_server(request.form['old_location'],request.form['new_location'],request.form['mac_address'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
@@ -173,7 +184,7 @@ def schedule_events():
 
     devices,state=get_devices()
     if request.method == 'POST':
-        #print(request.form['pid'])
+        ##print(request.form['pid'])
         answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],request.form['pid'],request.form['state'],request.form['set_point'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
         return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
     return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=devices,temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
@@ -196,28 +207,29 @@ def delete_event():
 def add_device():
 
     temp_device=get_temp_device()
+    devices,state=get_devices()
     if request.method == 'POST':
-        #print(request.form['presence_state'])
-        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'])
+        handles=request.form.getlist('handles[]')
+        #print(request.form['tactil_switch'],type(handles))
+
+        answer=add_new_device_server(current_user.username,request.form['location'],request.form['str_id'],request.form['state'],request.form['set_point'],request.form['mac_address'],request.form['temp_dev'],request.form['presence_state'],request.form['online'],request.form['tactil_switch'],request.form.getlist('handles[]'))
         flash(answer['message'])
+        #print(answer)
         return jsonify(answer)
 
-    if temp_device == None:
-        return render_template('add_device.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device)
-    else:
-        return render_template('add_device_w_temp.html', title='Add New Device',new_devices=get_new_devices(),sensors=get_new_sensors())
+    return render_template('add_device_w_temp.html', title='Add New Device',enumerate=enumerate,new_switches=get_switches(),new_devices=get_new_devices(),sensors=get_new_sensors(),temp_device=temp_device,rooms_devices=devices)
 
 
 @app.route('/add_sensor', methods=['POST'])
 @login_required
 def add_sensor():
     if request.method == 'POST':
-        #print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
-        #print(request.form['active_average'],type(request.form['active_average']))
+        ##print(request.form['location'],request.form['mac_address'],request.form['battery'],request.form['presence_state'],request.form['online'],request.form['battery_state'],request.form['temp_state'])
+        ##print(request.form['active_average'],type(request.form['active_average']))
         answer=add_new_sensor_server(current_user.username,request.form['location'],request.form['mac_address'],request.form['battery'],request.form['online'],request.form['battery_state'],request.form['temp_state'],request.form['active_average'])
         flash(answer['message'])
         return jsonify(answer)
-        #print(request.form['dev_type'],request.form['location'],request.form['mac_address'],request.form['state'],request.form['online'])
+        ##print(request.form['dev_type'],request.form['location'],request.form['mac_address'],request.form['state'],request.form['online'])
         #return 'Ok'
 
 @app.route('/log', methods=['GET'])
@@ -231,7 +243,7 @@ def log():
 def get_notifications():
     if request.method == 'POST':
         ans = get_new_notifications()
-        #print(ans)
+        ##print(ans)
         return jsonify(ans)
 
 @app.before_request
@@ -241,11 +253,11 @@ def new_device_notifier_after():
 @app.after_request
 def new_device_notifier(response):
     g.flag,g.new_dev_macs,g.new_dev_mac_enabled = get_new_device()
-    #print (g.flag)
+    ##print (g.flag)
     return response 
 
     if path == '/add_device' and method == 'POST':
-        #print(get_new_device())
+        ##print(get_new_device())
         g.flag ,g.new_dev_macs,g.new_dev_mac_enabled= get_new_device()
 
 
@@ -256,7 +268,7 @@ def generate_dummy_device():
 
     if request.method == 'POST':
 
-        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'))
+        generate_dummy_device_test(request.form.get('dev_type'),request.form.get('presence_state'),request.form.get('online_dev'),request.form.get('switch'),request.form.get('temp_dev'))
         return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
 
     return render_template('generate_dummy_device.html',title = 'Generate Dummy Device')
@@ -267,7 +279,7 @@ def generate_dummy_sensor():
     if request.method == 'POST':
 
         
-        #print(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
+        ##print(request.form.get('presence_state_sensor'), request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
         generate_dummy_sensor_test(request.form.get('online_sensor'),request.form.get('battery_sensor'),request.form.get('battery_sensor_state'),request.form.get('temperature_state'))
     return redirect(url_for('generate_dummy_device'))
 
@@ -305,8 +317,6 @@ def pruebitas2():
     users = User.query.all()
     
     if request.method == 'POST':
-        #print (xmltodict.parse(request.data)['xml']['From'])
+        ##print (xmltodict.parse(request.data)['xml']['From'])
         return jsonify({'nombre': 'pitu', 'apellido' : 'Lujan'})
-    return render_template('dele_user2.html', title=' Delete User', users=users)
-
-
+    return render_template('pruebitas2.html', title=' Delete User', users=users)

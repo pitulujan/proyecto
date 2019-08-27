@@ -2,11 +2,6 @@
 {% block app_content %}
      <link rel="stylesheet" href="/static/style_slider.css">
      <link rel="stylesheet" href="/static/index_y_remove_device.css">
-     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
-     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
-
-
-  
 
   <style type="text/css">
 
@@ -23,17 +18,25 @@
 
   </style>
 
-    <br>
+    <div class="row" style="display: flex;justify-content: center;">
+    <h1><span class="fa fa-home"></span> {{ title}}</h1>
+</div>
 
 {%if temp%}
 
-
-
+<div class="row">
+          <div class="col-xs-12" style="display: flex;justify-content: center;">
+                          
+                         <h2 id="temp_num" style="vertical-align: text-top;margin-top: 5px;"><span class="fa fa-thermometer-half"></span> {{temp['Current_value']}} °C</h2>
+                          
+                  
+          </div>
+</div>
 <div id="temp_for_back" >
        <div class="row">
           <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                           
-                         <h2 id="textoreloco" style="vertical-align: text-top;margin-top: 5px;">Temperature: {{temp['Current_value']}} °C</h2>
+                         <h2 id="temp_numm" style="vertical-align: text-top;margin-top: 5px;">Thermostat </h2>
                           
                   </div>
                     <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
@@ -53,7 +56,7 @@
      
             <form action="{{ url_for('set_temperature') }}" method="POST" style="padding-left: 15px;"> <!---On submit, send the form-data to a file named "/setparameters" (to process the input):-->
             <div class="form-group">
-              <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="{{temp['State']}}">
+              <input type="text" style="display:none;"  id="statevalue" name="statevalue" value="{{temp['clim']}}">
     
     <div class="row">
       <div class="col-xs-9">
@@ -75,16 +78,17 @@
 {%endif%}
 
 {% for k,v in devices.items()|sort: %}
+
 {%if k != 'Temperature' %}
 
 {%if k in current_sensors.keys()%}
-  <h1>{{devices[k]['online']}}</h1>
-        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%}{%else%} <span class="fa fa-street-view "  style="color: grey;"></span>{%endif%}{%if not current_sensors[k]['online'] %} <span class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+<h1>{{devices[k]['online']}}</h1>
+        <button class="dropdown-btn index" data-toggle="collapse" > {{k}}{%if state[k]['tactil_switch']%} {%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id="{{k.replace(' ','_')}}" style="color: green;"></span>{%else%} <span class="fa fa-street-view "id="{{k.replace(' ','_')}}"></span>{%endif%}{%else%} <span class="fa fa-street-view" id="{{k.replace(' ','_')}}" style="color: grey;"></span>{%endif%}{%endif%}{%if not current_sensors[k]['online'] %} <span id="senster_{{k.replace(' ','_')}}" class="fa fa-thermometer-half" style="color: grey;"></span>{%if current_sensors[k]['battery']%} <span id="battery_{{k.replace(' ','_')}}" class="fa fa-battery-full" style="font-size:25px;color: grey;"></span>{%endif%}{%else%} <span id="senster_{{k.replace(' ','_')}}" class="fa fa-thermometer-half"></span>{%if current_sensors[k]['battery']%} {%if current_sensors[k]['battery_state']%} <span id="battery_{{k.replace(' ','_')}}" class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span id="battery_{{k.replace(' ','_')}}" class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
 
 {%else%}
 
-<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view"  style="color: green;"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%}{%else%} <span class="fa fa-street-view "  style="color: grey;"></span>{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" id="dpdw{{'-'.join(k.split(' '))}}"> {{k}}{%if state[k]['tactil_switch']%}{%if state[k]['online']%} {%if state[k]['presence_state']%} <span class="fa fa-street-view" id="{{k.replace(' ','_')}}" style="color: green;"></span>{%else%} <span class="fa fa-street-view " id="{{k.replace(' ','_')}}"></span>{%endif%}{%else%} <span class="fa fa-street-view " id="{{k.replace(' ','_')}}" style="color: grey;"></span>{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 20px" aria-hidden="true"></i></button>
 
  {%endif%}
    <div class="dropdown-container-pitu collapse " >
@@ -97,7 +101,7 @@
                                         
                         </div>
 
-                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 16px;"> {%if not current_sensors[k]['online'] %} - {%else%}{{current_sensors[k]['temp_state']}}°C{%endif%}</h3>
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{k.replace(' ','_')}}" style="margin-top: 5px;padding-right: 16px;"> {%if not current_sensors[k]['online'] %} - {%else%}{{current_sensors[k]['temp_state']}}°C{%endif%}</h3>
                         </div>
             </div>
 
@@ -107,22 +111,43 @@
     {% for kk,vv in v.items()|sort: %}
       
           <div class="row">
+            {%if not vv['tactil_switch']:%}
             <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                             
                             <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
                             
             </div>
+            {%else:%}
+            <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;margin-top: 16px;">
+                            
+                            <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> {{kk}}</h3>
+                            
+            </div>
 
-                      <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
-                                <div class="onoffswitch">
-                                    {%if vv['State']==True:%}
-                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
-                                    {%else:%}
-                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="Off" >
-                                    {%endif%}
-                                    <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></label>
-                                </div>
-                      </div> 
+            {%endif%}
+                      {%if not vv['tactil_switch']:%}
+                            <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;">
+                                      
+                                      <div class="onoffswitch">
+                                          {%if vv['State']==True:%}
+                                          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="On" checked>
+                                          {%else:%}
+                                          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}" value="Off" >
+                                          {%endif%}
+                                          <label class="onoffswitch-label" for="myonoffswitch{{'-'.join(k.split(' '))}}{{'_'.join(kk.split(' '))}}"></label>
+                                      </div> 
+                              </div>
+                      {%else:%}
+
+                      <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 25px;"> 
+                                    <h2> <span onclick='' id="pir_enable{{vv['mac_address'].replace(':','_')}}" data-mac_address="{{vv['mac_address']}}" class="fa fa-street-view togglepirenable" style="color: {%if vv['pir_enabled']:%} black; {%else%} red; {%endif%}"> </span></h2>
+                                  </div>
+                      <div class="col-xs-2" style="display: flex;justify-content: flex-end;padding-right: 25px;"> 
+                                    <h2> <span onclick='' id="{{vv['mac_address']}}" data-mac_address="{{vv['mac_address']}}" class="fa fa-power-off toggleswitch"></span></h2>
+                        </div>
+                      {%endif%}
+                                
+                      
                            
             </div>
       {%if vv['dev_type'] == False:%}
@@ -159,7 +184,7 @@
 {%for key in current_sensors.keys():%}
 {%if key not in devices.keys()%}
 
-<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span class="fa fa-street-view "  style="color: grey"></span> <span class="fa thermometer-half" style="color: grey"></span>{%else%}{%if current_sensors[key]['presence_state']%} <span class="fa fa-street-view"  style="color: green"></span>{%else%} <span class="fa fa-street-view "></span>{%endif%} <span class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span id="senster_{{key.replace(' ','_')}}" class="fa thermometer-half" style="color: grey"></span>{%else%} <span id="senster_{{key.replace(' ','_')}}" class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
                  <div class="dropdown-container-pitu collapse " >
 
@@ -170,7 +195,7 @@
                                         
                         </div>
                         
-                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
+                        <div class="col-xs-4" style="display: flex;justify-content: flex-end;padding-right: 0px;"> <h3 id="id_temp_{{key.replace(' ','_')}}" style="margin-top: 5px;padding-right: 16px;"> {{current_sensors[key]['temp_state']}}°C</h3>
                         </div>
             </div>
         
@@ -179,6 +204,14 @@
      
 {%endif%}
 {%endfor%}
+
+{%if temp==None and devices|length==0 and current_sensors|length==0%}
+
+<div class="row" >
+ <center><h2 style="margin-top: 5px;">No devices associated yet! <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+</div>
+
+{%endif%}
 
 
 <div class="modal fade" id="connectionlostnotification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -215,17 +248,165 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="thermostataddedsucces" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <center><h4 > <span class="fa fa-thermometer-half"></span> Thermostat</h4></center>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+              
+
+              <h4 >New thermostat added successfully</h4>
+
+           
+
+              <row style="display: flex;justify-content: flex-end;" >
+                
+                <button type="button" class="btn btn-primary" id="dismiss_added_therm_notification" >
+                            Accept
+                </button>
+              </row>
+                        </div>
+
+
+
+        </div>
+    </div>
+</div>
   <script>
+
+socket.on('device_update', function(result) {
+
+
+      if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
+      $("#myonoffswitch"+result.location+result.str_id).click();;}
+      
+      //myonoffswitch
+
+    return false
+
+
+  });
+
+socket.on('new_temp_success', function(result) {
+
+$('#thermostataddedsucces').modal('show');
+
+ 
+    return false
+
+
+  });
+
+
+socket.on('update_presence', function(result) {
+  console.log(result);
+  console.log(result.presence_state);
+
+  if (result.presence_state) {
+
+
+$('#'+result.location).attr("style","color: green;");}
+
+else {
+  $('#'+result.location).attr("style","color: black;");
+
+
+}
+
+ 
+    return false
+
+
+  });
+
+socket.on('pir_enable', function(result) {
+
+  if (result.state) {
+
+    $('#pir_enable'+result.mac_address.replace(':','_')).attr("style","");
+    
+
+  }
+  else {$('#pir_enable'+result.mac_address.replace(':','_')).attr("style","color: red;");}
+
+
+
+    return false
+
+
+  });
+
+socket.on('low_bat_index', function(result) {
+
+
+
+  if (result.low_bat) {
+
+  $("#battery_"+result.location).attr("class","fa fa-battery-empty");
+  $("#battery_"+result.location).attr("style","color: red;font-size:25px;");
+
+  } else {
+
+  $("#battery_"+result.location).attr("class","fa fa-battery-full");
+  $("#battery_"+result.location).attr("style","color: black;font-size:25px;");
+  }
+
+    return false
+
+
+  });
+
+socket.on('update_temp', function(result) {
+
+  
+
+  if (result.gtonoff){
+
+    //$("#temp_num").text('Temperature: '+result.general_temp+'°C');
+    $("#temp_num").html('<span class="fa fa-thermometer-half"></span> '+result.general_temp+'°C')
+    $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C'); }
+
+    else{
+
+      $("#id_temp_"+result.sensor_loc).text(result.sensor_temp+'°C');}
+
+  
+      
+
+
+    return false
+
+
+  });
+
+socket.on('sensor_online', function(result) {
+  $('#text_error_body').text('It seems like temp sensor in '+result.sensor_loc+' is offline');
+  $("#battery_"+result.location).attr("style","color: grey;font-size:25px;");
+  $("#senster_"+result.location).attr("style","color: grey;");
+  $("#id_temp_"+result.sensor_loc).text('-°C');
+  $('#connectionlostnotification').modal('show');
+
+    return false
+
+
+  });
+
     {%if temp!=None%}
   $(document).on('change', '#myRange', function(){$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-console.log(result);
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama')
-            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            $('#text_error_body').text('It seems like device Temperature is offline');
             $('#temp_for_back').addClass('prevent-click');
             $('#temp_for_back').css('background-color', 'silver');
             $('#connectionlostnotification').modal('show');
@@ -246,14 +427,8 @@ console.log(result);
           $("#myonoffswitch").val('Off');$("#statevalue").val('False');$.post("{{ url_for('set_temperature') }}",{'state': 'False','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-
-          console.log(result);
-
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
             
-            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+            $('#text_error_body').text('It seems like device Temperature is offline');
             
             $('#connectionlostnotification').modal('show');
           }
@@ -265,12 +440,8 @@ console.log(result);
         else{$("#myonoffswitch").val('On');$("#statevalue").val('True');$.post("{{ url_for('set_temperature') }}",{'state': 'True','set_point':$("#myRange").val()}).done(function(result) {
 
         if (result['status']==400) { 
-console.log(result);
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama')
-            $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
+
+            $('#text_error_body').text('It seems like device Temperature is offline');
             
             $('#connectionlostnotification').modal('show');
           }
@@ -282,7 +453,7 @@ console.log(result);
 {%endif%}
 
     {% for k,v in devices.items()|sort: %}
-    {%if k != 'default' %}
+    {%if k != 'Temperature' %}
     {% for kk,vv in v.items()|sort: %}
     {% if vv['dev_type'] == False: %}
 
@@ -290,10 +461,7 @@ console.log(result);
 
         if (result['status']==400) { 
 
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            
+           
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
             $('#connectionlostnotification').modal('show');
@@ -315,7 +483,6 @@ console.log(result);
 
           if (result['status']==400) { 
 
-            console.log(result['status'])
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
@@ -333,7 +500,6 @@ console.log(result);
 
           if (result['status']==400) { 
 
-            console.log(result['status'])
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
@@ -356,11 +522,6 @@ console.log(result);
 
 
           if (result['status']==400) { 
-
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama 1')
             
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
           
@@ -377,11 +538,6 @@ console.log(result);
 
 
           if (result['status']==400) { 
-
-            console.log(result['status'])
-            console.log(result['str_id'])
-            console.log(result['location'])
-            console.log('la concha de tu mama')
             $('#text_error_body').text('It seems like device '+result['str_id']+' in '+result['location']+' is offline');
             
             $('#connectionlostnotification').modal('show');
@@ -404,6 +560,35 @@ console.log(result);
       //$("#connectionlostnotification").hide();
       location.reload(true);
     });
+
+        $("#dismiss_added_therm_notification").click(function(){
+      //$("#connectionlostnotification").hide();
+      location.reload(true);
+    });
+
+
+
+    $(document).on("click","span.toggleswitch",function(){
+
+      var mac_address = $(this).data('mac_address');
+
+      $.post("{{ url_for('toggle_switch_routes') }}",{'mac_address':mac_address}).done(function(result) {});
+
+
+
+    });
+
+        $(document).on("click","span.togglepirenable",function(){
+
+      var mac_address = $(this).data('mac_address');
+
+      $.post("{{ url_for('pir_enable') }}",{'mac_address':mac_address}).done(function(result) {});
+
+
+
+    });
+
+
   </script>
     
 {% endblock %}

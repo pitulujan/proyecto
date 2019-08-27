@@ -2,6 +2,8 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+<script type="text/javascript" src="static/socket.io.js"></script>
+
 <style type="text/css">
 .modal-body .form-horizontal .col-sm-2,
 .modal-body .form-horizontal .col-sm-10 {
@@ -142,6 +144,14 @@ color: black; }
 
 </div>
 
+<script type="text/javascript" src="static/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+   
+  socket.on('my response', function(msg) {console.log(msg.number); return false});
+
+</script>
+
 <script >
 	$(document).ready(function(){
     $(".open-AddBookDialog").click(function(){
@@ -161,7 +171,7 @@ $(document).ready(function(){
     $(".pitu").click(function(){
       var id_word = $(this).data('id'); 
       
-      $.post("{{ url_for('pruebitas') }}",{"id": id_word}).done(function(response) {alert(response.answer);
+      $.post("{{ url_for('pruebitas2') }}",{"id": id_word}).done(function(response) {alert(response.answer);
 
     });});});
 
