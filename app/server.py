@@ -215,7 +215,9 @@ def pir_mqtt(client,userdata,message):
         presence_state = True
     else:
         presence_state = False
+    print(mapping_macs.keys())
     if fallback in mapping_macs.keys():
+        print("entre y mande")
         take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
@@ -515,7 +517,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-#scheduler.start()
+scheduler.start()
 
 
 def get_activity_log():
