@@ -205,7 +205,7 @@ def touch_temp_mqtt(client,userdata,message):
     fallback = ast.literal_eval(str(message.payload.decode("utf-8")))['FallbackTopic']
     #print(fallback,'--> TOGGLE')
     if fallback in mapping_macs.keys():
-     toggle_temp(fallback)
+        toggle_temp(fallback)
 
 def pir_mqtt(client,userdata,message):
     global mapping_macs
@@ -515,7 +515,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 def get_activity_log():
@@ -640,7 +640,12 @@ def controlling_temp(**kwargs):
             else:
                 sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
                 temp_hist['state'] = 'off'
-        return
+            return
+        else:
+            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
+            temp_hist['state'] = 'off'
+            Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
+
     else:
         return
         
