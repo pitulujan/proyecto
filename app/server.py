@@ -217,7 +217,7 @@ def pir_mqtt(client,userdata,message):
         presence_state = False
     print(mapping_macs.keys())
     if fallback in mapping_macs.keys():
-        print("entre y mande")
+        print("entre y mande", mapping_macs[fallback])
         take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
@@ -1374,7 +1374,7 @@ def add_new_device_server(
         tactil_switch = ast.literal_eval(tactil_switch)
         handles=str(handles)
 
-        #print('cuando agrego el switch el tacti es: ',tactil_switch)
+        print('cuando agrego el switch el handles es: ',handles)
         mapping_macs[mac_address]={'location': location,'str_id':str_id,'handles':handles}
 
         device_to_add = Devices(
@@ -1750,13 +1750,14 @@ def take_action_pir(mac_address, state,handles,location,str_id):
     socketio.emit("update_presence",{"location": location.replace(' ','_'),"presence_state": state }, namespace="/test")
 
 
-
+    print(Current_state_dic_rooms[location][str_id]['pir_enabled'])
     if Current_state_dic_rooms[location][str_id]['pir_enabled']:
 
-
+        print(handles)
         handles = ast.literal_eval(handles)
 
         for dev in handles:
+            print(location,str_id)
             socketio.emit("device_update",{"location": location.replace(' ','-'),"state": state ,"str_id": dev.replace(' ','_')}, namespace="/test")
             Current_state_dic_rooms[location][dev.replace('_',' ')]['State'] = state
 

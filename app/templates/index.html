@@ -287,6 +287,8 @@
 
 socket.on('device_update', function(result) {
 
+    console.log(result);
+
 
       if ($("#myonoffswitch"+result.location+result.str_id).val() == 'On' && !result.state || $("#myonoffswitch"+result.location+result.str_id).val() == 'Off' && result.state) {
       $("#myonoffswitch"+result.location+result.str_id).click();;}
@@ -310,8 +312,7 @@ $('#thermostataddedsucces').modal('show');
 
 
 socket.on('update_presence', function(result) {
-  console.log(result);
-  console.log(result.presence_state);
+
 
   if (result.presence_state) {
 
