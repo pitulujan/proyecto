@@ -223,7 +223,7 @@ def pir_mqtt(client,userdata,message):
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app") #create new instance
+client = mqtt.Client("web_app_pc") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -615,41 +615,45 @@ def controlling_temp(**kwargs):
     global Current_state_dic_rooms
     temp=get_temp_state()
 
-    if Current_state_dic_rooms['Temperature']['Temperature']['State']:
+    try:
+ 
+        if Current_state_dic_rooms['Temperature']['Temperature']['State']:
 
-        if temp_hist['state'] == 'off':
+            if temp_hist['state'] == 'off':
 
-            set_point = temp['Set_Point']
+                set_point = temp['Set_Point']
 
-        elif temp_hist['state'] == "heat":
+            elif temp_hist['state'] == "heat":
 
-            set_point = temp['Set_Point'] + 1 
+                set_point = temp['Set_Point'] + 1 
 
-        else:
-            set_point = temp['Set_Point'] -1 
+            else:
+                set_point = temp['Set_Point'] -1 
 
 
 
-        #print(temp)
+            #print(temp)
 
-        if temp['Current_value'] != '-':
-            if temp['Current_value'] > set_point:
-                sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'10',qos=2)
-                temp_hist['state'] = 'ac'
-            elif temp['Current_value'] < set_point:
-                sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'11',qos=2)
-                temp_hist['state'] = 'heat'
+            if temp['Current_value'] != '-':
+                if temp['Current_value'] > set_point:
+                    sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'10',qos=2)
+                    temp_hist['state'] = 'ac'
+                elif temp['Current_value'] < set_point:
+                    sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'11',qos=2)
+                    temp_hist['state'] = 'heat'
+                else:
+                    sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
+                    temp_hist['state'] = 'off'
+                return
             else:
                 sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
                 temp_hist['state'] = 'off'
-            return
-        else:
-            sent=client.publish("temp/"+Current_state_dic_rooms['Temperature']['Temperature']['mac_address']+"/",'00',qos=2)
-            temp_hist['state'] = 'off'
-            Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
+                Current_state_dic_rooms['Temperature']['Temperature']['State'] = False
 
-    else:
-        return
+        else:
+            return
+    except Exception as e:
+           pass  
         
 
 def set_temp(
