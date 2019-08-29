@@ -223,7 +223,7 @@ def pir_mqtt(client,userdata,message):
 ########################################
 broker_address="192.168.2.20"
 #broker_address="127.0.0.1"
-client = mqtt.Client("web_app_pc") #create new instance
+client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
 client.message_callback_add("stat/sonoff/RESULT", result_mqtt)
@@ -454,6 +454,7 @@ def remove_dev(user, location_str_id):
 
 
     if location == 'Temperature':
+        print("elimine el job temp")
         scheduler.remove_job(device_to_remove.mac_address)
 
 
