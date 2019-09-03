@@ -5,7 +5,7 @@ from datetime import datetime
 
 def create_user_full(form,user):
 
-    create_user = User(username=form.username.data, admin=form.admin.data)
+    create_user = User(username=form.username.data, admin=form.admin.data,user_email=form.email.data)
     create_user.set_password(form.password.data)
 
     description= "User "+form.username.data+" has been added."

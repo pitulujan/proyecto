@@ -1,8 +1,7 @@
 from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log, Scheduled_events, Sensors, Log
-from app.mail import send_email
-from app import db, socketio
+from app import db, socketio,app
 from flask import jsonify
 from threading import Thread
 import socket
@@ -14,6 +13,9 @@ import random
 import time
 from flask_socketio import send, emit
 import paho.mqtt.client as mqtt
+from threading import Thread
+from flask_mail import Message
+from app import mail
 
 
 Current_state_dic_temp = {}
@@ -31,7 +33,8 @@ new_dev_mac_enabled = False
 low_baterry_not = False
 Low_baterry_array = []
 temp_hist={'state': 'off'}
-mail_flag={}
+mail_batery_flag={}
+mail_sensor_flag = {}
 
 seq_num = (
     0
@@ -223,8 +226,8 @@ def pir_mqtt(client,userdata,message):
         take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
-broker_address="192.168.2.20"
-#broker_address="127.0.0.1"
+#broker_address="192.168.2.20"
+broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -235,7 +238,7 @@ client.message_callback_add("temp/TOUCH",touch_temp_mqtt )
 client.message_callback_add("switch/TOUCH",touch_switch_mqtt )
 client.message_callback_add("switch/PIR",pir_mqtt )
 client.on_message=callback_mqtt #attach function to callback
-#client.connect(host=broker_address,port=1883) #connect to broker
+client.connect(host=broker_address,port=1883) #connect to broker
 client.subscribe("+/sonoff/+",qos=2)
 client.subscribe("switch/+",qos=2)
 client.subscribe("temp/+",qos=2)
@@ -320,7 +323,8 @@ def process_input(input_str):
     global low_baterry_not
     global Low_baterry_array
     global Current_state_dic_rooms
-    global mail_flag
+    global mail_batery_flag
+
     #print("Processing the input received from client")
     input_str = str(input_str).replace(chr(0), "")
 
@@ -377,19 +381,28 @@ def process_input(input_str):
                     if battery_state:
                         low_baterry_not = True
 
-                        if mac_address not in mail_flag.keys():
+                        if mac_address not in mail_batery_flag.keys():
+
+                            recipients_array = []
+                            users= User.query.filter_by(admin=True)
+
+                            for user in users:
+                                recipients_array.append(user.user_email)
                             subject = 'Bateria Baja'
                             sender = 'no-reply@' + app.config['MAIL_SERVER']
-                            recipients = 
+                            recipients = recipients_array
                             text_body = 'El sensor en '+location+' tiene bateria baja'
                             html_body = '<h2> El sensor en '+location+ ' tiene bateria baja</h2>'
                             send_email(subject, sender, recipients, text_body, html_body)
-                            mail_flag[mac_address] = True
+                            mail_batery_flag[mac_address] = True
 
                         Low_baterry_array.append((location, mac_address))
                         socketio.emit("low_bat_tobrowser",{"arrayToSendToBrowser": Low_baterry_array},namespace="/test")
                         socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": True},namespace="/test")
                     else:
+                        if mac_address in mail_batery_flag.keys():
+                            mail_batery_flag.pop(mac_address)
+
                         socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": False},namespace="/test")
 
             #print('deberia llegar aca')
@@ -531,7 +544,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-#scheduler.start()
+scheduler.start()
 
 
 def get_activity_log():
@@ -1523,7 +1536,7 @@ def add_new_sensor_server(
     db.session.commit()
     Sensors_state[mac_address] = datetime.now()
     scheduler.add_job(
-        check_sensor_state, "interval", seconds=300, args=[mac_address], id=mac_address
+        check_sensor_state, "interval", seconds=60, args=[mac_address], id=mac_address
     )
     New_sensors.pop(mac_address)
 
@@ -1545,21 +1558,51 @@ def add_new_sensor_server(
 def check_sensor_state(mac_address):
     global Current_sensors
     global Sensors_state
+    global mail_sensor_flag
+    global mapping_macs
 
     # #print('hola, estoy checkeando si el sensor '+mac_address+" está vivito y coleando")
     for sensor in Current_sensors:
         #print('sensor in check_sensor',sensor)
         if mac_address == Current_sensors[sensor]["mac_address"]:
             if (
-                round((datetime.now() - Sensors_state[mac_address]).total_seconds() / 60 ) < 2 ):
+                round((datetime.now() - Sensors_state[mac_address]).total_seconds() / 60 ) < 1 ):
                 Current_sensors[sensor]["online"] = True
+                if mac_address in mail_sensor_flag.keys():
+                    mail_sensor_flag.pop(mac_address)
                 #socketio.emit("sensor_online",{"sensor_loc": sensor,"sensor_state": True},namespace="/test")
             else:
 
                 Current_sensors[sensor]["online"] = False
+                if mac_address not in mail_sensor_flag.keys():
+                    mail_sensor_flag[mac_address] = True
+                    recipients_array = []
+                    users= User.query.filter_by(admin=True)
+
+                    for user in users:
+                        recipients_array.append(user.user_email)
+                    subject = 'Sensor Desconectado'
+                    sender = 'no-reply@' + app.config['MAIL_SERVER']
+                    recipients = recipients_array
+                    text_body = 'El sensor en '+mapping_macs[mac_address]['location']+' se desconectó'
+                    html_body = '<h2> El sensor en '+mapping_macs[mac_address]['location']+' se desconectó</h2>'
+                    send_email(subject, sender, recipients, text_body, html_body)
+
+
                 socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")
 
     return
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+
+def send_email(subject, sender, recipients, text_body, html_body):
+    msg = Message(subject, sender=sender, recipients=recipients)
+    msg.body = text_body
+    msg.html = html_body
+    Thread(target=send_async_email, args=(app, msg)).start()
 
 def get_new_devices():
 

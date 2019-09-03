@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from app.models import User
 from wtforms import StringField, PasswordField, BooleanField, SubmitField,DecimalField , IntegerField, validators
 from wtforms.validators import ValidationError, DataRequired, EqualTo , NumberRange 
+from wtforms.fields.html5 import EmailField
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -13,6 +14,8 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), validators.Length(min=4,max=10)])
     password = PasswordField('Password', validators=[DataRequired(), validators.Length(min=4,max=10)])
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    email = EmailField('Email', validators=[validators.DataRequired(), validators.Email()])
+    email2 = EmailField('Repeat Email', validators=[validators.DataRequired(), validators.Email(),EqualTo('email')])
     admin = BooleanField('Administrator')
     submit = SubmitField('Register')
 
