@@ -12,4 +12,4 @@ class Config(object):
     MAIL_USE_TLS = 1
     MAIL_USERNAME = 'test.proyecto.2019'
     MAIL_PASSWORD = 'lujanmuller2019.'
-    ADMINS = ['borismuller91@gmail.com','lujanmartin91@gmail.com']
+    

@@ -1589,7 +1589,7 @@ def check_sensor_state(mac_address):
                     send_email(subject, sender, recipients, text_body, html_body)
 
 
-                socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")
+                    socketio.emit("sensor_online",{"sensor_loc":sensor,"sensor_state": False},namespace="/test")
 
     return
 
