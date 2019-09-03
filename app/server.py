@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime, date
 from app.configuracion_scheduler import config_scheduler
 from app.models import User, Devices, Log, Scheduled_events, Sensors, Log
+from app.mail import send_email
 from app import db, socketio
 from flask import jsonify
 from threading import Thread
@@ -30,6 +31,7 @@ new_dev_mac_enabled = False
 low_baterry_not = False
 Low_baterry_array = []
 temp_hist={'state': 'off'}
+mail_flag={}
 
 seq_num = (
     0
@@ -233,7 +235,7 @@ client.message_callback_add("temp/TOUCH",touch_temp_mqtt )
 client.message_callback_add("switch/TOUCH",touch_switch_mqtt )
 client.message_callback_add("switch/PIR",pir_mqtt )
 client.on_message=callback_mqtt #attach function to callback
-client.connect(host=broker_address,port=1883) #connect to broker
+#client.connect(host=broker_address,port=1883) #connect to broker
 client.subscribe("+/sonoff/+",qos=2)
 client.subscribe("switch/+",qos=2)
 client.subscribe("temp/+",qos=2)
@@ -318,6 +320,7 @@ def process_input(input_str):
     global low_baterry_not
     global Low_baterry_array
     global Current_state_dic_rooms
+    global mail_flag
     #print("Processing the input received from client")
     input_str = str(input_str).replace(chr(0), "")
 
@@ -373,6 +376,16 @@ def process_input(input_str):
 
                     if battery_state:
                         low_baterry_not = True
+
+                        if mac_address not in mail_flag.keys():
+                            subject = 'Bateria Baja'
+                            sender = 'no-reply@' + app.config['MAIL_SERVER']
+                            recipients = 
+                            text_body = 'El sensor en '+location+' tiene bateria baja'
+                            html_body = '<h2> El sensor en '+location+ ' tiene bateria baja</h2>'
+                            send_email(subject, sender, recipients, text_body, html_body)
+                            mail_flag[mac_address] = True
+
                         Low_baterry_array.append((location, mac_address))
                         socketio.emit("low_bat_tobrowser",{"arrayToSendToBrowser": Low_baterry_array},namespace="/test")
                         socketio.emit("low_bat_index",{"location": location.replace(' ','_'), "low_bat": True},namespace="/test")
@@ -518,7 +531,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 def get_activity_log():
