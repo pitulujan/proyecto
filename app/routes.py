@@ -57,7 +57,7 @@ def register():
         flash(ans)
         return redirect(url_for('index'))
         
-    return render_template('register.html', title=' New User', form=form)
+    return render_template('register.html', title=' Agregar Usuario', form=form)
 
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
@@ -91,7 +91,7 @@ def delete_user():
         ans=delete_user_full(post_id,current_user.username)
         
         return jsonify({'ans':ans})
-    return render_template('delete_user2.html', title=' Delete User', users=users)
+    return render_template('delete_user2.html', title=' Borrar Usuario', users=users)
 
 
 @app.route('/set_temperature', methods=['POST'])

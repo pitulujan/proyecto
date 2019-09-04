@@ -97,7 +97,7 @@
                  <div class="row" style="margin-bottom: 10px;">
                         <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                                         
-                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperatura </h3>
                                         
                         </div>
 
@@ -184,14 +184,14 @@
 {%for key in current_sensors.keys():%}
 {%if key not in devices.keys()%}
 
-<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span id="senster_{{key.replace(' ','_')}}" class="fa thermometer-half" style="color: grey"></span>{%else%} <span id="senster_{{key.replace(' ','_')}}" class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
+<button class="dropdown-btn index" data-toggle="collapse" > {{key}}{%if not current_sensors[key]['online'] %} <span id="senster_{{key.replace(' ','_')}}" class="fa fa-thermometer-half" style="color: grey"></span>{%else%} <span id="senster_{{key.replace(' ','_')}}" class="fa fa-thermometer-half"></span>{%if current_sensors[key]['battery']%} {%if current_sensors[key]['battery_state']%} <span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-empty" style="color: red;font-size:25px;"></span>{%else%}<span id="battery_{{key.replace(' ','_')}}" class="fa fa-battery-full" style="font-size:25px;"></span> {%endif%}{%endif%}{%endif%} <i class="glyphicon glyphicon-triangle-bottom" style="font-size: 25px" aria-hidden="true"></i></button>
 
                  <div class="dropdown-container-pitu collapse " >
 
              <div class="row">
                         <div class="col-xs-8" style="display: flex;justify-content: flex-start;padding-left: 15px;">
                                         
-                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperature </h3>
+                                        <h3 id="textoreloco"   style="vertical-align: text-top;margin-top: 5px;padding-left: 20px;"> Temperatura </h3>
                                         
                         </div>
                         
@@ -208,7 +208,7 @@
 {%if temp==None and devices|length==0 and current_sensors|length==0%}
 
 <div class="row" >
- <center><h2 style="margin-top: 5px;">No devices associated yet! <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
+ <center><h2 style="margin-top: 5px;">No hay dispositivos asociados! <span class="glyphicon glyphicon-thumbs-down"></span></h2></center>
 </div>
 
 {%endif%}

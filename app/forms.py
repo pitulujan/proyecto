@@ -5,24 +5,24 @@ from wtforms.validators import ValidationError, DataRequired, EqualTo , NumberRa
 from wtforms.fields.html5 import EmailField
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
+    username = StringField('Usuario', validators=[DataRequired()])
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    remember_me = BooleanField('Recordarme')
     submit = SubmitField('Log In')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), validators.Length(min=4,max=10)])
-    password = PasswordField('Password', validators=[DataRequired(), validators.Length(min=4,max=10)])
-    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    username = StringField('Usuario', validators=[DataRequired(), validators.Length(min=4,max=10)])
+    password = PasswordField('Contraseña', validators=[DataRequired(), validators.Length(min=4,max=10)])
+    password2 = PasswordField('Repetir Contraseña', validators=[DataRequired(), EqualTo('password')])
     email = EmailField('Email', validators=[validators.DataRequired(), validators.Email()])
-    email2 = EmailField('Repeat Email', validators=[validators.DataRequired(), validators.Email(),EqualTo('email')])
-    admin = BooleanField('Administrator')
-    submit = SubmitField('Register')
+    email2 = EmailField('Repetir Email', validators=[validators.DataRequired(), validators.Email(),EqualTo('email')])
+    admin = BooleanField('Administrador')
+    submit = SubmitField('Registrar')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError('Please use a different username.')
+            raise ValidationError('Por favor utilice otro nombre de usuario')
 
 class ChangePassword(FlaskForm):
     current_password=PasswordField('Current Password', validators=[DataRequired(), validators.Length(min=4,max=10)])

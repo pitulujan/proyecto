@@ -17,7 +17,7 @@ def create_user_full(form,user):
 
     db.session.commit()    
         
-    return 'Congratulations, you have just registered '+form.username.data+'!'
+    return 'El usuario '+form.username.data+' fue registrado correctamente'
     
 def delete_user_full(user,current_user):
 
@@ -40,7 +40,7 @@ def delete_user_full(user,current_user):
     
     db.session.commit()
 
-    return 'User '+delete_user.username+ ' was successfully deleted'
+    return 'El usuario '+delete_user.username+ ' fue eliminado'
 
 def change_user_password(form,user):
     

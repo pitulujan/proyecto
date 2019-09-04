@@ -336,26 +336,32 @@ def process_input(input_str):
 
         #print("pitu-->", message.keys(), message)
         if "sensor_update" in message.keys():
-            #print('hasta aca va')
+            print('hasta aca va?')
             mac_address = message["sensor_update"]["mac_address"]
-
+            print(mac_address)
+            
             if message["sensor_update"]["battery"] == 1:
                 battery = True
             else:
                 battery = False
-
+            print(battery)
             if message["sensor_update"]["battery_state"] == 0:
                 battery_state = True
             else:
                 battery_state = False
+            print(battery_state)
 
             temp_state = message['sensor_update']['temp_state']
+            print(temp_state)
 
             if int(str(temp_state).split('.')[1])>5:
+                print('whaa')
                 temp_state= int(temp_state+1)
             else:
+                print('whawha')
                 temp_state = int(temp_state)
-            #print('la temp state en el process input es de : ', temp_state)
+            
+            print('la temp state en el process input es de : ', temp_state)
 
             new = True
             for location in Current_sensors:
@@ -369,8 +375,8 @@ def process_input(input_str):
                     #print('Current sensor', Sensors_state)
 
                     temp = get_temp_state()
-                    #print('la temp promedio es: ',temp)
-                    #print('temp in',temp,'location',location)
+                    print('la temp promedio es: ',temp)
+                    print('temp in',temp,'location',location)
                     if temp != None:
                          
                         socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
@@ -1536,7 +1542,7 @@ def add_new_sensor_server(
     db.session.commit()
     Sensors_state[mac_address] = datetime.now()
     scheduler.add_job(
-        check_sensor_state, "interval", seconds=60, args=[mac_address], id=mac_address
+        check_sensor_state, "interval", seconds=300, args=[mac_address], id=mac_address
     )
     New_sensors.pop(mac_address)
 
