@@ -1,5 +1,6 @@
 alembic==1.0.11
 APScheduler==3.6.1
+blinker==1.4
 certifi==2019.6.16
 chardet==3.0.4
 Click==7.0
@@ -7,6 +8,7 @@ dominate==2.4.0
 Flask==1.1.1
 Flask-Bootstrap==3.3.7.1
 Flask-Login==0.4.1
+Flask-Mail==0.9.1
 Flask-Migrate==2.5.2
 Flask-Moment==0.9.0
 Flask-SocketIO==4.2.1
