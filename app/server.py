@@ -492,7 +492,11 @@ def remove_dev(user, location_str_id):
 
     if location == 'Temperature':
         print("elimine el job temp")
-        scheduler.remove_job(device_to_remove.mac_address)
+        try:
+            scheduler.remove_job(device_to_remove.mac_address)
+        except Exception as e:
+            pass
+        
 
 
 
