@@ -1542,7 +1542,7 @@ def add_new_sensor_server(
     db.session.commit()
     Sensors_state[mac_address] = datetime.now()
     scheduler.add_job(
-        check_sensor_state, "interval", seconds=300, args=[mac_address], id=mac_address
+        check_sensor_state, "interval", seconds=60, args=[mac_address], id=mac_address
     )
     New_sensors.pop(mac_address)
 
@@ -1741,6 +1741,8 @@ def take_action(mac_address, state, set_point,tactil_switch,handles,location,str
     global Sent_messages
     global Current_state_dic_rooms
     print(Current_state_dic_rooms)
+    sent=client.publish("switch/"+mac_address+"/",'press',qos=2)
+
     if state == True:
         state = 'ON'
     elif state == False:
