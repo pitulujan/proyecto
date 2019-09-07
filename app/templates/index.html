@@ -249,6 +249,43 @@
     </div>
 </div>
 
+<div class="modal fade" id="sonsor_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top: 60px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Cerrar</span>
+                </button>
+                <center><h4 > <span class="fa fa-map-marker"></span> Localización Sensor</h4></center>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+              
+
+              <h4 id="text_sensor_location"></h4>
+
+           
+
+              <row style="display: flex;justify-content: flex-end;" >
+                
+                <button type="button" class="btn btn-primary" id="dismiss_added_therm_notification" >
+                            Aceptar
+                </button>
+              </row>
+                        </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
 <div class="modal fade" id="thermostataddedsucces" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="margin-top: 60px;">
@@ -309,6 +346,19 @@ $('#thermostataddedsucces').modal('show');
 
 
   });
+
+socket.on('sensor_id', function(result) {
+
+$('#text_error_body').text('El sensor se encuentra en  '+result.sensor_loc);
+
+  $('#text_sensor_location').modal('show');
+
+ 
+    return false
+
+
+  });
+
 
 
 socket.on('update_presence', function(result) {
@@ -392,7 +442,7 @@ socket.on('update_temp', function(result) {
   });
 
 socket.on('sensor_online', function(result) {
-  $('#text_error_body').text('It seems like temp sensor in '+result.sensor_loc+' is offline');
+  $('#text_error_body').text('El sensor en '+result.sensor_loc+' se desconectó');
   $("#battery_"+result.location).attr("style","color: grey;font-size:25px;");
   $("#senster_"+result.location).attr("style","color: grey;");
   $("#id_temp_"+result.sensor_loc).text('-°C');

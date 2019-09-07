@@ -340,6 +340,9 @@ def process_input(input_str):
             mac_address = message["sensor_update"]["mac_address"]
             print(mac_address)
             
+
+
+
             if message["sensor_update"]["battery"] == 1:
                 battery = True
             else:
@@ -382,7 +385,9 @@ def process_input(input_str):
                         socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
                     else:
                         socketio.emit("update_temp",{"gtonoff": False,"general_temp": '-','sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
-                         
+                    
+                    if message['sensor_update']['digital_input12'] == 0:
+                        socketio.emit("sensor_id",{'sensor_loc': location.replace(' ','_')},namespace="/test")    
 
                     if battery_state:
                         low_baterry_not = True
