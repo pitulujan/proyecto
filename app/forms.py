@@ -25,7 +25,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Por favor utilice otro nombre de usuario')
 
 class ChangePassword(FlaskForm):
-    current_password=PasswordField('Current Password', validators=[DataRequired(), validators.Length(min=4,max=10)])
-    new_password=PasswordField('New Password', validators=[DataRequired(), validators.Length(min=4,max=10)])
-    check_new_password=PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('new_password')])
-    submit = SubmitField('Change Password')
+    current_password=PasswordField('Contraseña Actual', validators=[DataRequired(), validators.Length(min=4,max=10)])
+    new_password=PasswordField('Nueva Contraseña', validators=[DataRequired(), validators.Length(min=4,max=10)])
+    check_new_password=PasswordField('Repetir Contraseña', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Guardar Cambios')
