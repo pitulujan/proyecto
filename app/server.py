@@ -336,9 +336,9 @@ def process_input(input_str):
 
         #print("pitu-->", message.keys(), message)
         if "sensor_update" in message.keys():
-            print('hasta aca va?')
+            #print('hasta aca va?')
             mac_address = message["sensor_update"]["mac_address"]
-            print(mac_address)
+            #print(mac_address)
             
 
 
@@ -347,24 +347,24 @@ def process_input(input_str):
                 battery = True
             else:
                 battery = False
-            print(battery)
+            #print(battery)
             if message["sensor_update"]["battery_state"] == 0:
                 battery_state = True
             else:
                 battery_state = False
-            print(battery_state)
+            #print(battery_state)
 
             temp_state = message['sensor_update']['temp_state']
-            print(temp_state)
+            #print(temp_state)
 
             if int(str(temp_state).split('.')[1])>5:
-                print('whaa')
+                #print('whaa')
                 temp_state= int(temp_state+1)
             else:
-                print('whawha')
+                #print('whawha')
                 temp_state = int(temp_state)
             
-            print('la temp state en el process input es de : ', temp_state)
+            #print('la temp state en el process input es de : ', temp_state)
 
             new = True
             for location in Current_sensors:
@@ -378,8 +378,8 @@ def process_input(input_str):
                     #print('Current sensor', Sensors_state)
 
                     temp = get_temp_state()
-                    print('la temp promedio es: ',temp)
-                    print('temp in',temp,'location',location)
+                    #print('la temp promedio es: ',temp)
+                    #print('temp in',temp,'location',location)
                     if temp != None:
                          
                         socketio.emit("update_temp",{"gtonoff": True,"general_temp": temp['Current_value'],'sensor_loc': location.replace(' ','_'),'sensor_temp': temp_state},namespace="/test")
@@ -555,7 +555,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 def get_activity_log():
@@ -600,7 +600,7 @@ def get_initial_values():
                     "pir_enabled" : True,
                 }
             }
-    print(Current_state_dic_rooms)
+    #print(Current_state_dic_rooms)
     # query_temp=Temperature.query.first()
     # Current_state_dic_temp={ 'State' : query_temp.state,'Set_Point' : query_temp.set_point, 'Current_value': 25} # Hay que ver como medimos el current value y lo agregamos
 
