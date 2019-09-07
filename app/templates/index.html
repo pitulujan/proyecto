@@ -349,7 +349,7 @@ $('#thermostataddedsucces').modal('show');
 
 socket.on('sensor_id', function(result) {
 
-$('#text_error_body').text('El sensor se encuentra en  '+result.sensor_loc);
+$('#text_sensor_location').text('El sensor se encuentra en  '+result.sensor_loc);
 
   $('#sonsor_location').modal('show');
 
