@@ -25,7 +25,7 @@
     $('#modal_body_battery').html('');
 
     $("#redirect_add").show();
-    $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
+    $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> Nuevo Dispositivo </h4>');
         
       for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
 
@@ -55,11 +55,11 @@
 
 
 
-    $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
+    $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Bateria Baja </h4>');
        
       for (i = 0; i < result.arrayToSendToBrowser.length; i++) {
 
-        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result.arrayToSendToBrowser[i][0]+'</h4>');
+        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Ubicación: '+result.arrayToSendToBrowser[i][0]+'</h4>');
       }; 
 
     $('#notificationsmodal').modal('show');
@@ -90,7 +90,7 @@
 
       if (result['new_dev_mac_enabled']) {
         $("#redirect_add").show();
-        $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> New Device </h4>');
+        $('#modal_header_devices').append('<h4><span  class="fa fa-sitemap" ></span> Nuevo Dispositivo </h4>');
         
       for (i = 0; i < result['new_dev_mac'].length; i++) {
 
@@ -101,11 +101,11 @@
       if (result['flag_bat']) {
 
         
-        $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Low battery </h4>');
+        $('#modal_header_battery').append('<h4><span class="fa fa-battery-empty"></span> Bateria Baja </h4>');
        
       for (i = 0; i < result['sensors_list'].length; i++) {
 
-        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Location: '+result['sensors_list'][i][0]+'</h4>');
+        $('#modal_body_battery').append('<h4><span class="fa fa-map-marker"></span> Ubicación: '+result['sensors_list'][i][0]+'</h4>');
       };};
 
 
@@ -173,7 +173,7 @@
                        <span aria-hidden="true">&times;</span>
                        <span class="sr-only">Close</span>
                 </button>
-                <center><h4><span  class="glyphicon glyphicon-log-out "></span> Are you sure you want to logout?</h4></center>
+                <center><h4><span  class="glyphicon glyphicon-log-out "></span> Está seguro que desea salir?</h4></center>
             </div>
 
             <!-- Modal Body -->
@@ -185,7 +185,7 @@
 
                 <button type="button" class="btn btn-default"
                         data-dismiss="modal">
-                            Cancel
+                            Cancelar
                 </button>
                 <button type="submit" id="logout_btn"class="btn btn-danger"  >
                     Logout
@@ -212,7 +212,7 @@
                 </button>
 
                 
-                <center><h4><span class="fa fa-exclamation-triangle"></span> New Notification</h4></center>
+                <center><h4><span class="fa fa-exclamation-triangle"></span> Nueva Notificación</h4></center>
             </div>
 
             <!-- Modal Body -->
@@ -225,8 +225,8 @@
 
               <row style="display: flex;justify-content: flex-end;" >
                 
-                <button type="submit" class="btn btn-default dis" id="dismiss_notification" > Accept</button>
-                <button type="button" class="btn btn-primary" id="redirect_add" > Add </button>
+                <button type="submit" class="btn btn-default dis" id="dismiss_notification" > Aceptar</button>
+                <button type="button" class="btn btn-primary" id="redirect_add" > Agregar </button>
               </row>
                         </div>
 
