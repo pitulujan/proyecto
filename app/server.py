@@ -226,8 +226,8 @@ def pir_mqtt(client,userdata,message):
         take_action_pir(fallback, presence_state,mapping_macs[fallback]['handles'],mapping_macs[fallback]["location"],mapping_macs[fallback]["str_id"])
 
 ########################################
-#broker_address="192.168.2.20"
-broker_address="127.0.0.1"
+broker_address="192.168.2.20"
+#broker_address="127.0.0.1"
 client = mqtt.Client("web_app") #create new instance
 client.will_set("tele/sonoff/LWT", payload="gorda traga leche", qos=0, retain=True)
 client.message_callback_add("tele/sonoff/INFO1", info1_mqtt)
@@ -550,7 +550,7 @@ scheduler.add_job(tick, "interval", seconds=60, id="basic", replace_existing=Tru
 scheduler.add_job(start_server,"date",run_date=datetime.now(),id="basic_server",replace_existing=True)
 scheduler.add_job(server_mqtt,"date",run_date=datetime.now(),id="basic_server_mqtt",replace_existing=True)
 
-scheduler.start()
+#scheduler.start()
 
 
 def get_activity_log():
