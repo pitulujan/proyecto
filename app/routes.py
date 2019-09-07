@@ -139,7 +139,7 @@ def remove_device():
         flash(ans)
         return render_template('remove_device.html', title='Remove Device', devices=devices,state=state,current_sensors=get_current_sensors(),list=list)
 
-    return render_template('remove_device.html', title='Remove Device', devices=devices,state=state,current_sensors=get_current_sensors(),list=list)
+    return render_template('remove_device.html', title='Quitar Disp.', devices=devices,state=state,current_sensors=get_current_sensors(),list=list)
 
 
 @app.route('/remove_sensor', methods=['POST'])
@@ -187,7 +187,7 @@ def schedule_events():
         ##print(request.form['pid'])
         answer = schedule_event(current_user.username,request.form['device'],request.form['location'],request.form['date'],request.form['pid'],request.form['state'],request.form['set_point'],day_of_week=request.form.getlist('repeat[]'))#(user,str_id,location,start_date,args=[], day_of_week=[]):
         return answer #--> aca hay que devolver el ID que le asignamos al event para usarlo como id del div que generamos
-    return render_template('schedule_events.html', title=' Schedule Events' , rooms_devices=devices,temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
+    return render_template('schedule_events.html', title=' Programar Eventos' , rooms_devices=devices,temperature=get_temp_state(),scheduled_events=get_scheduled_events(),enumerate=enumerate)
 
 @app.route('/reschedule_event', methods=['POST'])
 @login_required
